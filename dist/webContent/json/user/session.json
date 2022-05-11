@@ -1,0 +1,10 @@
+
+{
+  "code": 200
+  ,"msg": ""
+  ,"data": {
+    "username": "intemedic"
+    ,"sex": "男"
+    ,"role": 1
+  }
+}

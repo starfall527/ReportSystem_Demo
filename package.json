@@ -1,0 +1,77 @@
+{
+    "name": "demo",
+    "version": "1.0.0",
+    "main": "app.js",
+    "scripts": {
+        "start": "electron ./main.js ",
+        "dev": "electron ./main.js --debug",
+        "postinstall": "electron-builder install-app-deps",
+        "pack:win": "electron-builder --dir --win --x64",
+        "pack": "electron-builder --dir",
+        "pack:all": "electron-builder --platform=all",
+        "dist:win": "electron-builder -w",
+        "dist:linux": "electron-builder -l",
+        "windows-store": "node ./script/windows-store.js",
+        "release": "node ./script/release.js",
+        "electron-rebuild": "electron-rebuild -w opencv4nodejs better-sqlite3 --abi=99",
+        "packageWin": "electron-packager ./ electron --win --arch=x64 --icon=electron.ico --out=./dist --asar --app-version=1.0.0 --electron-version=16.0.5",
+        "pkgWin": "pkg -t win app.js",
+        "pkg": "pkg package.json -d",
+        "apidoc": "apidoc -i ./Admin/ -o ./document/"
+    },
+    "author": "cwx",
+    "license": "null",
+    "description": "node.js express mysql for IHC admin",
+    "dependencies": {
+        "async": "^3.2.2",
+        "better-sqlite3": "^7.4.5",
+        "express": "^4.17.1",
+        "glob": "^7.2.0",
+        "jsqr": "^1.4.0",
+        "log4js": "^6.3.0",
+        "lz-string": "^1.4.4",
+        "qr-image": "^3.2.0",
+        "qrcode-reader": "^1.0.4"
+    },
+    "bin": "app.js",
+    "pkg": {
+        "scripts": [
+            "Admin/**/*.js",
+            "Admin/**/**/*.js",
+            "Admin/*.js",
+            "webContent/**/**/*.js",
+            "webContent/**/*.js",
+            "webContent/*.js"
+        ],
+        "assets": [
+            "webContent/views/**/*",
+            "webContent/layui/**/*",
+            "webContent/json/**/*",
+            "webContent/*",
+            "webContent/**/**/**/*",
+            "webContent/**/**/**/**/*"
+        ],
+        "targets": [
+            "node12-win-x64"
+        ],
+        "outputPath": "dist/"
+    },
+    "devDependencies": {
+        "electron-builder": "^22.14.5",
+        "electron-packager": "^12.0.1",
+        "electron-rebuild": "^3.2.5",
+        "electron-store": "^8.0.1",
+        "pkg": "^5.5.1"
+    },
+    "opencv4nodejs": {
+        "disableAutoBuild": 1,
+        "opencvIncludeDir": "D:\\opencv-4.1.0\\opencv\\build\\include",
+        "opencvLibDir": "D:\\opencv-4.1.0\\opencv\\build\\x64\\vc15\\lib",
+        "opencvBinDir": "D:\\opencv-4.1.0\\opencv\\build\\x64\\vc15\\bin"
+    },
+    "apidoc": {
+        "name": "slideCenter二次开发demo",
+        "description": "接口文档",
+        "title": "接口文档"
+    }
+}

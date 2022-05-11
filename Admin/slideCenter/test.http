@@ -1,0 +1,30 @@
+@hostname = localhost
+@port = 9804
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@createdAt = {{$datetime iso8601}}
+
+@name = hello
+
+@getFolder=api/app/odm-slide/folders
+@getSlides=api/app/odm-slide/slides
+@getSlidesInfo=api/app/odm-slide/slides
+
+@Path = E:/切片/瑞康/单层
+@TenantName = 瑞康
+@IsReadOnly = false
+
+# GET http://{{host}}/api/app/odm-slide/slide
+# ?Path=E:/切片/瑞康/单层/G21-0848.tron
+# &TenantName=瑞康 HTTP/1.1
+
+
+# GET http://{{host}}/api/app/odm-slide/slide-uri
+# ?Path=E:/切片/瑞康/单层/G21-0848.tron
+# &TenantName=瑞康 HTTP/1.1
+
+
+GET http://{{host}}/api/app/odm-slide/folders
+?Path=1层
+&TenantName=瑞康 HTTP/1.1
+&IsRecursive=true

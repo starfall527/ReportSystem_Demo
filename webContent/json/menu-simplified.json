@@ -1,0 +1,10 @@
+{
+    "code": 200,
+    "msg": "",
+    "data": [{
+        "name": "slideCenter",
+        "title": "切片管理",
+        "icon": "layui-icon-auz",
+        "jump": "slideCenter/slideCenter"
+    }]
+}

@@ -1,0 +1,44 @@
+<!--
+ * @Author: cwx
+ * @Description: slideCenter
+ * @Date: 2021-10-21 17:41:07
+ * @LastEditTime: 2022-03-23 10:37:31
+ * @FilePath: \IHC_layuiAdmin_Demo\webContent\dist\views\slideCenter\slideCenter.html
+-->
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>切片管理</legend>
+</fieldset>
+
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md4">
+            <div class="layui-card" style="margin-bottom: 150px;">
+                <div class="layui-card-header">存储目录</div>
+                <div class="layui-card-body">
+                    <div id="tree"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md8">
+            <div class="layui-card">
+                <div class="layui-card-header">切片列表</div>
+                <div class="layui-card-body">
+                    <div class="layui-btn-container slide-table-list-btn">
+                        <button class="layui-btn layui-btn-sm" data-type="openSlide">打开选中切片</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getUrlQrcode">生成二维码</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getUrl">查询切片url</button>
+                    </div>
+                </div>
+                <table class="layui-show" id="slide-table-list" lay-filter="slide-table-list"></table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    layui.use('slideCenter', layui.factory('slideCenter'));
+</script>
