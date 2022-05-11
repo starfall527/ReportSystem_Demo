@@ -13,16 +13,17 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
     ,base: layui.cache.base //记录layuiAdmin文件夹所在路径
     ,views: layui.cache.base + 'views/' //视图所在目录
     ,entry: 'slideCenter/slideCenter' //默认视图文件名
+    // ,entry: 'user/login' //默认视图文件名 可改成登录界面
     ,engine: '.html' //视图文件后缀名
     ,pageTabs: false //是否开启页面选项卡功能。单页版不推荐开启
 
-    ,name: 'slideCenter二次开发demo'
+    ,name: '病例管理报告系统'
     ,tableName: 'layuiAdmin' //本地存储表名
     ,MOD_NAME: 'admin' //模块事件名
 
     ,debug: true //是否开启调试模式。如开启，接口异常时会抛出异常 URL 等信息
 
-    ,interceptor: false //是否开启未登入拦截
+    ,interceptor: true //是否开启未登入拦截
 
     //自定义请求字段
     ,request: {

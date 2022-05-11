@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-11 14:26:03
+ * @LastEditTime 2022-05-11 15:51:20
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -160,11 +160,16 @@
   * @return {*}  更新结果
   */
  function sqlMultiUpdate(keys1, keys1value, tableName, keys2, keys2value, type) {
-     [keys1, keys1value, keys2, keys2value].forEach(function (element) {
-         if (typeof element !== 'object') {
-             logger.error(`input params type incorrect, ${element} is not an array`); // 提醒参数类型错误
-         }
-     })
+ 
+     let checkArray = [keys1, keys1value];
+     if (['AND', 'OR'].includes(type)) {
+         checkArray.push(keys2, keys2value);
+         checkArray.forEach(function (element) {
+             if (typeof element !== 'object') {
+                 logger.error(`input params type incorrect, ${element} is not an array`); // 提醒参数类型错误
+             }
+         })
+     }
      let sqlString = "UPDATE " + tableName + " SET ";
      for (let i = 0; i < keys1.length; i++) {
          if (i < keys1.length - 1) {

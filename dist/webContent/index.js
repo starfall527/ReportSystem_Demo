@@ -2,8 +2,8 @@
  * @Author cwx
  * @Description 
  * @Date 2021-12-28 11:34:16
- * @LastEditTime 2022-03-23 10:44:13
- * @FilePath \IHC_layuiAdmin_Demo\webContent\index.js
+ * @LastEditTime 2022-05-11 17:51:08
+ * @FilePath \ReportSystem_Demo\dist\webContent\index.js
  */
 
 layui.config({

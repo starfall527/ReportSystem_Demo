@@ -36,9 +36,6 @@ layui.define(["table", "form"], function (e) {
                 width: 80,
                 title: "性别"
             }, {
-                field: "ip",
-                title: "IP"
-            }, {
                 field: "jointime",
                 title: "加入时间",
                 sort: !0
@@ -50,6 +47,9 @@ layui.define(["table", "form"], function (e) {
                 toolbar: "#table-useradmin-webuser"
             }]
         ],
+        response: {
+            statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+        },
         page: !0,
         limit: 30,
         height: "full-320",
@@ -118,6 +118,9 @@ layui.define(["table", "form"], function (e) {
                 toolbar: "#table-useradmin-admin"
             }]
         ],
+        response: {
+            statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+        },
         text: "对不起，加载出现异常！"
     }), l.on("tool(LAY-user-back-manage)", function (e) {
         var l = e.data;
@@ -170,6 +173,9 @@ layui.define(["table", "form"], function (e) {
                 toolbar: "#table-useradmin-admin"
             }]
         ],
+        response: {
+            statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+        },
         text: "对不起，加载出现异常！"
     }), l.on("tool(LAY-user-back-role)", function (e) {
         var l = e.data;

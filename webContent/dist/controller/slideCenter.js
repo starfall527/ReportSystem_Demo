@@ -2,8 +2,8 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-03-23 10:41:12
- * @FilePath \IHC_layuiAdmin_Demo\webContent\dist\controller\slideCenter.js
+ * @LastEditTime 2022-05-11 14:53:27
+ * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 layui.define(['tree', 'util', 'table'], function (exports) {
     var tree = layui.tree,
@@ -170,7 +170,7 @@ layui.define(['tree', 'util', 'table'], function (exports) {
                     contentType: 'application/json;charset=UTF-8',
                     data: checkData,
                     success: function (res) {
-                        layer.alert(`切片url:${res.data}`)
+                        layer.alert(`切片url:  ${res.data}`)
                     },
                     done: function (res) {}
                 })
@@ -178,5 +178,5 @@ layui.define(['tree', 'util', 'table'], function (exports) {
         }
     }
 
-    exports('slideCenter',{})
+    exports('slideCenter', {})
 });

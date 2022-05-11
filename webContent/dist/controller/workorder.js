@@ -53,6 +53,9 @@ layui.define(["table", "form", "element"], function (e) {
                 toolbar: "#table-system-order"
             }]
         ],
+        response: {
+            statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
+        },
         page: !0,
         limit: 10,
         limits: [10, 15, 20, 25, 30],

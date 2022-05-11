@@ -1,0 +1,22 @@
+{
+    "loggerParams": {
+        "default": {
+            "appenders": ["consoleOut", "dateFileOut"],
+            "level": "debug",
+            "comment": "这里是设置日志参数的,dateFileOut代表写到log目录下,consoleOut是控制台,level不用动"
+        },
+        "globalLogger": {
+            "appenders": ["consoleOut"],
+            "level": "debug"
+        },
+        "database": {
+            "appenders": ["consoleOut"],
+            "level": "debug"
+        },
+        "user": {
+            "appenders": ["consoleOut"],
+            "level": "debug"
+        }
+    }
+
+}
