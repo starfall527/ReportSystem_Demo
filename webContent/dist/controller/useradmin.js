@@ -2,11 +2,12 @@
 layui.define(["table", "form"], function (e) {
     var i = (layui.$, layui.admin),
         t = layui.view,
-        l = layui.table,
+        table = layui.table,
         r = layui.form;
-    l.render({
+    table.render({
         elem: "#LAY-user-manage",
-        url: "./json/useradmin/webuser.json",
+        // url: "./json/useradmin/webuser.json",
+        url: "api/user/userTable",
         cols: [
             [{
                 type: "checkbox",
@@ -17,45 +18,48 @@ layui.define(["table", "form"], function (e) {
                 title: "ID",
                 sort: !0
             }, {
-                field: "username",
+                field: "userName",
                 title: "用户名",
                 minWidth: 100
             }, {
                 field: "avatar",
                 title: "头像",
                 width: 100,
-                templet: "#imgTpl"
+                templet: "#imgTpl",
+                hide: true
             }, {
                 field: "phone",
                 title: "手机"
             }, {
                 field: "email",
-                title: "邮箱"
+                title: "邮箱",
+                hide: true
             }, {
                 field: "sex",
                 width: 80,
-                title: "性别"
+                title: "性别",
+                hide: true
             }, {
-                field: "jointime",
-                title: "加入时间",
-                sort: !0
+                field: "date",
+                title: "注册时间",
+                sort: true
             }, {
                 title: "操作",
                 width: 150,
                 align: "center",
                 fixed: "right",
-                toolbar: "#table-useradmin-webuser"
+                toolbar: "#table-userList"
             }]
         ],
         response: {
             statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
         },
-        page: !0,
+        page: true,
         limit: 30,
         height: "full-320",
         text: "对不起，加载出现异常！"
-    }), l.on("tool(LAY-user-manage)", function (e) {
-        var l = e.data;
+    }), table.on("tool(LAY-user-manage)", function (e) {
+        var data = e.data;
         "del" === e.event ? layer.prompt({
             formType: 1,
             title: "敏感操作，请验证口令"
@@ -68,7 +72,7 @@ layui.define(["table", "form"], function (e) {
             area: ["500px", "450px"],
             id: "LAY-popup-user-add",
             success: function (e, i) {
-                t(this.id).render("user/user/userform", l).done(function () {
+                t(this.id).render("user/user/userForm", data).done(function () {
                     r.render(null, "layuiadmin-form-useradmin"), r.on("submit(LAY-user-front-submit)", function (e) {
                         e.field;
                         layui.table.reload("LAY-user-manage"), layer.close(i)
@@ -76,9 +80,10 @@ layui.define(["table", "form"], function (e) {
                 })
             }
         })
-    }), l.render({
+    }), table.render({
         elem: "#LAY-user-back-manage",
-        url: "./json/useradmin/mangadmin.json",
+        // url: "./json/useradmin/mangadmin.json",
+        url: "api/user/adminTable",
         cols: [
             [{
                 type: "checkbox",
@@ -87,23 +92,25 @@ layui.define(["table", "form"], function (e) {
                 field: "id",
                 width: 80,
                 title: "ID",
-                sort: !0
+                sort: true
             }, {
-                field: "loginname",
-                title: "登录名"
+                field: "name",
+                title: "用户名"
             }, {
-                field: "telphone",
+                field: "phone",
                 title: "手机"
             }, {
                 field: "email",
-                title: "邮箱"
+                title: "邮箱",
+                hide: true
             }, {
                 field: "role",
                 title: "角色"
             }, {
-                field: "jointime",
+                field: "date",
                 title: "加入时间",
-                sort: !0
+                sort: true,
+                hide: true
             }, {
                 field: "check",
                 title: "审核状态",
@@ -122,8 +129,8 @@ layui.define(["table", "form"], function (e) {
             statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
         },
         text: "对不起，加载出现异常！"
-    }), l.on("tool(LAY-user-back-manage)", function (e) {
-        var l = e.data;
+    }), table.on("tool(LAY-user-back-manage)", function (e) {
+        var data = e.data;
         "del" === e.event ? layer.prompt({
             formType: 1,
             title: "敏感操作，请验证口令"
@@ -136,7 +143,7 @@ layui.define(["table", "form"], function (e) {
             area: ["420px", "450px"],
             id: "LAY-popup-user-add",
             success: function (e, i) {
-                t(this.id).render("user/administrators/adminform", l).done(function () {
+                t(this.id).render("user/administrators/adminForm", data).done(function () {
                     r.render(null, "layuiadmin-form-admin"), r.on("submit(LAY-user-back-submit)", function (e) {
                         e.field;
                         layui.table.reload("LAY-user-back-manage"), layer.close(i)
@@ -144,9 +151,10 @@ layui.define(["table", "form"], function (e) {
                 })
             }
         })
-    }), l.render({
+    }), table.render({
         elem: "#LAY-user-back-role",
-        url: "./json/useradmin/role.json",
+        // url: "./json/useradmin/role.json",
+        url: "api/user/roleTable",
         cols: [
             [{
                 type: "checkbox",
@@ -157,13 +165,13 @@ layui.define(["table", "form"], function (e) {
                 title: "ID",
                 sort: !0
             }, {
-                field: "rolename",
+                field: "role",
                 title: "角色名"
             }, {
-                field: "limits",
+                field: "authorization",
                 title: "拥有权限"
             }, {
-                field: "descr",
+                field: "description",
                 title: "具体描述"
             }, {
                 title: "操作",
@@ -177,8 +185,8 @@ layui.define(["table", "form"], function (e) {
             statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
         },
         text: "对不起，加载出现异常！"
-    }), l.on("tool(LAY-user-back-role)", function (e) {
-        var l = e.data;
+    }), table.on("tool(LAY-user-back-role)", function (e) {
+        var data = e.data;
         "del" === e.event ? layer.confirm("确定删除此角色？", function (i) {
             e.del(), layer.close(i)
         }) : "edit" === e.event && i.popup({
@@ -186,10 +194,10 @@ layui.define(["table", "form"], function (e) {
             area: ["500px", "480px"],
             id: "LAY-popup-user-add",
             success: function (e, i) {
-                t(this.id).render("user/administrators/roleform", l).done(function () {
+                t(this.id).render("user/administrators/roleForm", data).done(function () {
                     r.render(null, "layuiadmin-form-role"), r.on("submit(LAY-user-role-submit)", function (e) {
-                        e.field;
-                        layui.table.reload("LAY-user-back-role"), layer.close(i)
+                        console.log(e.field)
+                        // layui.table.reload("LAY-user-back-role"), layer.close(i)
                     })
                 })
             }

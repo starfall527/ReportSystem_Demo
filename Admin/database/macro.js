@@ -2,13 +2,13 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-11 15:51:20
+ * @LastEditTime 2022-05-13 14:04:27
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
  */
  const Database = require("better-sqlite3");
- const db = new Database('./ihc.db');
+ const db = new Database('./database.db');
  const logger = require('log4js').getLogger('database');
  
  // todo 设计一个数据库升级的方法,使得版本更新时,可以在不丢失数据的情况下更新表的结构(sqlAlter内有查询当前数据库结构的逻辑)

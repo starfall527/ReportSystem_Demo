@@ -40,7 +40,7 @@
         <img src="{{ item.user.avatar }}" class="layui-circle layim-msgbox-avatar">
       </a>
       <p class="layim-msgbox-user">
-        <a href="/u/{{ item.from }}/" target="_blank">{{ item.user.username||'' }}</a>
+        <a href="/u/{{ item.from }}/" target="_blank">{{ item.user.userName||'' }}</a>
         <span>{{ item.time }}</span>
       </p>
       <p class="layim-msgbox-content">
@@ -132,7 +132,7 @@ layui.use(['layim', 'flow'], function(){
       //选择分组
       parent.layui.layim.setFriendGroup({
         type: 'friend'
-        ,username: user.username
+        ,userName: user.userName
         ,avatar: user.avatar
         ,group: parent.layui.layim.cache().friend //获取好友分组数据
         ,submit: function(group, index){
@@ -141,7 +141,7 @@ layui.use(['layim', 'flow'], function(){
           parent.layui.layim.addList({
             type: 'friend'
             ,avatar: user.avatar //好友头像
-            ,username: user.username //好友昵称
+            ,userName: user.userName //好友昵称
             ,groupid: group //所在的分组id
             ,id: uid //好友ID
             ,sign: user.sign //好友签名
@@ -165,7 +165,7 @@ layui.use(['layim', 'flow'], function(){
             parent.layui.layim.addList({
               type: 'friend'
               ,avatar: user.avatar //好友头像
-              ,username: user.username //好友昵称
+              ,userName: user.userName //好友昵称
               ,groupid: group //所在的分组id
               ,id: uid //好友ID
               ,sign: user.sign //好友签名

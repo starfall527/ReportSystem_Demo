@@ -17,13 +17,13 @@
         <div class="layui-inline">
           <label class="layui-form-label">登录名</label>
           <div class="layui-input-block">
-            <input type="text" name="loginname" placeholder="请输入" autocomplete="off" class="layui-input">
+            <input type="text" name="loginName" placeholder="请输入" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-inline">
           <label class="layui-form-label">手机</label>
           <div class="layui-input-block">
-            <input type="text" name="telphone" placeholder="请输入" autocomplete="off" class="layui-input">
+            <input type="text" name="phone" placeholder="请输入" autocomplete="off" class="layui-input">
           </div>
         </div>
         <div class="layui-inline">
@@ -136,7 +136,7 @@ layui.use('useradmin', layui.factory('useradmin')).use(['admin', 'useradmin', 't
         ,area: ['420px', '450px']
         ,id: 'LAY-popup-useradmin-add'
         ,success: function(layero, index){
-          view(this.id).render('user/administrators/adminform').done(function(){
+          view(this.id).render('user/administrators/adminForm').done(function(){
             form.render(null, 'layuiadmin-form-admin');
             
             //监听提交

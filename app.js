@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2021-10-21 17:26:04
- * @LastEditTime 2022-05-11 16:06:51
+ * @LastEditTime 2022-05-13 14:24:29
  * @FilePath \ReportSystem_Demo\app.js
  */
 const express = require("express");
@@ -55,6 +55,8 @@ process.on('uncaughtException', function (err) {
 });
 
 const slideCenter = require('./Admin/slideCenter/slideCenter');
+const userManager = require('./Admin/Manager/userManager');
+
 app.use(express.static(path.join(process.cwd(), 'webContent'), {
     index: "index.html"
 })); //静态资源
@@ -65,6 +67,7 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 app.use('/api/slideCenter', slideCenter.router_slideCenter);
+app.use('/api/user', userManager.router_user);
 
 app.listen(9000, function () {
     console.log("the server is started!!!");

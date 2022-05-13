@@ -17,7 +17,7 @@ layui.define(["table", "form"], function (e) {
                 title: "ID",
                 sort: !0
             }, {
-                field: "username",
+                field: "userName",
                 title: "用户名",
                 minWidth: 100
             }, {
@@ -47,7 +47,7 @@ layui.define(["table", "form"], function (e) {
                 width: 150,
                 align: "center",
                 fixed: "right",
-                toolbar: "#table-useradmin-webuser"
+                toolbar: "#table-userList"
             }]
         ],
         page: !0,
@@ -68,7 +68,7 @@ layui.define(["table", "form"], function (e) {
             area: ["500px", "450px"],
             id: "LAY-popup-user-add",
             success: function (e, i) {
-                t(this.id).render("user/user/userform", l).done(function () {
+                t(this.id).render("user/user/userForm", l).done(function () {
                     r.render(null, "layuiadmin-form-useradmin"), r.on("submit(LAY-user-front-submit)", function (e) {
                         e.field;
                         layui.table.reload("LAY-user-manage"), layer.close(i)
@@ -89,10 +89,10 @@ layui.define(["table", "form"], function (e) {
                 title: "ID",
                 sort: !0
             }, {
-                field: "loginname",
+                field: "loginName",
                 title: "登录名"
             }, {
-                field: "telphone",
+                field: "phone",
                 title: "手机"
             }, {
                 field: "email",
@@ -133,7 +133,7 @@ layui.define(["table", "form"], function (e) {
             area: ["420px", "450px"],
             id: "LAY-popup-user-add",
             success: function (e, i) {
-                t(this.id).render("user/administrators/adminform", l).done(function () {
+                t(this.id).render("user/administrators/adminForm", l).done(function () {
                     r.render(null, "layuiadmin-form-admin"), r.on("submit(LAY-user-back-submit)", function (e) {
                         e.field;
                         layui.table.reload("LAY-user-back-manage"), layer.close(i)
@@ -154,7 +154,7 @@ layui.define(["table", "form"], function (e) {
                 title: "ID",
                 sort: !0
             }, {
-                field: "rolename",
+                field: "roleName",
                 title: "角色名"
             }, {
                 field: "limits",
@@ -180,7 +180,7 @@ layui.define(["table", "form"], function (e) {
             area: ["500px", "480px"],
             id: "LAY-popup-user-add",
             success: function (e, i) {
-                t(this.id).render("user/administrators/roleform", l).done(function () {
+                t(this.id).render("user/administrators/roleForm", l).done(function () {
                     r.render(null, "layuiadmin-form-role"), r.on("submit(LAY-user-role-submit)", function (e) {
                         e.field;
                         layui.table.reload("LAY-user-back-role"), layer.close(i)

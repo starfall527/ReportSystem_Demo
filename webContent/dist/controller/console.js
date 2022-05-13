@@ -194,7 +194,7 @@ layui.define(function (e) {
                     minWidth: 300,
                     templet: '<div><a href="{{ d.href }}" target="_blank" class="layui-table-link">{{ d.title }}</div>'
                 }, {
-                    field: "username",
+                    field: "userName",
                     title: "发帖者"
                 }, {
                     field: "channel",

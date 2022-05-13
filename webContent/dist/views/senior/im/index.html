@@ -163,7 +163,7 @@ layui.use(['admin', 'layim'], function(){
       var obj = {};
       if(To.type === 'group'){
         obj = {
-          username: '模拟群员'+(Math.random()*100|0)
+          userName: '模拟群员'+(Math.random()*100|0)
           ,avatar: layui.cache.dir + 'images/face/'+ (Math.random()*72|0) + '.gif'
           ,id: To.id
           ,type: To.type
@@ -171,7 +171,7 @@ layui.use(['admin', 'layim'], function(){
         }
       } else {
         obj = {
-          username: To.name
+          userName: To.name
           ,avatar: To.avatar
           ,id: To.id
           ,type: To.type
@@ -221,7 +221,7 @@ layui.use(['admin', 'layim'], function(){
     ,message: function(){
       //制造好友消息
       layim.getMessage({
-        username: "贤心"
+        userName: "贤心"
         ,avatar: "//tp1.sinaimg.cn/1571889140/180/40030060651/1"
         ,id: "100001"
         ,type: "friend"
@@ -232,7 +232,7 @@ layui.use(['admin', 'layim'], function(){
     ,messageAudio: function(){
       //接受音频消息
       layim.getMessage({
-        username: "林心如"
+        userName: "林心如"
         ,avatar: "//tp3.sinaimg.cn/1223762662/180/5741707953/0"
         ,id: "76543"
         ,type: "friend"
@@ -243,7 +243,7 @@ layui.use(['admin', 'layim'], function(){
     ,messageVideo: function(){
       //接受视频消息
       layim.getMessage({
-        username: "林心如"
+        userName: "林心如"
         ,avatar: "//tp3.sinaimg.cn/1223762662/180/5741707953/0"
         ,id: "76543"
         ,type: "friend"
@@ -254,7 +254,7 @@ layui.use(['admin', 'layim'], function(){
     ,messageTemp: function(){
       //接受临时会话消息
       layim.getMessage({
-        username: "小酱"
+        userName: "小酱"
         ,avatar: "//tva1.sinaimg.cn/crop.7.0.736.736.50/bd986d61jw8f5x8bqtp00j20ku0kgabx.jpg"
         ,id: "198909151014"
         ,type: "friend"
@@ -265,7 +265,7 @@ layui.use(['admin', 'layim'], function(){
       //实际使用时数据由动态获得
       layim.add({
         type: 'friend'
-        ,username: '麻花疼'
+        ,userName: '麻花疼'
         ,avatar: '//tva1.sinaimg.cn/crop.0.0.720.720.180/005JKVuPjw8ers4osyzhaj30k00k075e.jpg'
         ,submit: function(group, remark, index){
           layer.msg('好友申请已发送，请等待对方确认', {
@@ -299,7 +299,7 @@ layui.use(['admin', 'layim'], function(){
     ,addqun: function(){
       layim.add({
         type: 'group'
-        ,username: 'LayIM会员群'
+        ,userName: 'LayIM会员群'
         ,avatar: '//tva2.sinaimg.cn/crop.0.0.180.180.50/6ddfa27bjw1e8qgp5bmzyj2050050aa8.jpg'
         ,submit: function(group, remark, index){
           layer.msg('申请已发送，请等待管理员确认', {
@@ -326,13 +326,13 @@ layui.use(['admin', 'layim'], function(){
       var user = {
         type: 'friend'
         ,id: 1234560
-        ,username: '李彦宏' //好友昵称，若申请加群，参数为：groupname
+        ,userName: '李彦宏' //好友昵称，若申请加群，参数为：groupname
         ,avatar: '//tva4.sinaimg.cn/crop.0.0.996.996.180/8b2b4e23jw8f14vkwwrmjj20ro0rpjsq.jpg' //头像
         ,sign: '全球最大的中文搜索引擎'
       }
       layim.setFriendGroup({
         type: user.type
-        ,username: user.username
+        ,userName: user.userName
         ,avatar: user.avatar
         ,group: layim.cache().friend //获取好友列表数据
         ,submit: function(group, index){
@@ -342,7 +342,7 @@ layui.use(['admin', 'layim'], function(){
           //同意后，将好友追加到主面板
           layim.addList({
             type: user.type
-            ,username: user.username
+            ,userName: user.userName
             ,avatar: user.avatar
             ,groupid: group //所在的分组id
             ,id: user.id //好友ID
