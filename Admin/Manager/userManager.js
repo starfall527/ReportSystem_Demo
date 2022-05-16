@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-13 17:10:06
+ * @LastEditTime 2022-05-16 17:25:52
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -10,27 +10,30 @@ const express = require("express");
 const sqlMacros = require("../database/macro");
 const router_user = express.Router();
 const logger = require('log4js').getLogger('user');
+const config = require('../config.js');
 
 /***
  * @description: USER表定义
  * @field {*}   id              唯一标识    
  * @field {*}   role            身份
- * @field {*}   name            试剂名
- * @field {*}   phone        手机
+ * @field {*}   userName        用户姓名
+ * @field {*}   name            登录名
+ * @field {*}   phone           手机
  * @field {*}   password        密码
  * @field {*}   info            信息
- * @field {*}   Authorization   权限
+ * @field {*}   examStatus      审核状态
+ * @field {*}   authorization   权限
  * @field {*}   date            时间戳
  */
 const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
      id INTEGER not null PRIMARY KEY AUTOINCREMENT ,
      role VARCHAR(255) NOT NULL ,
      userName VARCHAR(255) NOT NULL unique ,
-     name VARCHAR(255) NOT NULL ,
+     name VARCHAR(255) ,
      phone VARCHAR(255) ,
      password VARCHAR(255) ,
      info VARCHAR(255) ,
-     Authorization VARCHAR(255) NOT NULL ,
+     authorization VARCHAR(255) NOT NULL ,
      isExamined INTEGER ,
      date timestamp NOT NULL default (datetime('now','localtime'))
      )`);
@@ -104,8 +107,27 @@ router_user.get('/roleTable', function (req, res) {
     res.send(json);
 });
 
+// 登录接口
 router_user.get('/login', function (req, res) {
     let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', req.query.userName);
+    let menu = config.readConfigFile('./webContent/json/menu.json');
+    if (user === undefined) {} else if (user[0].role === "专家端") {
+        menu.data.forEach(element => {
+            if (element.title === "病例管理") {
+                element.jump = "case/caseExpert";
+                console.log(element);
+            }
+        });// 
+    } else if (user[0].role === "上传端") {
+        menu.data.forEach(element => {
+            if (element.title === "病例管理") {
+                element.jump = "case/caseUpload";
+                console.log(element);
+            }
+        });
+    }
+    config.writeConfigFile('data', menu.data, './webContent/json/menu.json');
+    // * 根据登录者的role,更改menu.json的数据,加载对应的界面 后续考虑结合权限管理封装函数,准备好几份menu.json,读取后直接覆盖即可
 
     var json = {
         code: 500,
@@ -121,6 +143,8 @@ router_user.get('/login', function (req, res) {
         }
     }
     // res.send(json);
+    menu = config.readConfigFile('./webContent/json/menu.json');
+    console.log(menu);
     res.send({
         "code": 200,
         "msg": "登入成功",
@@ -128,6 +152,7 @@ router_user.get('/login', function (req, res) {
             "access_token": "c262e61cd13ad99fc650e6908c7e5e65b63d2f32185ecfed6b801ee3fbdd5c0a"
         }
     });
+
 });
 
 /*** 新增用户
@@ -142,10 +167,14 @@ router_user.get('/login', function (req, res) {
 router_user.post('/insert', function (req, res) {
     let data = req.body.data;
 
-    var reqValues = [data.name, data.password, data.phone];
-    var reqKeys = ['name', 'password', 'phone'];
-    let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'USER');
-
+    let role = sqlMacros.sqlSelect('*', 'ROLE', true, 'role', data.role);
+    if (role === undefined) {
+        logger.error('role not exist');
+    } else {
+        var reqValues = [data.userName, data.password, data.phone, data.role, role[0].authorization];
+        var reqKeys = ['userName', 'password', 'phone', 'role', 'authorization'];
+        let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'USER');
+    }
     var json = {
         code: 200,
         msg: '成功'
@@ -193,8 +222,8 @@ router_user.post('/role/insert', function (req, res) {
 
 
 
-/*** 删除步骤
- * @api {post} /api/user/delete 删除步骤
+/*** 删除用户
+ * @api {post} /api/user/delete 删除用户
  * @apiName DeleteStep
  * @apiGroup 步骤管理
  * @apiParam {ObjectArray} data             数据对象
@@ -213,19 +242,11 @@ router_user.post('/role/insert', function (req, res) {
  * 
  * @apiUse CommonResponse
  */
-router_user.post('/delete', function (req, res) {
-
+router_user.post('/batchDel', function (req, res) {
     let data = req.body.data;
     for (let i = 0; i < data.length; i++) {
         let result = sqlMacros.sqlDelete('id', data[i]['id'], 'USER');
-    } //删除所选数据
-
-    let select_result = sqlMacros.sqlSelect('id', 'USER', true,
-        'experimentID', data[0]['experimentID']);
-    for (let i = 0; i < select_result.length; i++) {
-        let result = sqlMacros.sqlUpdate('sequence', i + 1,
-            'USER', 'id', select_result[i]['id']);
-    } //重新排序
+    } // * 根据id删除所选数据
 
     var json = {
         code: 200,
@@ -234,6 +255,38 @@ router_user.post('/delete', function (req, res) {
     res.send(json);
 });
 
+/*** 删除角色
+ * @api {post} /api/user/role/delete 删除角色
+ * @apiName DeleteStep
+ * @apiGroup 步骤管理
+ * @apiParam {ObjectArray} data             数据对象
+ * @apiParam {String} data.id               唯一标识
+ * @apiParam {String} data.experimentID     实验ID
+ * @apiParamExample 
+    {
+        "data": [{
+            "id": 6,
+            "experimentID": 5
+        },{
+            "id": 7,
+            "experimentID": 5
+        }]
+    }
+ * 
+ * @apiUse CommonResponse
+ */
+router_user.post('/role/batchDel', function (req, res) {
+    let data = req.body.data;
+    for (let i = 0; i < data.length; i++) {
+        let result = sqlMacros.sqlDelete('id', data[i]['id'], 'ROLE');
+    } // * 根据id删除所选数据
+
+    var json = {
+        code: 200,
+        msg: '成功'
+    };
+    res.send(json);
+});
 
 /*** 更新步骤数据
  * @api {post} /api/user/update 更新步骤数据

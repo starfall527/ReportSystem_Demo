@@ -7,6 +7,12 @@
             "icon": "layui-icon-auz",
             "jump": "slideCenter/slideCenter"
         },{
+            "name": "caseManage",
+            "title": "病例管理",
+            "icon": "layui-icon-auz",
+            "jump": "case/case"
+        },
+        {
             "title": "主页",
             "icon": "layui-icon-home",
             "list": [{

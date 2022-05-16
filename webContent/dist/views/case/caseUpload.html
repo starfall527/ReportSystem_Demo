@@ -1,0 +1,31 @@
+<!--
+ * @Author: cwx
+ * @Description: slideCenter
+ * @Date: 2021-10-21 17:41:07
+ * @LastEditTime: 2022-05-16 16:43:31
+ * @FilePath: \ReportSystem_Demo\dist\webContent\dist\views\case\caseUpload.html
+-->
+<div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>病例管理</cite></a>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space10">
+
+        <div class="layui-card">
+            <div class="layui-card-header">病例列表</div>
+            <div class="layui-card-body">
+                <div class="layui-btn-container case-table-list-btn">
+                    <button class="layui-btn layui-btn-sm" data-type="createCase">创建病例</button>
+                    <button class="layui-btn layui-btn-sm" data-type="exportCase">导出病例</button>
+                </div>
+            </div>
+            <table class="layui-show" id="case-table-list" lay-filter="case-table-list"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use('caseAdmin', layui.factory('caseAdmin'));
+</script>

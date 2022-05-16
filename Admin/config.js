@@ -2,13 +2,12 @@
  * @Author cwx
  * @Description 配置文件
  * @Date 2021-11-24 10:23:33
- * @LastEditTime 2022-05-11 17:48:44
+ * @LastEditTime 2022-05-16 17:24:34
  * @FilePath \ReportSystem_Demo\Admin\config.js
  */
 
 const fs = require('fs');
 const configFile = require('path').join(process.cwd(), '/config.json');
-
 const logger = require('log4js').getLogger();
 
 /***
@@ -16,10 +15,13 @@ const logger = require('log4js').getLogger();
  * @param {*}
  * @return {*}  
  */
-function readConfigFile() {
+function readConfigFile(filePath) {
     // 如果文件存在 读取数据 fs.existsSync(path)
+    if (filePath === undefined) {
+        filePath = configFile;
+    }
     let result;
-    result = JSON.parse(fs.readFileSync(configFile, 'utf8', (err, data) => {
+    result = JSON.parse(fs.readFileSync(filePath, 'utf8', (err, data) => {
         if (err) {
             logger.debug(err)
         }
@@ -34,12 +36,15 @@ function readConfigFile() {
  * @param {*} value 值 可以是object/array/value
  * @return {*}
  */
-function writeConfigFile(key, value) {
-    let result = readConfigFile();
+function writeConfigFile(key, value, filePath) {
+    if (filePath === undefined) {
+        filePath = configFile;
+    }
+    let result = readConfigFile(filePath);
     result[key] = value;
     var str = JSON.stringify(result, "", "\t");
 
-    fs.writeFile(configFile, str, function (err) {
+    fs.writeFile(filePath, str, function (err) {
         if (err) {
             logger.error(err);
         }

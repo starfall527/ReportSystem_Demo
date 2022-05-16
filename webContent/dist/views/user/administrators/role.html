@@ -77,22 +77,24 @@
                 var checkStatus = table.checkStatus('LAY-user-back-role'),
                     checkData = checkStatus.data; //得到选中的数据
 
-                if (checkData.length === 0) {
+                    if (checkData.length === 0) {
                     return layer.msg('请选择数据');
                 }
-
                 layer.confirm('确定删除吗？', function (index) {
-
-                    //执行 Ajax 后重载
-                    /*
-                    admin.req({
-                      url: 'xxx'
-                      //,……
+                        admin.req({ // 批量删除用户
+                            url: 'api/user/role/batchDel',
+                            type: 'POST',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: JSON.stringify({
+                                data: checkData
+                            }),
+                            success: function (res) {
+                                form.render();
+                                table.reload('LAY-user-back-role');
+                                layer.msg('已删除');
+                            }
+                        })
                     });
-                    */
-                    table.reload('LAY-user-back-role');
-                    layer.msg('已删除');
-                });
             },
             add: function () {
                 admin.popup({

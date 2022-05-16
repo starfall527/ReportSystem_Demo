@@ -2,8 +2,8 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-11 15:12:49
- * @FilePath \ReportSystem_Demo\Admin\caseManager.js
+ * @LastEditTime 2022-05-16 11:42:35
+ * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
 // * 玻片管理的本质就是打印标签,记录该玻片的病人信息与实验信息 数据格式要能被后续的步骤解析
@@ -26,28 +26,39 @@ const logger = require('log4js').getLogger();
 /*** @note sql表定义
  * @description: CASE表定义
  * @field {*}   id              唯一标识
+ * @field {*}   status          病例状态
  * @field {*}   pathologyNum    病理号
  * @field {*}   patName         病人姓名
  * @field {*}   gender          病人性别
  * @field {*}   age             病人年龄
  * @field {*}   department      送检单位
  * @field {*}   hosName         医院名
- * @field {*}   label           标签内容(承载实验信息json)
- * @field {*}   date            时间戳
+ * @field {*}   subspecialty    亚专科
+ * @field {*}   samplePart      取样部位
+ * @field {*}   expert          会诊专家
+ * @field {*}   note            备注
+ * @field {*}   uploadDate      上传时间
+ * @field {*}   diagnoseDate    诊断时间
+ * @field {*}   confirmDate     确认诊断时间
+ * @field {*}   date            时间戳(建表时间)
  */
 const createCaseTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS CASE(
     id INTEGER not null PRIMARY KEY AUTOINCREMENT ,
-    status VARCHAR(255) NOT NULL,
+    status VARCHAR(255) NOT NULL ,
     pathologyNum VARCHAR(255) NOT NULL unique ,
     patName VARCHAR(255) NOT NULL ,
     gender VARCHAR(255) NOT NULL ,
     age VARCHAR(255),
     department VARCHAR(255),
     hosName VARCHAR(255),
+    subspecialty VARCHAR(255),
     note VARCHAR(255),
-    experimentName VARCHAR(255),
+    uploadDate timestamp,
+    diagnoseDate timestamp,
+    confirmDate timestamp,
     date timestamp NOT NULL default (datetime('now','localtime'))
     )`);
+    
 /*** apidoc定义CASE表数据
  * @apiDefine CaseSqlData
  * @apiSuccess {Object} data                数据对象

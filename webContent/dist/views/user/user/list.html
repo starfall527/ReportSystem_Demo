@@ -24,13 +24,13 @@
                         <input type="text" name="userName" placeholder="请输入" autocomplete="off" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-inline">
+                <!-- <div class="layui-inline">
                     <label class="layui-form-label">邮箱</label>
                     <div class="layui-input-block">
                         <input type="text" name="email" placeholder="请输入" autocomplete="off" class="layui-input">
                     </div>
-                </div>
-                <div class="layui-inline">
+                </div> -->
+                <!-- <div class="layui-inline">
                     <label class="layui-form-label">性别</label>
                     <div class="layui-input-block">
                         <select name="sex">
@@ -39,7 +39,7 @@
                             <option value="2">女</option>
                         </select>
                     </div>
-                </div>
+                </div> -->
                 <div class="layui-inline">
                     <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search">
                         <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
@@ -99,30 +99,48 @@
                     return layer.msg('请选择数据');
                 }
 
-                layer.prompt({
-                    formType: 1,
-                    title: '敏感操作，请验证口令'
-                }, function (value, index) {
-                    layer.close(index);
+                // layer.prompt({
+                //     formType: 1,
+                //     title: '敏感操作，请验证口令'
+                // }, function (value, index) {
+                //     layer.close(index);
+                //     layer.confirm('确定删除吗？', function (index) {
+                //         admin.req({ // 批量删除用户
+                //             url: 'api/user/batchDel',
+                //             type: 'POST',
+                //             contentType: 'application/json;charset=UTF-8',
+                //             data: JSON.stringify({
+                //                 data: checkData
+                //             }),
+                //             success: function (res) {
+                //                 form.render();
+                //                 table.reload('LAY-user-manage');
+                //                 layer.msg('已删除');
+                //             }
+                //         })
+                //     });
+                // });
 
-                    layer.confirm('确定删除吗？', function (index) {
-
-                        //执行 Ajax 后重载
-                        /*
-                        admin.req({
-                          url: 'xxx'
-                          //,……
-                        });
-                        */
-                        table.reload('LAY-user-manage');
-                        layer.msg('已删除');
+                layer.confirm('确定删除吗？', function (index) {
+                        admin.req({ // 批量删除用户
+                            url: 'api/user/batchDel',
+                            type: 'POST',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: JSON.stringify({
+                                data: checkData
+                            }),
+                            success: function (res) {
+                                form.render();
+                                table.reload('LAY-user-manage');
+                                layer.msg('已删除');
+                            }
+                        })
                     });
-                });
             },
             add: function () {
                 admin.popup({
                     title: '添加用户',
-                    area: ['500px', '450px'],
+                    area: ['450px', '500px'],
                     id: 'LAY-popup-user-add',
                     success: function (layero, index) {
                         view(this.id).render('user/user/userForm').done(function () {
@@ -142,7 +160,6 @@
                                                     element.role
                                                 ));
                                     })
-                                    form.render('select');
                                     form.render();
                                 }
                             })
@@ -152,7 +169,6 @@
                                 data) {
                                 var field = data.field; //获取提交的字段
                                 //提交 Ajax 成功后，关闭当前弹层并重载表格
-                                //$.ajax({});
                                 admin.req({
                                     url: 'api/user/insert',
                                     type: 'POST',
@@ -161,15 +177,11 @@
                                         data: field
                                     }),
                                     success: function (res) {
-                                        if (res.result == setter
-                                            .response.statusCode
-                                            .ok) {
-                                            layer.msg('新增成功');
-                                        }
+                                        layer.msg('新增成功');
                                     },
                                     done: function (res) {
                                         layui.table.reload(
-                                            'LAY-user-back-manage'
+                                            'LAY-user-manage'
                                         ); //重载表格
                                         layer.close(index);
                                     }
