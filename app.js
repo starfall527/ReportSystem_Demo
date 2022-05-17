@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2021-10-21 17:26:04
- * @LastEditTime 2022-05-13 14:24:29
+ * @LastEditTime 2022-05-17 16:32:06
  * @FilePath \ReportSystem_Demo\app.js
  */
 const express = require("express");
@@ -56,6 +56,7 @@ process.on('uncaughtException', function (err) {
 
 const slideCenter = require('./Admin/slideCenter/slideCenter');
 const userManager = require('./Admin/Manager/userManager');
+const caseManager = require('./Admin/Manager/caseManager');
 
 app.use(express.static(path.join(process.cwd(), 'webContent'), {
     index: "index.html"
@@ -68,6 +69,7 @@ app.use(express.json());
 
 app.use('/api/slideCenter', slideCenter.router_slideCenter);
 app.use('/api/user', userManager.router_user);
+app.use('/api/case', caseManager.router_case);
 
 app.listen(9000, function () {
     console.log("the server is started!!!");

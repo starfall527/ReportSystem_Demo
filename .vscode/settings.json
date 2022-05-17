@@ -23,6 +23,7 @@
         "nobackfeed",
         "openport",
         "pagetabs",
+        "pathCase",
         "printerfont",
         "printlabel",
         "qrcode",

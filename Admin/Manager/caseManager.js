@@ -2,14 +2,14 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-16 11:42:35
+ * @LastEditTime 2022-05-17 16:43:18
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
 // * 玻片管理的本质就是打印标签,记录该玻片的病人信息与实验信息 数据格式要能被后续的步骤解析
 // * 与标签打印机的二次开发需求未确定,暂缓
 // * 可能会有与LIS系统通信的需求
-// * CASE表添加字段, 可从该字段中读取实验信息
+// * pathCase表添加字段, 可从该字段中读取实验信息
 // * 集成标签打印,并能够把实验信息写入二维码中
 // * 二维码承载内容:实验ID,玻片ID
 // let o={
@@ -24,7 +24,7 @@ const router_case = express.Router();
 const logger = require('log4js').getLogger();
 
 /*** @note sql表定义
- * @description: CASE表定义
+ * @description: pathCase表定义
  * @field {*}   id              唯一标识
  * @field {*}   status          病例状态
  * @field {*}   pathologyNum    病理号
@@ -42,24 +42,27 @@ const logger = require('log4js').getLogger();
  * @field {*}   confirmDate     确认诊断时间
  * @field {*}   date            时间戳(建表时间)
  */
-const createCaseTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS CASE(
+const createCaseTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS pathCase(
     id INTEGER not null PRIMARY KEY AUTOINCREMENT ,
     status VARCHAR(255) NOT NULL ,
-    pathologyNum VARCHAR(255) NOT NULL unique ,
+    pathologyNum VARCHAR(255) NOT NULL ,
     patName VARCHAR(255) NOT NULL ,
-    gender VARCHAR(255) NOT NULL ,
-    age VARCHAR(255),
-    department VARCHAR(255),
-    hosName VARCHAR(255),
-    subspecialty VARCHAR(255),
-    note VARCHAR(255),
-    uploadDate timestamp,
-    diagnoseDate timestamp,
-    confirmDate timestamp,
+    patientInfo VARCHAR(255) ,
+    gender VARCHAR(255) ,
+    age VARCHAR(255) ,
+    department VARCHAR(255) ,
+    hosName VARCHAR(255) ,
+    subspecialty VARCHAR(255) ,
+    note VARCHAR(255) ,
+    uploadDate timestamp ,
+    diagnoseDate timestamp ,
+    confirmDate timestamp ,
     date timestamp NOT NULL default (datetime('now','localtime'))
     )`);
-    
-/*** apidoc定义CASE表数据
+
+// sqlMacros.sqlAlter('pathCase', 'patientInfo', 'VARCHAR(255)', '');
+
+/*** apidoc定义pathCase表数据
  * @apiDefine CaseSqlData
  * @apiSuccess {Object} data                数据对象
  * @apiSuccess {String} data.id             唯一标识
@@ -74,8 +77,8 @@ const createCaseTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS CASE(
  * @param {*} res
  * @return {*}
  */
-router_case.get('/', function (req, res) {
-    let result = sqlMacros.sqlSelect('*', 'CASE');
+router_case.get('/table', function (req, res) {
+    let result = sqlMacros.sqlSelect('*', 'pathCase');
     var json = {
         code: 200,
         msg: '成功',
@@ -95,7 +98,7 @@ router_case.get('/', function (req, res) {
  */
 router_case.post('/query', function (req, res) {
     let data = req.body;
-    let result = sqlMacros.sqlQuery('*', 'CASE', ['pathologyNum', 'date'], [data.pathologyNum, data.date], 'AND');
+    let result = sqlMacros.sqlQuery('*', 'pathCase', ['pathologyNum', 'date'], [data.pathologyNum, data.date], 'AND');
     var json = {
         code: 200,
         msg: '成功',
@@ -118,7 +121,7 @@ router_case.post('/query', function (req, res) {
 router_case.post('/delete', function (req, res) {
     let data = req.body.data;
     for (let i = 0; i < data.length; i++) {
-        let result = sqlMacros.sqlDelete('id', data[i]['id'], 'CASE');
+        let result = sqlMacros.sqlDelete('id', data[i]['id'], 'pathCase');
     } //删除所选数据
 
     var json = {
@@ -148,7 +151,7 @@ router_case.post('/insert', function (req, res) {
     let data = req.body.data;
     var reqValues = [data.pathologyNum, data.patName, data.hosName, data.note, data.experimentName];
     var reqKeys = ['pathologyNum', 'patName', 'hosName', 'note', 'experimentName'];
-    let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'CASE');
+    let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
 
     res.send({
         code: 200,
