@@ -1,0 +1,61 @@
+<!--
+ * @Author: cwx
+ * @Description: slideCenter
+ * @Date: 2021-10-21 17:41:07
+ * @LastEditTime: 2022-05-23 10:53:49
+ * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
+-->
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>病例管理</cite></a>
+        <a><cite>病例详情</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space10">
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">病例详情</div>
+                <div class="layui-card-body">
+                    <form class="layui-form">
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-md4">
+                                <div class="layui-inline">
+                                    <div class="layui-form-label" id="name">姓名:</div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md4">
+                                <div class="layui-inline">
+                                    <div class="layui-form-label" id="gender">性别:</div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md4">
+                                <div class="layui-inline">
+                                    <div class="layui-form-label" id="age" >年龄:</div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-col-md6">
+            <div class="layui-card">
+                <div class="layui-card-header">病例报告</div>
+                <div class="layui-card-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    layui.use('caseAdmin', layui.factory('caseAdmin'));
+</script>

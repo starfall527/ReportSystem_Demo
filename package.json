@@ -70,7 +70,7 @@
         "opencvBinDir": "D:\\opencv-4.1.0\\opencv\\build\\x64\\vc15\\bin"
     },
     "apidoc": {
-        "name": "slideCenter二次开发demo",
+        "name": "病例管理报告系统",
         "description": "接口文档",
         "title": "接口文档"
     }

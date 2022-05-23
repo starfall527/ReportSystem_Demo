@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-17 16:43:18
+ * @LastEditTime 2022-05-18 16:11:59
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -31,9 +31,17 @@ const logger = require('log4js').getLogger();
  * @field {*}   patName         病人姓名
  * @field {*}   gender          病人性别
  * @field {*}   age             病人年龄
- * @field {*}   department      送检单位
+ * @field {*}   birthDate       出生日期
+ * @field {*}   IDNum           身份证号
+ * @field {*}   patTel          病人电话
+ * @field {*}   familyTel       家属电话
+ * @field {*}   subspecialty    专科 
+ * @field {*}   inspectionDate  送检时间
+ * @field {*}   unit            送检单位
+ * @field {*}   department      送检科室
  * @field {*}   hosName         医院名
- * @field {*}   subspecialty    亚专科
+ * @field {*}   doctor          医生名
+ * @field {*}   doctorTel       医生电话
  * @field {*}   samplePart      取样部位
  * @field {*}   expert          会诊专家
  * @field {*}   note            备注
@@ -42,25 +50,35 @@ const logger = require('log4js').getLogger();
  * @field {*}   confirmDate     确认诊断时间
  * @field {*}   date            时间戳(建表时间)
  */
-const createCaseTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS pathCase(
-    id INTEGER not null PRIMARY KEY AUTOINCREMENT ,
-    status VARCHAR(255) NOT NULL ,
-    pathologyNum VARCHAR(255) NOT NULL ,
-    patName VARCHAR(255) NOT NULL ,
-    patientInfo VARCHAR(255) ,
-    gender VARCHAR(255) ,
-    age VARCHAR(255) ,
-    department VARCHAR(255) ,
-    hosName VARCHAR(255) ,
-    subspecialty VARCHAR(255) ,
-    note VARCHAR(255) ,
-    uploadDate timestamp ,
-    diagnoseDate timestamp ,
-    confirmDate timestamp ,
-    date timestamp NOT NULL default (datetime('now','localtime'))
-    )`);
-
-// sqlMacros.sqlAlter('pathCase', 'patientInfo', 'VARCHAR(255)', '');
+const createCaseTable = sqlMacros.sqlExecute(
+    "CREATE TABLE IF NOT EXISTS pathCase(" +
+    "id INTEGER not null PRIMARY KEY AUTOINCREMENT ," + // id 唯一标识
+    "status VARCHAR(255) NOT NULL ," + // 病例状态
+    "pathologyNum VARCHAR(255) NOT NULL ," + // 病理号
+    "patName VARCHAR(255) NOT NULL ," + // 病人姓名
+    "patientInfo VARCHAR(255) ," + // 病人信息
+    "gender VARCHAR(255) ," + // 性别
+    "age VARCHAR(255) ," + // 病人年龄
+    "nation VARCHAR(255) ," + // 病人民族
+    "birthDate timestamp ," + // 出生日期
+    "IDNum VARCHAR(255)," + // 身份证号
+    "patTel VARCHAR(255) ," + // 病人电话
+    "familyTel VARCHAR(255) ," + // 家属电话
+    "subspecialty VARCHAR(255)," + // 专科
+    "inspectionDate timestamp," + // 送检时间
+    "unit VARCHAR(255)," + // 送检单位
+    "department VARCHAR(255)," + // 送检科室
+    "hosName VARCHAR(255)," + // 医院名
+    "doctor VARCHAR(255)," + // 医生名
+    "doctorTel VARCHAR(255)," + // 医生电话
+    "samplePart VARCHAR(255)," + // 取样部位
+    "expert VARCHAR(255)," + // 会诊专家
+    "note VARCHAR(255)," + // 备注
+    "uploadDate timestamp," + // 上传时间
+    "diagnoseDate timestamp," + // 诊断时间
+    "confirmDate timestamp," + // 确认诊断时间
+    "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
+);
 
 /*** apidoc定义pathCase表数据
  * @apiDefine CaseSqlData
@@ -73,7 +91,7 @@ const createCaseTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS pathCas
  */
 
 /***
- * @description: 查询玻片
+ * @description:@note 查询病例
  * @param {*} res
  * @return {*}
  */
@@ -131,7 +149,7 @@ router_case.post('/delete', function (req, res) {
     res.send(json);
 });
 
-/*** 新增玻片数据
+/*** @note  新增玻片数据
  * @api {post} /api/case/insert 新增玻片数据
  * @apiName InsertCase
  * @apiGroup 玻片管理
@@ -149,8 +167,12 @@ router_case.post('/delete', function (req, res) {
  */
 router_case.post('/insert', function (req, res) {
     let data = req.body.data;
-    var reqValues = [data.pathologyNum, data.patName, data.hosName, data.note, data.experimentName];
-    var reqKeys = ['pathologyNum', 'patName', 'hosName', 'note', 'experimentName'];
+    var reqKeys = Object.keys(data);
+    var reqValues = Object.values(data);
+
+    reqKeys.push('status');
+    reqValues.push('未诊断');
+
     let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
 
     res.send({

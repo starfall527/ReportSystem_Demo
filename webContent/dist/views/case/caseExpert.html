@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-17 16:02:28
+ * @LastEditTime: 2022-05-23 17:18:19
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -16,19 +16,89 @@
     <div class="layui-row layui-col-space10">
 
         <div class="layui-card">
-            <div class="layui-card-header">病例列表</div>
+            <div class="layui-card-header">病例列表（专家端）</div>
             <div class="layui-card-body">
-                <div class="layui-btn-container slide-table-list-btn">
-                    <button class="layui-btn layui-btn-sm" data-type="openSlide">打开选中切片</button>
-                    <button class="layui-btn layui-btn-sm" data-type="getUrlQrcode">生成二维码</button>
-                    <button class="layui-btn layui-btn-sm" data-type="getUrl">查询切片url</button>
+                <div class="layui-btn-container case-table-btn">
+                    <button class="layui-btn layui-btn-sm" data-type="exportCase">导出病例</button>
+                    <button class="layui-btn layui-btn-sm" data-type="exportCase">导出病例</button>
                 </div>
+                <table class="layui-show" id="case-table" lay-filter="case-table"></table>
+
+                <script type="text/html" id="table-toolbar" lay-filter="table-toolbar">
+                    <a class="layui-btn layui-btn-xs" lay-event="diagnose">诊断</a>
+                    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                    <!-- <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a> 专家端没有删除按钮 -->
+                </script>
+
             </div>
-            <table class="layui-show" id="slide-table-list" lay-filter="slide-table-list"></table>
         </div>
     </div>
 </div>
 
 <script>
     layui.use('caseAdmin', layui.factory('caseAdmin'));
+</script>
+
+
+<script>
+    layui.use(['admin', 'form', 'laydate','table'], function () {
+        var $ = layui.$,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            table = layui.table,
+            form = layui.form;
+
+
+        //工具条事件
+        table.on('tool(case-table)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if (layEvent === '') { //查看
+            } else if (layEvent === 'del') { //删除
+                layer.confirm('将删除数据,确定？', function (index) {
+                    obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
+                    admin.req({
+                        url: 'api/case/del',
+                        type: 'get',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: checkData,
+                        success: function (res) {
+                            layer.alert(`切片url:${res.data}`)
+                        },
+                        done: function (res) {}
+                    })
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            } else if (layEvent === 'edit') { //编辑
+                layer.msg('test');
+                layer.open({
+                    type: 1,
+                    area: ['85%', '80%'],
+                    shadeClose: false,
+                    shade: 0.8,
+                    maxmin: true,
+                    //这里进行页面的跳转，并在跳转时进行传参，传参方式用?拼接的方式
+                    content: '/#/case/caseForm',
+                    success: function (layero, index) {
+
+                    }
+                });
+            } else if (layEvent === 'diagnose') { //诊断
+                //do something
+
+                obj.update({
+                    username: '123',
+                    title: 'xxx'
+                });
+            } else if (layEvent === 'star') { //收藏
+                //do something
+            }
+        });
+
+    });
 </script>

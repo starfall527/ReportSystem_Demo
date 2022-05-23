@@ -41,6 +41,8 @@ async function sendRequest(path) {
             reject(err.message);
         });
         req.end();
+    }).catch(err => {
+        console.error(err);
     })
 }
 
@@ -217,7 +219,7 @@ function getTreeJson(path, tree) {
             rootFolder = treeJson[treeJson.length - 1];
         treeJson.push(rootFolder);
     } // * 将根目录添加到treeJson
-    else{
+    else {
         treeJsonList.push({
             path: path,
             pathArray: path.split('/'),
@@ -331,12 +333,15 @@ async function getSlides(path) {
 
 router_slideCenter.get('/getFolders', function (req, res) {
     getFolder('./').then(apiRes => {
-        apiRes = JSON.parse(apiRes);
-        let path = apiRes.path.replace(/\\/g, '/');
-        if (path[path.length - 1] == '/') {
-            path = path.slice(0, path.length - 1); // 去掉最后一个/
+        let folderList = [];
+        if (apiRes !== undefined) {
+            apiRes = JSON.parse(apiRes);
+            let path = apiRes.path.replace(/\\/g, '/');
+            if (path[path.length - 1] == '/') {
+                path = path.slice(0, path.length - 1); // 去掉最后一个/
+            }
+            folderList = getTreeJson(path, []);
         }
-        let folderList = getTreeJson(path, []);
         var json = {
             code: 200,
             msg: '成功',
@@ -404,6 +409,9 @@ router_slideCenter.get('/table', function (req, res) {
 
 const qrImage = require('qr-image');
 const path = require('path');
+const {
+    Console
+} = require("console");
 router_slideCenter.get('/openSlide', function (req, res) {
     let data = req.query;
     getSlideUri(data.path, '', false).then(apiRes => {

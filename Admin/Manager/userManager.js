@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-16 17:25:52
+ * @LastEditTime 2022-05-20 18:01:09
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -115,14 +115,12 @@ router_user.get('/login', function (req, res) {
         menu.data.forEach(element => {
             if (element.title === "病例管理") {
                 element.jump = "case/caseExpert";
-                console.log(element);
             }
-        });// 
+        }); // 
     } else if (user[0].role === "上传端") {
         menu.data.forEach(element => {
             if (element.title === "病例管理") {
                 element.jump = "case/caseUpload";
-                console.log(element);
             }
         });
     }
@@ -139,12 +137,13 @@ router_user.get('/login', function (req, res) {
     } else {
         if (user[0].password === req.query.password) {
             json.data.access_token = "";
-            // todo 分配token
+            // todo 分配token 
+        } else {
+            json.msg = '密码错误';
         }
     }
     // res.send(json);
-    menu = config.readConfigFile('./webContent/json/menu.json');
-    console.log(menu);
+    // menu = config.readConfigFile('./webContent/json/menu.json');
     res.send({
         "code": 200,
         "msg": "登入成功",
@@ -152,8 +151,14 @@ router_user.get('/login', function (req, res) {
             "access_token": "c262e61cd13ad99fc650e6908c7e5e65b63d2f32185ecfed6b801ee3fbdd5c0a"
         }
     });
-
 });
+
+
+// 登出接口
+router_user.get('/logout', function (req, res) {
+    sqlMacros.sqlMultiUpdate(['isLoggedIn'],['false'],'USER','name','')
+});
+
 
 /*** 新增用户
  * @api {post} /api/user/insert 新增用户
@@ -166,7 +171,6 @@ router_user.get('/login', function (req, res) {
  */
 router_user.post('/insert', function (req, res) {
     let data = req.body.data;
-
     let role = sqlMacros.sqlSelect('*', 'ROLE', true, 'role', data.role);
     if (role === undefined) {
         logger.error('role not exist');
