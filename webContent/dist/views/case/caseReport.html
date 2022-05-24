@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-23 10:53:49
+ * @LastEditTime: 2022-05-24 18:08:12
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -19,25 +19,57 @@
         <div class="layui-col-md6">
             <div class="layui-card">
                 <div class="layui-card-header">病例详情</div>
-                <div class="layui-card-body">
+                <div class="layui-card-body" style="margin-bottom: 20px;">
                     <form class="layui-form">
-                        <div class="layui-row layui-col-space10">
+                        <div class="layui-row layui-col-space15">
                             <div class="layui-col-md4">
-                                <div class="layui-inline">
-                                    <div class="layui-form-label" id="name">姓名:</div>
-                                </div>
+                                <div class="layui-form-label" id="name">姓名:</div>
                             </div>
                             <div class="layui-col-md4">
-                                <div class="layui-inline">
-                                    <div class="layui-form-label" id="gender">性别:</div>
-                                </div>
+                                <div class="layui-form-label" id="gender">性别:</div>
                             </div>
                             <div class="layui-col-md4">
-                                <div class="layui-inline">
-                                    <div class="layui-form-label" id="age" >年龄:</div>
-                                </div>
+                                <div class="layui-form-label" id="age">年龄:</div>
                             </div>
                         </div>
+
+                        <div class="layui-row layui-col-space15">
+                            <div class="layui-col-md4">
+                                <div class="layui-form-label" id="pathologyNum">病理号:</div>
+                            </div>
+                            <div class="layui-col-md4">
+                                <div class="layui-form-label" id="uploadDate">申请时间:</div>
+                            </div>
+                            <div class="layui-col-md4">
+                                <div class="layui-form-label" id="unit">送检单位:</div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <fieldset class="layui-elem-field" style="margin-top:20px;">
+                            <legend>临床资料</legend>
+                            <div class="layui-field-box" id="clinicalData">无</div>
+                        </fieldset>
+                        <fieldset class="layui-elem-field" style="margin-top:20px;">
+                            <legend>影像学检查</legend>
+                            <div class="layui-field-box" id="imgCheck">无</div>
+                        </fieldset>
+                        <fieldset class="layui-elem-field" style="margin-top:20px;">
+                            <legend>取材部位</legend>
+                            <div class="layui-field-box" id="samplePart">无</div>
+                        </fieldset>
+                        <fieldset class="layui-elem-field" style="margin-top:20px;">
+                            <legend>病史</legend>
+                            <div class="layui-field-box" id="history">无</div>
+                        </fieldset>
+                        <fieldset class="layui-elem-field" style="margin-top:20px;">
+                            <legend>备注</legend>
+                            <div class="layui-field-box" id="note">无</div>
+                        </fieldset>
+                        <fieldset class="layui-elem-field" style="margin-top:20px;">
+                            <legend>附件</legend>
+                            <div class="layui-field-box" id="appendix">无</div>
+                        </fieldset>
                     </form>
                 </div>
             </div>
@@ -48,14 +80,96 @@
             <div class="layui-card">
                 <div class="layui-card-header">病例报告</div>
                 <div class="layui-card-body">
+                    <textarea name="" placeholder="请输入诊断意见" class="layui-textarea"></textarea>
+                    <div class="layui-label" id="sign-label" style="margin-top:30px;margin-bottom:30px;">医生签名:</div>
+                    <div class="layui-row layui-col-space15">
+                        <div class="layui-panel" style=" background-color: #e2e0e0; 
+                        margin-top:10px;margin-bottom:20px">
+                            <div class="layui-row layui-col-space15">
+                                <div class="layui-col-md4">
+                                    <div class="layui-label" id="unit">送检单位:</div>
+                                </div>
+                                <div class="layui-col-md4">
+                                    <div class="layui-label" id="gender">送检医生:</div>
+                                </div>
+                                <div class="layui-col-md4">
+                                    <div class="layui-label" id="age">送检医生电话:12345678910</div>
+                                </div>
+                            </div>
 
+                            <div class="layui-row layui-col-space15">
+                                <div class="layui-col-md4">
+                                    <div class="layui-label" id="pathologyNum">病理号:</div>
+                                </div>
+                                <div class="layui-col-md4">
+                                    <div class="layui-label" id="uploadDate">申请时间:</div>
+                                </div>
+                                <div class="layui-col-md4">
+                                    <div class="layui-label" id="unit">送检单位:</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-btn-container" style="margin-left: 39%;margin-top: 30px">
+                        <button class="layui-btn layui-btn-radius">提交报告</button>
+                        <button class="layui-btn layui-btn-normal layui-btn-radius">加做医嘱</button>
+                        <button class="layui-btn layui-btn-warm layui-btn-radius">转诊</button>
+                        <button class="layui-btn layui-btn-danger layui-btn-radius">退回病例</button>
+                        <button class="layui-btn layui-btn-primary layui-btn-radius">质控评价</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-label" id="expert-label">诊断专家:</div>
                 </div>
             </div>
         </div>
+
     </div>
 
-</div>
+    <script>
+        layui.use('caseAdmin', layui.factory('caseAdmin'));
+        layui.use(['admin', 'form', 'laydate'], function () {
+            var $ = layui.$,
+                admin = layui.admin,
+                element = layui.element,
+                layer = layui.layer,
+                laydate = layui.laydate,
+                form = layui.form;
 
-<script>
-    layui.use('caseAdmin', layui.factory('caseAdmin'));
-</script>
+            form.render(null, 'component-form-group');
+
+            laydate.render({
+                elem: '#LAY-component-form-group-date'
+            });
+            laydate.render({
+                elem: '#inspectionDate',
+                type: 'datetime'
+            });
+
+
+            /* 监听提交 */
+            form.on('submit(case-form-submit)', function (data) {
+                layer.alert(JSON.stringify(data.field), {
+                    title: '最终的提交信息'
+                })
+                admin.req({
+                    url: 'api/case/insert',
+                    type: 'POST',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({
+                        data: data.field
+                    }),
+                    success: function (res) {
+                        location.href = './#/case/caseUpload'; // 跳转回列表
+                        layer.msg('添加成功');
+                    },
+                    done: function (res) {}
+                })
+                return false;
+            });
+        });
+    </script>

@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-18 16:11:59
+ * @LastEditTime 2022-05-24 17:29:17
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -73,7 +73,9 @@ const createCaseTable = sqlMacros.sqlExecute(
     "doctorTel VARCHAR(255)," + // 医生电话
     "samplePart VARCHAR(255)," + // 取样部位
     "expert VARCHAR(255)," + // 会诊专家
+    "diagnosis VARCHAR(255)," + // 诊断意见
     "note VARCHAR(255)," + // 备注
+    "slideUrl TEXT," + // 切片url
     "uploadDate timestamp," + // 上传时间
     "diagnoseDate timestamp," + // 诊断时间
     "confirmDate timestamp," + // 确认诊断时间
@@ -136,12 +138,11 @@ router_case.post('/query', function (req, res) {
  * @param {*} res
  * @return {*}
  */
-router_case.post('/delete', function (req, res) {
-    let data = req.body.data;
+router_case.get('/delete', function (req, res) {
+    let data = req.query;
     for (let i = 0; i < data.length; i++) {
         let result = sqlMacros.sqlDelete('id', data[i]['id'], 'pathCase');
     } //删除所选数据
-
     var json = {
         code: 200,
         msg: '成功'
@@ -153,16 +154,10 @@ router_case.post('/delete', function (req, res) {
  * @api {post} /api/case/insert 新增玻片数据
  * @apiName InsertCase
  * @apiGroup 玻片管理
- * 
  * @apiParam {Object} data                  数据对象
  * @apiParam {String} data.pathologyNum     病理号
  * @apiParam {String} data.patName          病人姓名
- * @apiParam {String} data.hosName          医院名
- * @apiParamExample 
-  {
-     
-  }
- * 
+ * @apiParam {String} data.hosName          医院名 
  * @apiUse CommonResponse
  */
 router_case.post('/insert', function (req, res) {
@@ -181,6 +176,34 @@ router_case.post('/insert', function (req, res) {
     });
 });
 
+
+/*** @note  发起会诊
+ * @api {post} /api/case/startConsultation 新增玻片数据
+ * @apiName startConsultation
+ * @apiGroup 病例管理
+ * @apiParam {Object} data                  数据对象
+ * @apiParam {String} data.pathologyNum     病理号
+ * @apiParam {String} data.patName          病人姓名
+ * @apiParam {String} data.hosName          医院名 
+ * @apiUse CommonResponse
+ */
+router_case.post('/startConsultation', function (req, res) {
+    // todo 需要检查该病例的各个必填项是否为空,包括病理号,病人名,专家名,切片url等等
+    // ["病理号","病人名","专家名","切片url"]
+
+    let data = req.body.data;
+    var reqKeys = Object.keys(data);
+    var reqValues = Object.values(data);
+    
+    reqKeys.push('status');
+    reqValues.push('诊断中');
+
+    let result = sqlMacros.sqlMultiUpdate(reqKeys, reqValues, 'pathCase');
+    res.send({
+        code: 200,
+        msg: '成功'
+    });
+});
 
 module.exports = {
     router_case

@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-20 18:01:09
+ * @LastEditTime 2022-05-24 18:05:29
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -156,7 +156,7 @@ router_user.get('/login', function (req, res) {
 
 // 登出接口
 router_user.get('/logout', function (req, res) {
-    sqlMacros.sqlMultiUpdate(['isLoggedIn'],['false'],'USER','name','')
+    sqlMacros.sqlMultiUpdate(['isLoggedIn'], ['false'], 'USER', 'name', '')
 });
 
 
@@ -175,8 +175,8 @@ router_user.post('/insert', function (req, res) {
     if (role === undefined) {
         logger.error('role not exist');
     } else {
-        var reqValues = [data.userName, data.password, data.phone, data.role, role[0].authorization];
-        var reqKeys = ['userName', 'password', 'phone', 'role', 'authorization'];
+        var reqValues = [data.userName, data.userName, data.password, data.phone, data.role, role[0].authorization];
+        var reqKeys = ['userName', 'name', 'password', 'phone', 'role', 'authorization'];
         let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'USER');
     }
     var json = {

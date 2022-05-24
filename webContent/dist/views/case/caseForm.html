@@ -13,7 +13,6 @@
         <div class="layui-card-header">新建病例</div>
         <div class="layui-card-body" style="padding: 15px;">
             <form class="layui-form" action="" lay-filter="component-form-group">
-
                 <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">病理号</label>
@@ -59,11 +58,10 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">出生日期</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="birthDate" id="LAY-component-form-group-date" lay-verify="date"
+                            <input type="text" name="birthDate" id="LAY-component-form-group-date" lay-verify=""
                                 placeholder="" class="layui-input">
                         </div>
                     </div>
-
                 </div>
 
                 <div class="layui-form-item">
@@ -82,7 +80,7 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">送检时间</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="inspectionDate" id="inspectionDate" lay-verify="datetime"
+                            <input type="text" name="inspectionDate" id="inspectionDate" lay-verify=""
                                 placeholder="" class="layui-input">
                         </div>
                     </div>
@@ -95,6 +93,10 @@
                 </div>
 
                 <div class="layui-form-item">
+                    <label class="layui-form-label">切片url</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="slideUrl" lay-verify="required" class="layui-input">
+                    </div>
                     <!-- <div class="layui-inline">
                         <label class="layui-form-label">验证手机</label>
                         <div class="layui-input-inline">
@@ -157,9 +159,6 @@
 
         /* 监听提交 */
         form.on('submit(case-form-submit)', function (data) {
-            layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            })
             admin.req({
                 url: 'api/case/insert',
                 type: 'POST',

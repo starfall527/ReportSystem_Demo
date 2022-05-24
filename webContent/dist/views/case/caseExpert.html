@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-23 17:18:19
+ * @LastEditTime: 2022-05-24 15:29:54
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -23,13 +23,10 @@
                     <button class="layui-btn layui-btn-sm" data-type="exportCase">导出病例</button>
                 </div>
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
-
                 <script type="text/html" id="table-toolbar" lay-filter="table-toolbar">
                     <a class="layui-btn layui-btn-xs" lay-event="diagnose">诊断</a>
                     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-                    <!-- <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a> 专家端没有删除按钮 -->
                 </script>
-
             </div>
         </div>
     </div>
@@ -41,7 +38,7 @@
 
 
 <script>
-    layui.use(['admin', 'form', 'laydate','table'], function () {
+    layui.use(['admin', 'form', 'laydate', 'table'], function () {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
@@ -58,23 +55,7 @@
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
             if (layEvent === '') { //查看
-            } else if (layEvent === 'del') { //删除
-                layer.confirm('将删除数据,确定？', function (index) {
-                    obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
-                    admin.req({
-                        url: 'api/case/del',
-                        type: 'get',
-                        contentType: 'application/json;charset=UTF-8',
-                        data: checkData,
-                        success: function (res) {
-                            layer.alert(`切片url:${res.data}`)
-                        },
-                        done: function (res) {}
-                    })
-                    layer.close(index);
-                    //向服务端发送删除指令
-                });
-            } else if (layEvent === 'edit') { //编辑
+            }  else if (layEvent === 'edit') { //编辑
                 layer.msg('test');
                 layer.open({
                     type: 1,
@@ -85,12 +66,10 @@
                     //这里进行页面的跳转，并在跳转时进行传参，传参方式用?拼接的方式
                     content: '/#/case/caseForm',
                     success: function (layero, index) {
-
                     }
                 });
             } else if (layEvent === 'diagnose') { //诊断
                 //do something
-
                 obj.update({
                     username: '123',
                     title: 'xxx'

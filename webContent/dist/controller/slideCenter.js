@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-05-11 14:53:27
+ * @LastEditTime 2022-05-24 15:36:05
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 layui.define(['tree', 'util', 'table'], function (exports) {
@@ -170,7 +170,7 @@ layui.define(['tree', 'util', 'table'], function (exports) {
                     contentType: 'application/json;charset=UTF-8',
                     data: checkData,
                     success: function (res) {
-                        layer.alert(`切片url:  ${res.data}`)
+                        layer.alert(`${res.data}`,{title:'切片url'})
                     },
                     done: function (res) {}
                 })

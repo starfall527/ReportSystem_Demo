@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-05-20 18:14:35
+ * @LastEditTime 2022-05-24 16:41:31
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\caseAdmin.js
  */
 layui.define(['tree', 'util', 'table'], function (exports) {
@@ -70,8 +70,6 @@ layui.define(['tree', 'util', 'table'], function (exports) {
         limit: 20,
     });
 
-    
-
     $('.case-table-btn .layui-btn').on('click', function () {
         var type = $(this).data('type');
         active[type] ? active[type].call(this) : '';
@@ -79,25 +77,6 @@ layui.define(['tree', 'util', 'table'], function (exports) {
 
 
     var active = {
-        addCase: function () {
-            var oldData = table.cache["case-table"];
-            // admin.req({
-            //     url: 'api/case/insert',
-            //     type: 'POST',
-            //     contentType: 'application/json;charset=UTF-8',
-            //     data: JSON.stringify({
-            //         data: {
-            //         }
-            //     }),
-            //     success: function (res) {
-            //     },
-            //     done: function (res) {
-            //         layer.msg('添加成功');
-            //     }
-            // })
-            // layui.table.reload('case-table');
-        },
-
         getUrl: function () { // * 复制url
             var checkStatus = table.checkStatus('case-table'),
                 checkData = checkStatus.data[0];

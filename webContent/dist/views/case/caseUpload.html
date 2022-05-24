@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-20 18:09:50
+ * @LastEditTime: 2022-05-24 17:46:57
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -20,9 +20,14 @@
             <div class="layui-card-body">
                 <div class="layui-btn-container case-table-btn">
                     <a href="./#/case/caseForm" class="layui-btn layui-btn-sm" target="_self">新建病例</a>
-                    <button class="layui-btn layui-btn-sm" data-type="exportCase">导出病例</button>
+                    <button class="layui-btn layui-btn-sm" data-type="startConsultation">发起会诊</button>
                 </div>
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
+
+                <script type="text/html" id="table-toolbar" lay-filter="table-toolbar">
+                    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                </script>
             </div>
         </div>
     </div>
@@ -30,4 +35,73 @@
 
 <script>
     layui.use('caseAdmin', layui.factory('caseAdmin'));
+    layui.use(['admin', 'form', 'laydate', 'table'], function () {
+        var $ = layui.$,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            table = layui.table,
+            view = layui.view,
+            form = layui.form;
+        //工具条事件
+        table.on('tool(case-table)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if (layEvent === '') { //查看
+            } else if (layEvent === 'del') { //删除
+                layer.confirm('将删除数据,确定？', function (index) {
+                    obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
+                    admin.req({
+                        url: 'api/case/delete',
+                        type: 'get',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: data,
+                        success: function (res) {
+                            layer.msg('删除成功')
+                        },
+                        done: function (res) {}
+                    })
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            } else if (layEvent === 'edit') { //编辑
+                layer.msg('test');
+            } else if (layEvent === 'star') { //收藏
+                //do something
+            }
+        });
+
+        // 按钮监听
+        $('.case-table-btn .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        var active = {
+            startConsultation: function () {
+                var checkStatus = table.checkStatus('case-table'),
+                    checkData = checkStatus.data[0];
+                if (checkData === undefined) {
+                    return layer.msg('请选择病例');
+                } else {
+                    admin.popup({
+                        title: '选择专家',
+                        area: ['1200px', '800px'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                        id: 'popup-chooseExpert',
+                        success: function (layero, index) {
+                            view(this.id).render('case/chooseExpert').done(function () {})
+                        }
+                    })
+
+
+
+
+                }
+            }
+        }
+
+
+    });
 </script>
