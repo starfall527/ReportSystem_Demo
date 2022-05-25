@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-24 17:29:17
+ * @LastEditTime 2022-05-25 17:36:48
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -111,8 +111,41 @@ router_case.get('/table', function (req, res) {
     res.send(json);
 });
 
+
 /***
- * @description: 条件查询玻片
+ * @description:@note 专家端查询病例
+ * @param {*} res
+ * @return {*}
+ */
+router_case.get('/expertTable', function (req, res) {
+    let userName = req.query.userName;
+    let cases = sqlMacros.sqlSelect('*', 'pathCase');
+    let result = [];
+    cases.forEach(element => {
+        if (element.expert !== null) {
+            let experts = element.expert.split('/');
+            experts.forEach(expertsElement => {
+                if (expertsElement === userName) {
+                    result.push(element);
+                }
+            });
+        }
+    }); // * 搜索指派给该专家的病例
+
+    var json = {
+        code: 200,
+        msg: '成功',
+        data: sqlMacros.getPageData(result, req.query.page, req.query.limit),
+        count: result.length
+    };
+    if (result.length == 0) {
+        json.msg = '查询无数据';
+    }
+    res.send(json);
+});
+
+/***
+ * @description: 条件查询
  * @param {*} res
  * @return {*}
  */
@@ -133,7 +166,7 @@ router_case.post('/query', function (req, res) {
 
 
 /***
- * @description: 删除玻片
+ * @description: 删除
  * @param {*} delete
  * @param {*} res
  * @return {*}
@@ -169,7 +202,6 @@ router_case.post('/insert', function (req, res) {
     reqValues.push('未诊断');
 
     let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
-
     res.send({
         code: 200,
         msg: '成功'
@@ -190,15 +222,48 @@ router_case.post('/insert', function (req, res) {
 router_case.post('/startConsultation', function (req, res) {
     // todo 需要检查该病例的各个必填项是否为空,包括病理号,病人名,专家名,切片url等等
     // ["病理号","病人名","专家名","切片url"]
+    let caseData = req.body.data;
+    let flag = true;
+    ["pathologyNum", "patName", "expert", "slideUrl"].forEach(element => {
+        if (caseData[element] === "" || caseData[element] === undefined || caseData[element] === null) {
+            flag = false;
+        }
+    });
+    if (flag) {
+        let result = sqlMacros.sqlMultiUpdate(['status'], ['诊断中'], 'pathCase', 'id', req.body.caseID);
+        res.send({
+            code: 200,
+            msg: '成功'
+        });
+    } else {
+        res.send({
+            code: 500,
+            msg: '病例信息未完善,请检查数据完整性'
+        });
+    }
+});
 
+/*** @note  选择专家
+ * @api {post} /api/case/chooseExpert 选择专家
+ * @apiName chooseExpert
+ * @apiGroup 选择专家
+ * @apiParam {Object} data                  数据对象
+ * @apiParam {String} data.pathologyNum     病理号
+ * @apiParam {String} data.patName          病人姓名
+ * @apiParam {String} data.hosName          医院名 
+ * @apiUse CommonResponse
+ */
+router_case.post('/chooseExpert', function (req, res) {
     let data = req.body.data;
-    var reqKeys = Object.keys(data);
-    var reqValues = Object.values(data);
-    
-    reqKeys.push('status');
-    reqValues.push('诊断中');
-
-    let result = sqlMacros.sqlMultiUpdate(reqKeys, reqValues, 'pathCase');
+    let caseID = req.body.caseID;
+    let expertName = '';
+    data.forEach(element => {
+        expertName += element.name + '/';
+    });
+    if (expertName !== '') {
+        expertName = expertName.slice(0, expertName.length - 1);
+    }
+    let result = sqlMacros.sqlMultiUpdate(['expert'], [expertName], 'pathCase', 'id', caseID);
     res.send({
         code: 200,
         msg: '成功'

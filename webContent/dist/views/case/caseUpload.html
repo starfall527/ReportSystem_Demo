@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-24 17:46:57
+ * @LastEditTime: 2022-05-25 15:14:10
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -25,6 +25,7 @@
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
 
                 <script type="text/html" id="table-toolbar" lay-filter="table-toolbar">
+                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="chooseExpert">选择专家</a>
                     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
                     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
                 </script>
@@ -34,7 +35,6 @@
 </div>
 
 <script>
-    layui.use('caseAdmin', layui.factory('caseAdmin'));
     layui.use(['admin', 'form', 'laydate', 'table'], function () {
         var $ = layui.$,
             admin = layui.admin,
@@ -43,7 +43,64 @@
             laydate = layui.laydate,
             table = layui.table,
             view = layui.view,
+            setter = layui.setter,
             form = layui.form;
+
+        table.render({
+            elem: '#case-table',
+            url: 'api/case/table', //使用后端数据
+            height: 'full-320',
+            response: {
+                statusCode: 200
+            },
+            cols: [
+                [{
+                        field: 'radio',
+                        type: 'radio',
+                        fixed: 'left'
+                    },
+                    {
+                        field: 'pathologyNum',
+                        title: '病理号',
+                        minWidth: 120
+                    }, {
+                        field: 'status',
+                        title: '状态',
+                        minWidth: 120
+                    }, {
+                        field: 'patientInfo',
+                        title: '病人信息',
+                        minWidth: 120
+                    }, {
+                        field: 'hosName',
+                        title: '医院名',
+                        minWidth: 120
+                    }, {
+                        field: 'subspecialty',
+                        title: '亚专科',
+                        minWidth: 120
+                    }, {
+                        field: 'expert',
+                        title: '指派专家',
+                        minWidth: 120
+                    }, {
+                        field: 'date',
+                        title: '上传时间',
+                        minWidth: 120
+                    }, {
+                        title: "操作",
+                        width: 210,
+                        align: "center",
+                        fixed: "right",
+                        toolbar: "#table-toolbar"
+                    }
+                ]
+            ],
+            page: true,
+            limit: 20,
+        });
+
+
         //工具条事件
         table.on('tool(case-table)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
@@ -71,6 +128,17 @@
                 layer.msg('test');
             } else if (layEvent === 'star') { //收藏
                 //do something
+            } else if (layEvent === 'chooseExpert') { //收藏
+                admin.popup({
+                    title: '选择专家',
+                    area: ['1200px', '800px'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                    id: 'popup-chooseExpert',
+                    success: function (layero, index) {
+                        view(this.id).render('case/chooseExpert', {
+                            caseData: data
+                        }).done(function () {})
+                    }
+                })
             }
         });
 
@@ -86,22 +154,20 @@
                 if (checkData === undefined) {
                     return layer.msg('请选择病例');
                 } else {
-                    admin.popup({
-                        title: '选择专家',
-                        area: ['1200px', '800px'], // 为防止窗口变形,设置弹窗宽度至少为400px
-                        id: 'popup-chooseExpert',
-                        success: function (layero, index) {
-                            view(this.id).render('case/chooseExpert').done(function () {})
-                        }
+                    admin.req({
+                        url: 'api/case/startConsultation',
+                        type: 'POST',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: JSON.stringify({
+                            data: checkData
+                        }),
+                        success: function (res) {
+                            layui.table.reload('case-table');
+                        },
+                        done: function (res) {}
                     })
-
-
-
-
                 }
             }
         }
-
-
     });
 </script>

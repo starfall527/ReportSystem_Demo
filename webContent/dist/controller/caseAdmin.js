@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-05-24 16:41:31
+ * @LastEditTime 2022-05-25 17:08:23
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\caseAdmin.js
  */
 layui.define(['tree', 'util', 'table'], function (exports) {
@@ -18,8 +18,7 @@ layui.define(['tree', 'util', 'table'], function (exports) {
 
     table.render({
         elem: '#case-table',
-        url: //'./json/demo/experimentData.js', //使用假数据
-            'api/case/table', //使用后端数据
+        url: 'api/case/table', //使用后端数据
         height: 'full-320',
         response: {
             statusCode: 200

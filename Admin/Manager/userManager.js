@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-24 18:05:29
+ * @LastEditTime 2022-05-25 17:24:56
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -11,6 +11,7 @@ const sqlMacros = require("../database/macro");
 const router_user = express.Router();
 const logger = require('log4js').getLogger('user');
 const config = require('../config.js');
+const md5 = require('md5');
 
 /***
  * @description: USER表定义
@@ -70,6 +71,21 @@ router_user.get('/userTable', function (req, res) {
     res.send(json);
 });
 
+
+router_user.get('/expertTable', function (req, res) {
+    let result = sqlMacros.sqlSelect('*', 'USER', true, 'role', '专家端');
+    var json = {
+        code: 200,
+        msg: '成功',
+        data: sqlMacros.getPageData(result, req.query.page, req.query.limit),
+        count: result.length
+    };
+    if (result.length == 0) {
+        json.msg = '未选中实验或查询无数据';
+    }
+    res.send(json);
+});
+
 router_user.get('/adminTable', function (req, res) {
     let result = sqlMacros.sqlSelect('*', 'USER');
     var json = {
@@ -107,16 +123,37 @@ router_user.get('/roleTable', function (req, res) {
     res.send(json);
 });
 
+
+router_user.post('/queryExpert', function (req, res) {
+    let data = req.body;
+    console.log(data);
+    var reqKeys = Object.keys(data).splice(2, Object.keys(data).length - 1);
+    var reqValues = Object.values(data).splice(2, Object.values(data).length - 1);
+    let result = sqlMacros.sqlQuery('*', 'USER', reqKeys, reqValues, 'AND'); // 默认是AND查询,看界面要不要配置OR方式
+    var json = {
+        code: 200,
+        msg: '成功',
+        data: sqlMacros.getPageData(result, req.query.page, req.query.limit),
+        count: result.length
+    };
+    if (result.length == 0) {
+        json.msg = '未选中实验或查询无数据';
+    }
+    res.send(json);
+});
+
 // 登录接口
 router_user.get('/login', function (req, res) {
     let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', req.query.userName);
     let menu = config.readConfigFile('./webContent/json/menu.json');
-    if (user === undefined) {} else if (user[0].role === "专家端") {
+    if (user.length === 0) {
+        logger.error('未找到用户');
+    } else if (user[0].role === "专家端") {
         menu.data.forEach(element => {
             if (element.title === "病例管理") {
                 element.jump = "case/caseExpert";
             }
-        }); // 
+        });
     } else if (user[0].role === "上传端") {
         menu.data.forEach(element => {
             if (element.title === "病例管理") {
@@ -136,19 +173,23 @@ router_user.get('/login', function (req, res) {
         json.msg = '未选中实验或查询无数据';
     } else {
         if (user[0].password === req.query.password) {
-            json.data.access_token = "";
+            json.data.access_token = md5(`${user[0].id}${user[0].userName}${Date.now()}`);
+            global.session = {
+                userName: user[0].userName,
+                access_token: json.data.access_token,
+            }
             // todo 分配token 
         } else {
             json.msg = '密码错误';
         }
     }
     // res.send(json);
-    // menu = config.readConfigFile('./webContent/json/menu.json');
     res.send({
         "code": 200,
         "msg": "登入成功",
         "data": {
-            "access_token": "c262e61cd13ad99fc650e6908c7e5e65b63d2f32185ecfed6b801ee3fbdd5c0a"
+            userName: user[0].userName,
+            access_token: "c262e61cd13ad99fc650e6908c7e5e65b63d2f32185ecfed6b801ee3fbdd5c0a"
         }
     });
 });
@@ -172,7 +213,7 @@ router_user.get('/logout', function (req, res) {
 router_user.post('/insert', function (req, res) {
     let data = req.body.data;
     let role = sqlMacros.sqlSelect('*', 'ROLE', true, 'role', data.role);
-    if (role === undefined) {
+    if (role.length === 0) {
         logger.error('role not exist');
     } else {
         var reqValues = [data.userName, data.userName, data.password, data.phone, data.role, role[0].authorization];
@@ -223,8 +264,6 @@ router_user.post('/role/insert', function (req, res) {
     };
     res.send(json);
 });
-
-
 
 /*** 删除用户
  * @api {post} /api/user/delete 删除用户
@@ -292,10 +331,10 @@ router_user.post('/role/batchDel', function (req, res) {
     res.send(json);
 });
 
-/*** 更新步骤数据
- * @api {post} /api/user/update 更新步骤数据
+/*** 更新用户数据
+ * @api {post} /api/user/update 更新用户数据
  * @apiName UpdateStep
- * @apiGroup 步骤管理
+ * @apiGroup 用户管理
  * 
  * @apiParam {Object} data           数据对象
  * @apiParam {String} data.id        唯一标识
@@ -322,7 +361,6 @@ router_user.post('/update', function (req, res) {
     };
     res.send(json);
 });
-
 
 
 

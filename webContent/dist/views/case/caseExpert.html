@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-24 15:29:54
+ * @LastEditTime: 2022-05-25 17:18:13
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -33,11 +33,6 @@
 </div>
 
 <script>
-    layui.use('caseAdmin', layui.factory('caseAdmin'));
-</script>
-
-
-<script>
     layui.use(['admin', 'form', 'laydate', 'table'], function () {
         var $ = layui.$,
             admin = layui.admin,
@@ -47,6 +42,61 @@
             table = layui.table,
             form = layui.form;
 
+        console.log(layui.data('layuiAdmin').userName);
+
+        table.render({
+            elem: '#case-table',
+            url: 'api/case/expertTable', //使用后端数据
+            height: 'full-320',
+            response: {
+                statusCode: 200
+            },
+            where: {
+                userName: layui.data('layuiAdmin').userName,
+            },
+            cols: [
+                [{
+                        field: 'radio',
+                        type: 'radio',
+                        fixed: 'left'
+                    },
+                    {
+                        field: 'pathologyNum',
+                        title: '病理号',
+                        minWidth: 120
+                    }, {
+                        field: 'status',
+                        title: '状态',
+                        minWidth: 120
+                    }, {
+                        field: 'patientInfo',
+                        title: '病人信息',
+                        minWidth: 120
+                    }, {
+                        field: 'hosName',
+                        title: '医院名',
+                        minWidth: 120
+                    }, {
+                        field: 'subspecialty',
+                        title: '亚专科',
+                        minWidth: 120
+                    }, {
+                        field: 'date',
+                        title: '上传时间',
+                        minWidth: 120
+                    }, {
+                        title: "操作",
+                        width: 150,
+                        align: "center",
+                        fixed: "right",
+                        toolbar: "#table-toolbar"
+                    }
+                ]
+            ],
+            page: true,
+            limit: 20,
+        });
+
 
         //工具条事件
         table.on('tool(case-table)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
@@ -55,7 +105,7 @@
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
             if (layEvent === '') { //查看
-            }  else if (layEvent === 'edit') { //编辑
+            } else if (layEvent === 'edit') { //编辑
                 layer.msg('test');
                 layer.open({
                     type: 1,
@@ -65,8 +115,7 @@
                     maxmin: true,
                     //这里进行页面的跳转，并在跳转时进行传参，传参方式用?拼接的方式
                     content: '/#/case/caseForm',
-                    success: function (layero, index) {
-                    }
+                    success: function (layero, index) {}
                 });
             } else if (layEvent === 'diagnose') { //诊断
                 //do something

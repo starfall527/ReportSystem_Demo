@@ -135,9 +135,6 @@
                                 form.on('submit(LAY-user-back-submit)', function (
                                     data) {
                                     var field = data.field; //获取提交的字段
-
-                                    //提交 Ajax 成功后，关闭当前弹层并重载表格
-                                    //$.ajax({});
                                     admin.req({
                                         url: 'api/user/admin/insert',
                                         type: 'POST',
