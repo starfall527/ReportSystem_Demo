@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-25 17:18:13
+ * @LastEditTime: 2022-05-26 16:37:04
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -33,16 +33,15 @@
 </div>
 
 <script>
-    layui.use(['admin', 'form', 'laydate', 'table'], function () {
+    layui.use(['admin', 'form', 'laydate', 'table', 'view'], function () {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
             layer = layui.layer,
             laydate = layui.laydate,
             table = layui.table,
+            view = layui.view,
             form = layui.form;
-
-        console.log(layui.data('layuiAdmin').userName);
 
         table.render({
             elem: '#case-table',
@@ -108,21 +107,19 @@
             } else if (layEvent === 'edit') { //编辑
                 layer.msg('test');
                 layer.open({
-                    type: 1,
-                    area: ['85%', '80%'],
+                    type: 3,
                     shadeClose: false,
-                    shade: 0.8,
-                    maxmin: true,
                     //这里进行页面的跳转，并在跳转时进行传参，传参方式用?拼接的方式
-                    content: '/#/case/caseForm',
+                    content: '/#/case/caseReport.html',
                     success: function (layero, index) {}
                 });
             } else if (layEvent === 'diagnose') { //诊断
-                //do something
-                obj.update({
-                    username: '123',
-                    title: 'xxx'
-                });
+                // view().render('case/caseReport', {
+                //     caseData: data
+                // }).done(function () {})
+
+               window.location.href = `./#/case/caseReport.html?caseID=${data.id}`;
+
             } else if (layEvent === 'star') { //收藏
                 //do something
             }

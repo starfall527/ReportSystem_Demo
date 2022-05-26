@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-24 18:11:29
+ * @LastEditTime: 2022-05-26 16:44:38
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -127,18 +127,27 @@
                 </div>
             </div>
         </div>
-
     </div>
+</div>
 
-    <script>
-        layui.use('caseAdmin', layui.factory('caseAdmin'));
-        layui.use(['admin', 'form', 'laydate'], function () {
+<script type="text/html" template lay-done="layui.data.sendParams(d.params)"></script>
+<script>
+    layui.data.sendParams = function (params) {
+        layui.use(['admin', 'form', 'laydate','router'], function () {
             var $ = layui.$,
                 admin = layui.admin,
                 element = layui.element,
                 layer = layui.layer,
                 laydate = layui.laydate,
-                form = layui.form;
+                form = layui.form,
+                setter = layui.setter;
+
+            var router = layui.router();
+            console.log(router.search.caseID);
+
+            setTimeout(() => {
+                // self.location = './#/case/caseUpload'; // 跳转回列表
+            }, 2000);
 
             form.render(null, 'component-form-group');
 
@@ -172,4 +181,5 @@
                 return false;
             });
         });
-    </script>
+    }
+</script>

@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-05-25 17:08:23
+ * @LastEditTime 2022-05-25 18:05:05
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\caseAdmin.js
  */
 layui.define(['tree', 'util', 'table'], function (exports) {
@@ -75,26 +75,7 @@ layui.define(['tree', 'util', 'table'], function (exports) {
     });
 
 
-    var active = {
-        getUrl: function () { // * 复制url
-            var checkStatus = table.checkStatus('case-table'),
-                checkData = checkStatus.data[0];
-            if (checkData === undefined) {
-                return layer.msg('请选择数据');
-            } else {
-                admin.req({
-                    url: 'api/case/opencase',
-                    type: 'get',
-                    contentType: 'application/json;charset=UTF-8',
-                    data: checkData,
-                    success: function (res) {
-                        layer.alert(`切片url:${res.data}`)
-                    },
-                    done: function (res) {}
-                })
-            }
-        }
-    }
+    var active = {}
 
     exports('caseAdmin', {})
 });
