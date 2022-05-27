@@ -88,13 +88,12 @@
                         key: setter.request.tokenName,
                         value: res.data.access_token
                     });
-                   
                     //请求成功后，写入 userName
                     layui.data(setter.tableName, {
                         key: "userName",
                         value: res.data.userName
                     });
-                   
+
                     //登入成功的提示与跳转
                     layer.msg('登入成功', {
                         offset: '15px',
@@ -113,12 +112,5 @@
                 }
             });
         });
-
-        //实际使用时记得删除该代码
-        layer.msg('为了方便演示，用户名密码可随意输入', {
-            offset: '15px',
-            icon: 1
-        });
-
     });
 </script>

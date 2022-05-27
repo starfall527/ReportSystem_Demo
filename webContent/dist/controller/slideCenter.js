@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-05-24 15:36:05
+ * @LastEditTime 2022-05-27 14:36:56
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 layui.define(['tree', 'util', 'table'], function (exports) {
@@ -87,13 +87,10 @@ layui.define(['tree', 'util', 'table'], function (exports) {
         }
     });
 
-
     $('.slide-table-list-btn .layui-btn').on('click', function () {
         var type = $(this).data('type');
         active[type] ? active[type].call(this) : '';
     });
-
-
     var active = {
         openSlide: function () { // * 打开选中切片
             var checkStatus = table.checkStatus('slide-table-list'),

@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2021-10-21 17:26:04
- * @LastEditTime 2022-05-17 16:32:06
+ * @LastEditTime 2022-05-27 14:55:30
  * @FilePath \ReportSystem_Demo\app.js
  */
 const express = require("express");
@@ -46,6 +46,9 @@ log4js.configure({
     },
     categories: loggerParams
 });
+
+
+global.session = [];
 
 process.on('uncaughtException', function (err) {
     //打印出错误

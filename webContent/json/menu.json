@@ -12,29 +12,7 @@
 			"name": "caseManage",
 			"title": "病例管理",
 			"icon": "layui-icon-auz",
-			"jump": "case/caseExpert",
-			"list": [
-				{
-					"name": "caseForm",
-					"title": "病例列表（上传端）",
-					"jump": "case/caseUpload"
-				},
-				{
-					"name": "caseForm",
-					"title": "病例列表（专家端）",
-					"jump": "case/caseExpert"
-				},
-				{
-					"name": "caseForm",
-					"title": "病例表单",
-					"jump": "case/caseForm"
-				},
-				{
-					"name": "caseReport",
-					"title": "病例报告",
-					"jump": "case/caseReport"
-				}
-			]
+			"jump": "case/caseUpload"
 		},
 		{
 			"name": "user",
@@ -43,13 +21,8 @@
 			"list": [
 				{
 					"name": "user",
-					"title": "网站用户",
+					"title": "用户管理",
 					"jump": "user/user/list"
-				},
-				{
-					"name": "administrators-list",
-					"title": "后台管理员",
-					"jump": "user/administrators/list"
 				},
 				{
 					"name": "administrators-rule",

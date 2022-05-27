@@ -73,15 +73,23 @@
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">亚专科</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="subspecialty" lay-verify="" class="layui-input">
+                        <div class="layui-input-inline">
+                            <select name="subspecialty" lay-verify="">
+                                <option value="未知"></option>
+                                <option value="神经病理">神经病理</option>
+                                <option value="淋巴病理">淋巴病理</option>
+                                <option value="妇科病理">妇科病理</option>
+                                <option value="消化病理">消化病理</option>
+                                <option value="分子病理">分子病理</option>
+                                <option value="皮肤病理">皮肤病理</option>
+                            </select>
                         </div>
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">送检时间</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="inspectionDate" id="inspectionDate" lay-verify=""
-                                placeholder="" class="layui-input">
+                            <input type="text" name="inspectionDate" id="inspectionDate" lay-verify="" placeholder=""
+                                class="layui-input">
                         </div>
                     </div>
                     <div class="layui-inline">
@@ -93,9 +101,30 @@
                 </div>
 
                 <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">医院名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="hosName" lay-verify="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">医生名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="doctor" lay-verify="" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
                     <label class="layui-form-label">切片url</label>
                     <div class="layui-input-block">
-                        <input type="text" name="slideUrl" lay-verify="required" class="layui-input">
+                        <div class="layui-col-md6">
+                            <input type="text" name="slideUrl" lay-verify="required" class="layui-input">
+                        </div>
+                        <div class="layui-col-md6">
+                            <button class="layui-btn" style="margin-left:20px" lay-filter="chooseSlide"
+                                id="chooseSlide">选择切片</button>
+                        </div>
                     </div>
                     <!-- <div class="layui-inline">
                         <label class="layui-form-label">验证手机</label>
@@ -138,12 +167,13 @@
 </div>
 
 <script>
-    layui.use(['admin', 'form', 'laydate'], function () {
+    layui.use(['admin', 'form', 'laydate', 'view'], function () {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
             layer = layui.layer,
             laydate = layui.laydate,
+            view = layui.view,
             form = layui.form;
 
         form.render(null, 'component-form-group');
@@ -156,9 +186,22 @@
             type: 'datetime'
         });
 
+        $('#chooseSlide').on('click', function () {
+            admin.popup({
+                title: '选择切片',
+                area: ['1200px', '850px'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                id: 'popup-chooseSlide',
+                success: function (layero, index) {
+                    view(this.id).render('slideCenter/slideCenter', {}).done(function () {
+                        $('#title').hide();
+                    }) // ! view.render必须在success以后调用,在表格填到一半时选择切片会导致刷新,因此只能先选择切片,后续需要优化
+                }
+            })
+        })
 
         /* 监听提交 */
         form.on('submit(case-form-submit)', function (data) {
+            data.field.doctor = layui.data('layuiAdmin').userName;
             admin.req({
                 url: 'api/case/insert',
                 type: 'POST',

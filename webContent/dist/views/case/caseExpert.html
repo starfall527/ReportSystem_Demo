@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-26 16:37:04
+ * @LastEditTime: 2022-05-27 18:05:30
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -18,14 +18,15 @@
         <div class="layui-card">
             <div class="layui-card-header">病例列表（专家端）</div>
             <div class="layui-card-body">
-                <div class="layui-btn-container case-table-btn">
+                <!-- <div class="layui-btn-container case-table-btn">
                     <button class="layui-btn layui-btn-sm" data-type="exportCase">导出病例</button>
                     <button class="layui-btn layui-btn-sm" data-type="exportCase">导出病例</button>
-                </div>
+                </div> -->
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
                 <script type="text/html" id="table-toolbar" lay-filter="table-toolbar">
                     <a class="layui-btn layui-btn-xs" lay-event="diagnose">诊断</a>
-                    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                    <!-- <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a> -->
+                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport">查看报告</a>
                 </script>
             </div>
         </div>
@@ -68,12 +69,16 @@
                         title: '状态',
                         minWidth: 120
                     }, {
-                        field: 'patientInfo',
+                        field: 'patName',
                         title: '病人信息',
                         minWidth: 120
                     }, {
                         field: 'hosName',
                         title: '医院名',
+                        minWidth: 120
+                    }, {
+                        field: 'doctor',
+                        title: '医生名',
                         minWidth: 120
                     }, {
                         field: 'subspecialty',
@@ -85,7 +90,7 @@
                         minWidth: 120
                     }, {
                         title: "操作",
-                        width: 150,
+                        width: 180,
                         align: "center",
                         fixed: "right",
                         toolbar: "#table-toolbar"
@@ -104,24 +109,15 @@
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
             if (layEvent === '') { //查看
-            } else if (layEvent === 'edit') { //编辑
-                layer.msg('test');
-                layer.open({
-                    type: 3,
-                    shadeClose: false,
-                    //这里进行页面的跳转，并在跳转时进行传参，传参方式用?拼接的方式
-                    content: '/#/case/caseReport.html',
-                    success: function (layero, index) {}
-                });
             } else if (layEvent === 'diagnose') { //诊断
-                // view().render('case/caseReport', {
-                //     caseData: data
-                // }).done(function () {})
-
-               window.location.href = `./#/case/caseReport.html?caseID=${data.id}`;
-
-            } else if (layEvent === 'star') { //收藏
-                //do something
+                if (data.status === '诊断完成'){
+                    layer.msg('诊断已完成');
+                }
+                else {
+                    location.href = `./#/case/caseReport/caseID=${data.id}`;
+                }
+            } else if (layEvent === 'openReport') { // 查看报告
+                layer.msg('还没做=_=');
             }
         });
 

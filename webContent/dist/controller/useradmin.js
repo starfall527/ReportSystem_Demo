@@ -1,6 +1,7 @@
 /** layuiAdmin.pro-v1.4.0 LPPL License By https://www.layui.com/admin/ */ ;
-layui.define(["table", "form"], function (e) {
+layui.define(["table", "form", "admin"], function (e) {
     var i = (layui.$, layui.admin),
+        admin = layui.admin,
         t = layui.view,
         table = layui.table,
         r = layui.form;
@@ -60,26 +61,44 @@ layui.define(["table", "form"], function (e) {
         text: "对不起，加载出现异常！"
     }), table.on("tool(LAY-user-manage)", function (e) {
         var data = e.data;
-        "del" === e.event ? layer.prompt({
-            formType: 1,
-            title: "敏感操作，请验证口令"
-        }, function (i, t) {
-            layer.close(t), layer.confirm("真的删除行么", function (i) {
-                e.del(), layer.close(i)
-            })
-        }) : "edit" === e.event && i.popup({
-            title: "编辑用户",
-            area: ["500px", "450px"],
-            id: "LAY-popup-user-add",
-            success: function (e, i) {
-                t(this.id).render("user/user/userForm", data).done(function () {
-                    r.render(null, "layuiadmin-form-useradmin"), r.on("submit(LAY-user-front-submit)", function (e) {
-                        e.field;
-                        layui.table.reload("LAY-user-manage"), layer.close(i)
-                    })
+        if ("del" === e.event) {
+            layer.confirm('将删除用户,确定？', function (index) {
+                e.del(); // 删除对应行（tr）的DOM结构，并更新缓存
+                admin.req({
+                    url: 'api/user/delete',
+                    type: 'get',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: data,
+                    success: function (res) {
+                        layer.msg('删除成功')
+                    },
+                    done: function (res) {}
                 })
-            }
-        })
+                layer.close(index);
+                //向服务端发送删除指令
+            });
+        }
+
+        // "del" === e.event ? layer.prompt({
+        //     formType: 1,
+        //     title: "敏感操作，请验证口令"
+        // }, function (i, t) {
+        //     layer.close(t), layer.confirm("真的删除行么", function (i) {
+        //         e.del(), layer.close(i)
+        //     })
+        // }) : "edit" === e.event && i.popup({
+        //     title: "编辑用户",
+        //     area: ["500px", "450px"],
+        //     id: "LAY-popup-user-add",
+        //     success: function (e, i) {
+        //         t(this.id).render("user/user/userForm", data).done(function () {
+        //             r.render(null, "layuiadmin-form-useradmin"), r.on("submit(LAY-user-front-submit)", function (e) {
+        //                 e.field;
+        //                 layui.table.reload("LAY-user-manage"), layer.close(i)
+        //             })
+        //         })
+        //     }
+        // })
     }), table.render({
         elem: "#LAY-user-back-manage",
         // url: "./json/useradmin/mangadmin.json",

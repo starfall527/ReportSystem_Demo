@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-25 17:36:48
+ * @LastEditTime 2022-05-27 17:42:13
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -98,6 +98,7 @@ const createCaseTable = sqlMacros.sqlExecute(
  * @return {*}
  */
 router_case.get('/table', function (req, res) {
+    let userName = req.query.userName;
     let result = sqlMacros.sqlSelect('*', 'pathCase');
     var json = {
         code: 200,
@@ -144,14 +145,16 @@ router_case.get('/expertTable', function (req, res) {
     res.send(json);
 });
 
-/***
+/*** @note  条件查询
  * @description: 条件查询
  * @param {*} res
  * @return {*}
  */
 router_case.post('/query', function (req, res) {
-    let data = req.body;
-    let result = sqlMacros.sqlQuery('*', 'pathCase', ['pathologyNum', 'date'], [data.pathologyNum, data.date], 'AND');
+    let data = req.body.data;
+    var reqKeys = Object.keys(data);
+    var reqValues = Object.values(data);
+    let result = sqlMacros.sqlQuery('*', 'pathCase', reqKeys, reqValues, 'AND');
     var json = {
         code: 200,
         msg: '成功',
@@ -165,7 +168,7 @@ router_case.post('/query', function (req, res) {
 });
 
 
-/***
+/*** @note  删除病例
  * @description: 删除
  * @param {*} delete
  * @param {*} res
@@ -173,9 +176,7 @@ router_case.post('/query', function (req, res) {
  */
 router_case.get('/delete', function (req, res) {
     let data = req.query;
-    for (let i = 0; i < data.length; i++) {
-        let result = sqlMacros.sqlDelete('id', data[i]['id'], 'pathCase');
-    } //删除所选数据
+    let result = sqlMacros.sqlDelete('id', data.id, 'pathCase'); //删除所选数据
     var json = {
         code: 200,
         msg: '成功'
@@ -230,7 +231,7 @@ router_case.post('/startConsultation', function (req, res) {
         }
     });
     if (flag) {
-        let result = sqlMacros.sqlMultiUpdate(['status'], ['诊断中'], 'pathCase', 'id', req.body.caseID);
+        let result = sqlMacros.sqlMultiUpdate(['status'], ['诊断中'], 'pathCase', 'id', caseData.id);
         res.send({
             code: 200,
             msg: '成功'
@@ -268,6 +269,20 @@ router_case.post('/chooseExpert', function (req, res) {
         code: 200,
         msg: '成功'
     });
+});
+
+// @note 更新病例数据
+router_case.post('/update', function (req, res) {
+    let data = req.body.data;
+    var reqKeys = Object.keys(data);
+    var reqValues = Object.values(data);
+    let result = sqlMacros.sqlMultiUpdate(reqKeys, reqValues,
+        'pathCase', 'id', data.caseID);
+    var json = {
+        code: 200,
+        msg: '成功'
+    };
+    res.send(json);
 });
 
 module.exports = {
