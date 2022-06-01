@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-05-31 12:00:29
+ * @LastEditTime 2022-06-01 18:07:03
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 layui.define(['tree', 'util', 'table'], function (exports) {
@@ -169,6 +169,30 @@ layui.define(['tree', 'util', 'table'], function (exports) {
                         layer.alert(`${res.data}`, {
                             title: '切片url'
                         })
+                    },
+                    done: function (res) {}
+                })
+            }
+        },
+        getAnnotationImgs: function () { // * 复制url
+            var checkStatus = table.checkStatus('slide-table-list'),
+                checkData = checkStatus.data[0];
+            if (checkData === undefined) {
+                return layer.msg('请选择数据');
+            } else {
+                admin.req({
+                    url: 'api/slideCenter/getAnnotationImgs',
+                    type: 'get',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: checkData,
+                    success: function (res) {
+                        console.log(res.data.annotationImg);
+
+                        // var reader = new FileReader();
+                        // reader.readAsDataURL(res.data.annotationImg[0]);
+                        // reader.onload = function () {
+                        //     document.getElementById("file_img").src = this.result;
+                        // }
                     },
                     done: function (res) {}
                 })

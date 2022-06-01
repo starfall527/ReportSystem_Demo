@@ -10,6 +10,8 @@ const express = require("express");
 const router_slideCenter = express.Router();
 const fs = require('fs');
 var http = require("http");
+const logger = require('log4js').getLogger();
+const base64 = require('js-base64');
 
 var options = {
     hostname: 'localhost',
@@ -313,6 +315,7 @@ async function getAnnotations(path, tenantName) {
 async function getAnnotationImage(path, tenantName, AnnotationId) {
     options.path = `/api/app/odm-slide/annotation-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&AnnotationId=${AnnotationId}`;
     let uri = await sendRequest(options.path);
+    uri = `${options.hostname}:${options.port}${options.path}` // * 只传地址给前端
     return uri;
 }
 
@@ -342,7 +345,6 @@ async function getFolder(path) {
     return result;
 }
 
-
 /***
  * @description: 获取文件夹下切片列表
  * @param {*} path
@@ -354,7 +356,6 @@ async function getSlides(path) {
     let result = await sendRequest(options.path);
     return result;
 }
-
 
 router_slideCenter.get('/getFolders', function (req, res) {
     getFolder('./').then(apiRes => {
@@ -395,6 +396,7 @@ router_slideCenter.get('/getSlides', function (req, res) {
     })
 });
 
+// 获取切片url
 router_slideCenter.post('/getSlideUrl', function (req, res) {
     let data = req.body.data;
     let filePath = data.filePath;
@@ -403,7 +405,8 @@ router_slideCenter.post('/getSlideUrl', function (req, res) {
         var json = {
             code: 200,
             msg: '成功',
-            data: res
+            data: res,
+            path: filePath,
         };
         if (res.length == 0) {
             json.msg = '查询无数据';
@@ -411,7 +414,6 @@ router_slideCenter.post('/getSlideUrl', function (req, res) {
         res.send(json);
     })
 });
-
 
 router_slideCenter.get('/table', function (req, res) {
     let data = req.query;
@@ -432,11 +434,45 @@ router_slideCenter.get('/table', function (req, res) {
     res.send(json);
 });
 
+// 获取切片的标注数据图
+router_slideCenter.get('/getAnnotationImgs', function (req, res) {
+    let data = req.query;
+    let tableData = [];
+    let annotationImg = [];
+    getAnnotations(data.path, '').then(res => {
+        logger.info(res);
+        let annotations = JSON.parse(res);
+        annotations.forEach(element => {
+            getAnnotationImage(data.path, '', element.id).then(imgRes => {
+                annotationImg.push(imgRes); // 返回的是uri,不是base64
+            })
+        });
+    })
+
+    setTimeout(() => {
+        let pageData = getPageData(tableData, req.query.page, req.query.limit)
+        var json = {
+            code: 200,
+            msg: '成功',
+            data: {
+                pageData: pageData,
+                annotationImg: annotationImg
+            },
+            count: tableData.length
+        };
+        if (res.length == 0) {
+            json.msg = '查询无数据';
+        }
+        res.send(json);
+    }, 500);
+});
+
+
 const qrImage = require('qr-image');
 const path = require('path');
 const {
-    Console
-} = require("console");
+    Base64
+} = require("js-base64");
 router_slideCenter.get('/openSlide', function (req, res) {
     let data = req.query;
     getSlideUri(data.path, '', false).then(apiRes => {
@@ -449,6 +485,7 @@ router_slideCenter.get('/openSlide', function (req, res) {
         });
         // 创建可以写入流，当有pipe它的时候就会生成一个userStr.png的文件
         var img = fs.createWriteStream(qrImgPath);
+        console.log(apiRes)
         // 将生成的二维码流pipe进入刚刚创建的可写入流，并生成文件
         qrcodeImg.pipe(img).on('finish', function () {
             var json = {

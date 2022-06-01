@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-31 10:39:15
+ * @LastEditTime: 2022-06-01 15:32:38
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\slideCenter\slideCenter.html
 -->
 
@@ -30,9 +30,11 @@
                         <button class="layui-btn layui-btn-sm" data-type="openSlide" id="openSlide">打开选中切片</button>
                         <button class="layui-btn layui-btn-sm" data-type="getUrlQrcode" id="getUrlQrcode">生成二维码</button>
                         <button class="layui-btn layui-btn-sm" data-type="getUrl" id="getUrl">查询切片url</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getAnnotationImgs" id="getAnnotationImgs">查询切片标注</button>
                     </div>
                 </div>
                 <table class="layui-show" id="slide-table-list" lay-filter="slide-table-list"></table>
+                <img id="file_img" src="" alt="">
             </div>
         </div>
 
