@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-05-24 17:03:53
- * @LastEditTime: 2022-05-27 17:58:56
+ * @LastEditTime: 2022-05-31 09:46:19
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\chooseExpert.html
 -->
 
@@ -19,11 +19,12 @@
                                 <input type="text" name="userName" id="userName" lay-verify="text" placeholder="请输入"
                                     autocomplete="off" class="layui-input">
                             </div>
-                        </div> <div class="layui-form-item" style="margin-top: 15px;">
+                        </div>
+                        <div class="layui-form-item" style="margin-top: 15px;">
                             <label class="layui-form-label layui-required">擅长亚专科</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="subspecialty" id="subspecialty" lay-verify="text" placeholder="请输入"
-                                    autocomplete="off" class="layui-input">
+                                <input type="text" name="subspecialty" id="subspecialty" lay-verify="text"
+                                    placeholder="请输入" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -77,8 +78,8 @@
                 },
                 cols: [
                     [{
-                            field: 'checkbox',
-                            type: 'checkbox',
+                            field: 'radio',
+                            type: 'radio',
                             fixed: 'left'
                         },
                         {
@@ -88,10 +89,6 @@
                         }, {
                             field: 'subspecialty',
                             title: '擅长亚专科',
-                            minWidth: 120
-                        }, {
-                            field: 'price',
-                            title: '会诊价格',
                             minWidth: 120
                         }
                     ]

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-27 18:05:30
+ * @LastEditTime: 2022-05-30 14:24:30
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -110,14 +110,22 @@
 
             if (layEvent === '') { //查看
             } else if (layEvent === 'diagnose') { //诊断
-                if (data.status === '诊断完成'){
+                if (data.status === '诊断完成') {
                     layer.msg('诊断已完成');
-                }
-                else {
+                } else {
                     location.href = `./#/case/caseReport/caseID=${data.id}`;
                 }
             } else if (layEvent === 'openReport') { // 查看报告
-                layer.msg('还没做=_=');
+                admin.req({
+                    url: 'api/case/openReport',
+                    type: 'get',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: data,
+                    success: function (res) {
+                        layer.msg(res.data);
+                    },
+                    done: function (res) {}
+                })
             }
         });
 

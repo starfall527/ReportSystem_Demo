@@ -292,6 +292,31 @@ async function getSlideUri(path, tenantName, isReadOnly) {
 }
 
 /***
+ * @description: 获取标注数据
+ * @param {*} path
+ * @param {*} tenantName
+ * @return {*}
+ */
+async function getAnnotations(path, tenantName) {
+    options.path = `/api/app/odm-slide/annotations?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}`;
+    let uri = await sendRequest(options.path);
+    return uri;
+}
+
+/***
+ * @description: 获取标注数据图像
+ * @param {*} path
+ * @param {*} tenantName
+ * @param {*} AnnotationId
+ * @return {*}
+ */
+async function getAnnotationImage(path, tenantName, AnnotationId) {
+    options.path = `/api/app/odm-slide/annotation-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&AnnotationId=${AnnotationId}`;
+    let uri = await sendRequest(options.path);
+    return uri;
+}
+
+/***
  * @description: 获取文件夹列表  接口返回的数据有误
  * @param {*} path
  * @param {*} tenantName
@@ -430,6 +455,7 @@ router_slideCenter.get('/openSlide', function (req, res) {
                 code: 200,
                 msg: '成功',
                 data: apiRes,
+                path: data.path,
                 fileName: data.fileName,
                 qrcodeName: qrcodeName
             };

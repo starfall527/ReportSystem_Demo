@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-27 16:30:03
+ * @LastEditTime 2022-05-30 09:43:19
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -129,7 +129,6 @@ router_user.get('/roleTable', function (req, res) {
 // @note 查询专家
 router_user.post('/queryExpert', function (req, res) {
     let data = req.body;
-    console.log(data);
     var reqKeys = Object.keys(data).splice(2, Object.keys(data).length - 1);
     var reqValues = Object.values(data).splice(2, Object.values(data).length - 1);
     let result = sqlMacros.sqlQuery('*', 'USER', reqKeys, reqValues, 'AND'); // 默认是AND查询,看界面要不要配置OR方式
@@ -151,18 +150,21 @@ router_user.get('/login', function (req, res) {
     let menu = config.readConfigFile('./webContent/json/menu.json');
     if (user.length === 0) {
         logger.error('未找到用户');
-    } else if (user[0].role === "专家端") {
-        menu.data.forEach(element => {
-            if (element.title === "病例管理") {
-                element.jump = "case/caseExpert";
-            }
-        });
-    } else if (user[0].role === "上传端") {
-        menu.data.forEach(element => {
-            if (element.title === "病例管理") {
-                element.jump = "case/caseUpload";
-            }
-        });
+    } else {
+        let role = sqlMacros.sqlSelect('*', 'ROLE', true, 'role', user[0].role);
+        if (user[0].role === "专家端") {
+            menu.data.forEach(element => {
+                if (element.title === "病例管理") {
+                    element.jump = "case/caseExpert";
+                }
+            });
+        } else if (user[0].role === "上传端") {
+            menu.data.forEach(element => {
+                if (element.title === "病例管理") {
+                    element.jump = "case/caseUpload";
+                }
+            });
+        }
     }
     config.writeConfigFile('data', menu.data, './webContent/json/menu.json');
     // * 根据登录者的role,更改menu.json的数据,加载对应的界面 后续考虑结合权限管理封装函数,准备好几份menu.json,读取后直接覆盖即可
@@ -192,12 +194,14 @@ router_user.get('/login', function (req, res) {
     res.send(json);
 });
 
-// 登出接口
+// session接口
 router_user.get('/getSessionData', function (req, res) {
     let userName = '';
+    let flag = false;
     global.session.forEach(element => {
         if (element.access_token == req.query.access_token) {
             userName = element.userName;
+            flag = true;
         }
     });
     let json = {
@@ -207,6 +211,8 @@ router_user.get('/getSessionData', function (req, res) {
             "userName": userName
         }
     }
+    json.code = flag ? 200 : 500;
+    json.msg = flag ? '' : '登录已过期';
     res.send(json);
 });
 
@@ -320,7 +326,7 @@ router_user.post('/batchDel', function (req, res) {
  * @param {*} res
  * @return {*}
  */
- router_user.get('/delete', function (req, res) {
+router_user.get('/delete', function (req, res) {
     let data = req.query;
     let result = sqlMacros.sqlDelete('id', data.id, 'USER'); //删除所选数据
     var json = {

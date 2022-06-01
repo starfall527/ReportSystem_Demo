@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-05-27 14:36:56
+ * @LastEditTime 2022-05-31 12:00:29
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 layui.define(['tree', 'util', 'table'], function (exports) {
@@ -14,12 +14,12 @@ layui.define(['tree', 'util', 'table'], function (exports) {
         view = layui.view,
         table = layui.table;
 
-    let path = '';
+    var path = '';
+    var caseID = '';
 
     table.render({
         elem: '#slide-table-list',
-        url: //'./json/demo/experimentData.js', //使用假数据
-            'api/slideCenter/table', //使用后端数据
+        url: 'api/slideCenter/table', //使用后端数据
         height: 'full-320',
         response: {
             statusCode: 200
@@ -29,8 +29,8 @@ layui.define(['tree', 'util', 'table'], function (exports) {
         },
         cols: [
             [{
-                    field: 'radio',
-                    type: 'radio',
+                    field: 'checkbox',
+                    type: 'checkbox',
                     fixed: 'left'
                 },
                 {
@@ -60,7 +60,6 @@ layui.define(['tree', 'util', 'table'], function (exports) {
             type: "get",
             async: false,
             success: function (result) {
-                console.log(result)
                 data = result.data;
             }
         });
@@ -167,13 +166,15 @@ layui.define(['tree', 'util', 'table'], function (exports) {
                     contentType: 'application/json;charset=UTF-8',
                     data: checkData,
                     success: function (res) {
-                        layer.alert(`${res.data}`,{title:'切片url'})
+                        layer.alert(`${res.data}`, {
+                            title: '切片url'
+                        })
                     },
                     done: function (res) {}
                 })
             }
         }
     }
-
     exports('slideCenter', {})
+
 });

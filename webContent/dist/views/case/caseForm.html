@@ -9,174 +9,362 @@
 </div>
 
 <div class="layui-fluid">
-    <div class="layui-card">
-        <div class="layui-card-header">新建病例</div>
-        <div class="layui-card-body" style="padding: 15px;">
-            <form class="layui-form" action="" lay-filter="component-form-group">
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">病理号</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="pathologyNum" lay-verify="required" class="layui-input">
+
+    <div class="layui-carousel" id="stepForm" lay-filter="stepForm" style="margin: 0 auto;">
+        <div carousel-item>
+            <div>
+                <form class="layui-form" action="" lay-filter="component-form-group">
+                    <div class="layui-row" style="margin-bottom: 10px;">
+                        <div class="layui-card">
+                            <div class="layui-card-header">新建病例</div>
+                            <div class="layui-card-body">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">病理号</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="pathologyNum" lay-verify="required"
+                                                class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">患者姓名</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="patName" lay-verify="required" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">性别</label>
+                                        <div class="layui-input-block">
+                                            <select name="gender" lay-filter="gender">
+                                                <option value="未知"></option>
+                                                <option value="男">男</option>
+                                                <option value="女">女</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">年龄</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="age" lay-verify="" class="layui-input">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">民族</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="nation" lay-verify="" class="layui-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">出生日期</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="birthDate" id="LAY-component-form-group-date"
+                                                lay-verify="" placeholder="" class="layui-input">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">取材部位</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="samplePart" lay-verify="" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">亚专科</label>
+                                        <div class="layui-input-inline">
+                                            <select name="subspecialty" lay-verify="">
+                                                <option value="未知"></option>
+                                                <option value="神经病理">神经病理</option>
+                                                <option value="淋巴病理">淋巴病理</option>
+                                                <option value="妇科病理">妇科病理</option>
+                                                <option value="消化病理">消化病理</option>
+                                                <option value="分子病理">分子病理</option>
+                                                <option value="皮肤病理">皮肤病理</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">送检时间</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="inspectionDate" id="inspectionDate" lay-verify=""
+                                                placeholder="" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">送检单位</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="unit" lay-verify="" class="layui-input">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">医院名</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="hosName" lay-verify="" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <!-- <div class="layui-inline">
+                                        <label class="layui-form-label">医生名</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="doctor" lay-verify="" class="layui-input">
+                                        </div>
+                                    </div> -->
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="layui-inline">
-                        <label class="layui-form-label">患者姓名</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="patName" lay-verify="required" class="layui-input">
+                    <div class="layui-row">
+                        <div class="layui-card">
+                            <div class="layui-card-body">
+                                <div class="layui-row layui-col-space5" style="margin-right:20px;">
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">临床资料</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="clinicalData" class="layui-textarea"
+                                                    placeholder="必选项,请填写" id="clinicalData"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">病史</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="history" class="layui-textarea" id="history"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-row layui-col-space5" style="margin-right:20px;">
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">大体所见</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="general" class="layui-textarea" placeholder="必选项,请填写"
+                                                    id="general"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">影像学检查</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="imgCheck" class="layui-textarea"
+                                                    id="imgCheck"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-row layui-col-space5" style="margin-right:20px;">
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">原诊断意见</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="originDiagnosis" class="layui-textarea"
+                                                    placeholder="必选项,请填写" id="originDiagnosis"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">备注</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="note" class="layui-textarea" id="note"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn next" lay-submit lay-filter="formStep">下一步</button>
+                                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div>
+                <form>
+                    <div class="layui-fluid">
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-md4">
+                                <div class="layui-card" style="margin-bottom: 50px;height:710px">
+                                    <div class="layui-card-header">存储目录</div>
+                                    <div class="layui-card-body">
+                                        <div id="tree"></div>
+
+                                        <div class="layui-btn-container form-step-btn" style="padding-bottom: 10px;">
+                                            <button class="layui-btn pre" lay-submit
+                                                lay-filter="formStep2-pre">上一步</button>
+                                            <button class="layui-btn next" lay-submit
+                                                lay-filter="formStep2-next">下一步</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md8">
+                                <div class="layui-card">
+                                    <div class="layui-card-header">切片列表</div>
+                                    <div class="layui-card-body">
+                                        <div class="layui-btn-container slide-table-list-btn">
+                                            <button class="layui-btn layui-btn-sm" data-type="openSlide"
+                                                id="openSlide">打开选中切片</button>
+                                            <button class="layui-btn layui-btn-sm" data-type="getUrlQrcode"
+                                                id="getUrlQrcode">生成二维码</button>
+                                            <button class="layui-btn layui-btn-sm" lay-submit id="chooseSlide"
+                                                lay-filter="chooseSlide">选择切片</button>
+                                        </div>
+                                    </div>
+                                    <table class="layui-show" id="slide-table-list" lay-filter="slide-table-list">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        layui.use('slideCenter', layui.factory('slideCenter'));
+                    </script>
+                </form>
+            </div>
+
+            <div>
+                <form>
+                    <div class="layui-fluid">
+                        <div class="layui-row layui-col-space15">
+                            <div class="layui-col-md4">
+                                <div class="layui-card">
+                                    <div class="layui-card-header">条件搜索</div>
+                                    <div class="layui-card-body">
+                                        <form class="layui-form" lay-filter="queryExpert" id="queryExpert">
+                                            <div class="layui-form-item" style="margin-top: 15px;">
+                                                <label class="layui-form-label layui-required">专家姓名</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="userName" id="userName" lay-verify="text"
+                                                        placeholder="请输入" autocomplete="off" class="layui-input">
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item" style="margin-top: 15px;">
+                                                <label class="layui-form-label layui-required">擅长亚专科</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="subspecialty" id="subspecialty"
+                                                        lay-verify="text" placeholder="请输入" autocomplete="off"
+                                                        class="layui-input">
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <div class="layui-btn-container form-control-btn"
+                                                        style="margin-left: 0px;">
+                                                        <button type="submit" class="layui-btn" lay-filter="query"
+                                                            lay-submit data-type="query">查询</button>
+                                                        <button type="reset" class="layui-btn layui-btn-primary"
+                                                            data-type="reset">重置</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md8">
+                                <div class="layui-card">
+                                    <div class="layui-card-header">专家列表</div>
+                                    <div class="layui-card-body">
+                                        <table class="layui-show" id="expert-table" lay-filter="expert-table"></table>
+                                        <div class="layui-btn-container case-table-btn" style="margin-top: 20px;">
+                                            <button class="layui-btn pre" lay-submit
+                                                lay-filter="formStep3-pre">上一步</button>
+                                            <button class="layui-btn" lay-submit
+                                                lay-filter="case-form-submit">提交表单</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="layui-inline">
-                        <label class="layui-form-label">性别</label>
-                        <div class="layui-input-block">
-                            <select name="gender" lay-filter="gender">
-                                <option value="未知"></option>
-                                <option value="男">男</option>
-                                <option value="女">女</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="layui-inline">
-                        <label class="layui-form-label">年龄</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="age" lay-verify="" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">民族</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="nation" lay-verify="" class="layui-input">
-                        </div>
-                    </div>
-
-                    <div class="layui-inline">
-                        <label class="layui-form-label">出生日期</label>
-                        <div class="layui-input-inline">
-                            <input type="text" name="birthDate" id="LAY-component-form-group-date" lay-verify=""
-                                placeholder="" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">取材部位</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="samplePart" lay-verify="" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">亚专科</label>
-                        <div class="layui-input-inline">
-                            <select name="subspecialty" lay-verify="">
-                                <option value="未知"></option>
-                                <option value="神经病理">神经病理</option>
-                                <option value="淋巴病理">淋巴病理</option>
-                                <option value="妇科病理">妇科病理</option>
-                                <option value="消化病理">消化病理</option>
-                                <option value="分子病理">分子病理</option>
-                                <option value="皮肤病理">皮肤病理</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">送检时间</label>
-                        <div class="layui-input-inline">
-                            <input type="text" name="inspectionDate" id="inspectionDate" lay-verify="" placeholder=""
-                                class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">送检单位</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="unit" lay-verify="" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">医院名</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="hosName" lay-verify="" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">医生名</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="doctor" lay-verify="" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="layui-form-item">
-                    <label class="layui-form-label">切片url</label>
-                    <div class="layui-input-block">
-                        <div class="layui-col-md6">
-                            <input type="text" name="slideUrl" lay-verify="required" class="layui-input">
-                        </div>
-                        <div class="layui-col-md6">
-                            <button class="layui-btn" style="margin-left:20px" lay-filter="chooseSlide"
-                                id="chooseSlide">选择切片</button>
-                        </div>
-                    </div>
-                    <!-- <div class="layui-inline">
-                        <label class="layui-form-label">验证手机</label>
-                        <div class="layui-input-inline">
-                            <input type="tel" name="phone" lay-verify="required|phone" autocomplete="off"
-                                class="layui-input">
-                        </div>
-                    </div> -->
-                </div>
+                </form>
+            </div>
 
 
-                <div class="layui-form-item">
-                    <!-- <div class="layui-inline">
-                        <label class="layui-form-label">验证身份证</label>
-                        <div class="layui-input-block">
-                            <input type="text" name="identity" lay-verify="identity" placeholder="" autocomplete="off"
-                                class="layui-input">
-                        </div>
-                    </div> -->
-                    <div class="layui-inline">
-                        <!-- <label class="layui-form-label">搜索选择框</label>
-                        <div class="layui-input-inline">
-                            <select name="modules" lay-verify="" lay-search="">
-                                <option value="">直接选择或搜索选择</option>
-                                <option value="1">layer</option>
-                                <option value="2">form</option>
-                            </select>
-                        </div> -->
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit="" lay-filter="case-form-submit">立即提交</button>
-                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
-                    </div>
-                </div>
-            </form>
         </div>
     </div>
+
 </div>
 
 <script>
-    layui.use(['admin', 'form', 'laydate', 'view'], function () {
+    layui.define(['admin', 'form', 'laydate', 'view', 'stepLay', 'table'], function () {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
             layer = layui.layer,
             laydate = layui.laydate,
             view = layui.view,
+            step = layui.stepLay,
+            table = layui.table,
             form = layui.form;
 
-        form.render(null, 'component-form-group');
+        var caseData = {};
+
+        step.render({
+            elem: '#stepForm',
+            filter: 'stepForm',
+            width: '100%', //设置容器宽度
+            stepWidth: '950px',
+            height: '750px',
+            stepItems: [{
+                title: '填写病例信息'
+            }, {
+                title: '选择病例切片'
+            }, {
+                title: '选择会诊专家'
+            }]
+        });
+
+        table.render({
+            elem: '#expert-table',
+            url: 'api/user/expertTable', //使用后端数据
+            height: 'full-400',
+            response: {
+                statusCode: 200
+            },
+            cols: [
+                [{
+                        field: 'radio',
+                        type: 'radio',
+                        fixed: 'left'
+                    },
+                    {
+                        field: 'userName',
+                        title: '专家名',
+                        minWidth: 120,
+                        width: 240
+                    }, {
+                        field: 'subspecialty',
+                        title: '擅长亚专科',
+                        minWidth: 120,
+                        width: 560
+                    },
+                ]
+            ],
+            page: true,
+            limit: 20,
+        });
 
         laydate.render({
             elem: '#LAY-component-form-group-date'
@@ -187,34 +375,96 @@
         });
 
         $('#chooseSlide').on('click', function () {
-            admin.popup({
-                title: '选择切片',
-                area: ['1200px', '850px'], // 为防止窗口变形,设置弹窗宽度至少为400px
-                id: 'popup-chooseSlide',
-                success: function (layero, index) {
-                    view(this.id).render('slideCenter/slideCenter', {}).done(function () {
-                        $('#title').hide();
-                    }) // ! view.render必须在success以后调用,在表格填到一半时选择切片会导致刷新,因此只能先选择切片,后续需要优化
-                }
-            })
+            var checkStatus = table.checkStatus('slide-table-list'),
+                checkData = checkStatus.data; // 要改成复选框
+            caseData.slideUrl = [];
+            if (checkData.length === 0) {
+                return layer.msg('请选择数据');
+            } else {
+                checkData.forEach(element => {
+                    admin.req({
+                        url: 'api/slideCenter/openSlide',
+                        type: 'get',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: element,
+                        success: function (res) {
+                            caseData.slideUrl.push({
+                                path: res.path,
+                                slideUrl: res.data
+                            });
+                        },
+                        done: function (res) {}
+                    })
+                });
+            }
         })
 
         /* 监听提交 */
         form.on('submit(case-form-submit)', function (data) {
             data.field.doctor = layui.data('layuiAdmin').userName;
-            admin.req({
-                url: 'api/case/insert',
-                type: 'POST',
-                contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify({
-                    data: data.field
-                }),
-                success: function (res) {
-                    location.href = './#/case/caseUpload'; // 跳转回列表
-                    layer.msg('添加成功');
-                },
-                done: function (res) {}
-            })
+            var checkStatus = table.checkStatus('expert-table'),
+                checkData = checkStatus.data;
+            if (checkData === []) {
+                return layer.msg('请选择专家');
+            } else {
+                caseData.slideUrl = JSON.stringify(caseData.slideUrl);
+                caseData.expert = checkData[0].userName;
+                Object.keys(data.field).forEach(element => {
+                    caseData[element] = data.field[element]; //逐个赋值
+                });
+                console.log(caseData);
+                if (caseData.id === undefined) { // 用这个区分是否为新建数据
+                    admin.req({
+                        url: 'api/case/insert',
+                        type: 'POST',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: JSON.stringify({
+                            data: caseData
+                        }),
+                        success: function (res) {
+                            layer.msg('添加成功,即将跳转回列表');
+                            setTimeout(() => {
+                                location.href = './#/case/caseUpload'; // 跳转回列表
+                            }, 1500);
+                        },
+                        done: function (res) {}
+                    })
+                } else {
+                    // todo update数据
+                }
+            }
+            return false;
+        });
+
+        form.on('submit(formStep)', function (data) {
+            data.field.doctor = layui.data('layuiAdmin').userName;
+            Object.keys(data.field).forEach(element => {
+                caseData[element] = data.field[element]; //逐个赋值
+            });
+            step.next('#stepForm');
+            return false;
+        });
+
+        form.on('submit(chooseSlide)', function (data) {
+            data.field.doctor = layui.data('layuiAdmin').userName;
+            Object.keys(data.field).forEach(element => {
+                caseData[element] = data.field[element]; //逐个赋值
+            });
+            step.next('#stepForm');
+            return false;
+        });
+
+        form.on('submit(formStep2-pre)', function (data) {
+            step.pre('#stepForm');
+            return false;
+        });
+        form.on('submit(formStep2-next)', function (data) {
+            step.next('#stepForm');
+            return false;
+        });
+        form.on('submit(formStep3-pre)', function (data) {
+            console.log(caseData);
+            step.pre('#stepForm');
             return false;
         });
     });

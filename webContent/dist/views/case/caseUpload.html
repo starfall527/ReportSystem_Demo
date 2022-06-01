@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-27 17:55:09
+ * @LastEditTime: 2022-05-31 15:21:55
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -25,9 +25,10 @@
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
 
                 <script type="text/html" id="table-toolbar" lay-filter="table-toolbar">
-                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="chooseExpert">选择专家</a>
-                    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                    <!-- <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="chooseExpert">选择专家</a>
+                    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="chooseSlide">选择切片</a> -->
+                <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
                 </script>
             </div>
         </div>
@@ -69,7 +70,8 @@
                     }, {
                         field: 'status',
                         title: '状态',
-                        minWidth: 120
+                        minWidth: 120,
+                        width: 120
                     }, {
                         field: 'patName',
                         title: '病人姓名',
@@ -89,10 +91,11 @@
                     }, {
                         field: 'date',
                         title: '上传时间',
-                        minWidth: 120
+                        minWidth: 120,
+                        width: 210
                     }, {
                         title: "操作",
-                        width: 210,
+                        width: 150,
                         align: "center",
                         fixed: "right",
                         toolbar: "#table-toolbar"
@@ -123,7 +126,7 @@
                             layer.msg('删除成功')
                         },
                         done: function (res) {}
-                    })
+                    });
                     layer.close(index);
                     //向服务端发送删除指令
                 });
@@ -141,6 +144,27 @@
                             caseData: data,
                             viewID: this.id
                         }).done(function () {})
+                    }
+                })
+            } else if (layEvent === 'chooseSlide') { //选择切片
+                admin.popup({
+                    title: '选择切片',
+                    area: ['1200px', '850px'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                    id: 'popup-chooseSlide',
+                    success: function (layero, index) {
+                        view(this.id).render('slideCenter/slideCenter', {
+                            caseData: data
+                        }).done(
+                            function () {
+                                $('#title').hide();
+                                $('#getUrl').hide();
+                                setTimeout(() => {
+                                    $('#chooseSlide')
+                                        .show(); // 如果slideCenter界面没有别的地方在用的话,这两个按钮的显隐就能确定,去掉该延时
+                                }, 30);
+                                document.getElementById("openSlide").innerHTML = "预览切片";
+                                document.getElementById("getUrl").innerHTML = data.id;
+                            })
                     }
                 })
             }

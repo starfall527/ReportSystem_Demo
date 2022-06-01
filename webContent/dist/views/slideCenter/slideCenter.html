@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-27 16:13:39
+ * @LastEditTime: 2022-05-31 10:39:15
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\slideCenter\slideCenter.html
 -->
 
@@ -14,7 +14,7 @@
 <div class="layui-fluid">
     <div class="layui-row layui-col-space10">
         <div class="layui-col-md4">
-            <div class="layui-card" style="margin-bottom: 150px;">
+            <div class="layui-card" style="margin-bottom: 50px;">
                 <div class="layui-card-header">存储目录</div>
                 <div class="layui-card-body">
                     <div id="tree"></div>
@@ -27,9 +27,9 @@
                 <div class="layui-card-header">切片列表</div>
                 <div class="layui-card-body">
                     <div class="layui-btn-container slide-table-list-btn">
-                        <button class="layui-btn layui-btn-sm" data-type="openSlide">打开选中切片</button>
-                        <button class="layui-btn layui-btn-sm" data-type="getUrlQrcode">生成二维码</button>
-                        <button class="layui-btn layui-btn-sm" data-type="getUrl">查询切片url</button>
+                        <button class="layui-btn layui-btn-sm" data-type="openSlide" id="openSlide">打开选中切片</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getUrlQrcode" id="getUrlQrcode">生成二维码</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getUrl" id="getUrl">查询切片url</button>
                     </div>
                 </div>
                 <table class="layui-show" id="slide-table-list" lay-filter="slide-table-list"></table>
@@ -38,7 +38,6 @@
 
     </div>
 </div>
-
 <script>
     layui.use('slideCenter', layui.factory('slideCenter'));
 </script>

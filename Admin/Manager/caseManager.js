@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-27 17:42:13
+ * @LastEditTime 2022-05-31 11:36:00
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -22,6 +22,8 @@ const express = require("express");
 const sqlMacros = require("../database/macro.js");
 const router_case = express.Router();
 const logger = require('log4js').getLogger();
+const fs = require('fs');
+const html2pdf = require('html-pdf')
 
 /*** @note sql表定义
  * @description: pathCase表定义
@@ -71,26 +73,23 @@ const createCaseTable = sqlMacros.sqlExecute(
     "hosName VARCHAR(255)," + // 医院名
     "doctor VARCHAR(255)," + // 医生名
     "doctorTel VARCHAR(255)," + // 医生电话
-    "samplePart VARCHAR(255)," + // 取样部位
     "expert VARCHAR(255)," + // 会诊专家
+
+    "samplePart VARCHAR(255)," + // 取样部位 
+    "clinicalData VARCHAR(255)," + // 临床资料
+    "imgCheck VARCHAR(255)," + // 影像学检查
+    "history VARCHAR(255)," + // 病史
+    "general VARCHAR(255)," + // 大体所见
+    "originDiagnosis VARCHAR(255)," + // 原诊断意见
     "diagnosis VARCHAR(255)," + // 诊断意见
+
     "note VARCHAR(255)," + // 备注
-    "slideUrl TEXT," + // 切片url
+    "slideUrl TEXT," + // 切片url json数组
     "uploadDate timestamp," + // 上传时间
     "diagnoseDate timestamp," + // 诊断时间
     "confirmDate timestamp," + // 确认诊断时间
     "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
 );
-
-/*** apidoc定义pathCase表数据
- * @apiDefine CaseSqlData
- * @apiSuccess {Object} data                数据对象
- * @apiSuccess {String} data.id             唯一标识
- * @apiSuccess {String} data.pathologyNum   病理号
- * @apiSuccess {String} data.patName        病人姓名
- * @apiSuccess {String} data.hosName        医院名
- * @apiSuccess {String} data.date           创建时间
- */
 
 /***
  * @description:@note 查询病例
@@ -99,7 +98,13 @@ const createCaseTable = sqlMacros.sqlExecute(
  */
 router_case.get('/table', function (req, res) {
     let userName = req.query.userName;
-    let result = sqlMacros.sqlSelect('*', 'pathCase');
+    let result = [];
+    let cases = sqlMacros.sqlSelect('*', 'pathCase');
+    cases.forEach(element => {
+        if (element.doctor === userName) {
+            result.push(element);
+        }
+    });
     var json = {
         code: 200,
         msg: '成功',
@@ -111,7 +116,6 @@ router_case.get('/table', function (req, res) {
     }
     res.send(json);
 });
-
 
 /***
  * @description:@note 专家端查询病例
@@ -188,25 +192,31 @@ router_case.get('/delete', function (req, res) {
  * @api {post} /api/case/insert 新增玻片数据
  * @apiName InsertCase
  * @apiGroup 玻片管理
- * @apiParam {Object} data                  数据对象
- * @apiParam {String} data.pathologyNum     病理号
- * @apiParam {String} data.patName          病人姓名
- * @apiParam {String} data.hosName          医院名 
+ * @apiParam {Object} data                  数据对象,具体字段由表单决定
  * @apiUse CommonResponse
  */
 router_case.post('/insert', function (req, res) {
     let data = req.body.data;
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
-
     reqKeys.push('status');
     reqValues.push('未诊断');
 
     let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
-    res.send({
+    let newCase = sqlMacros.sqlQuery('*', 'pathCase', reqKeys, reqValues, 'AND');
+    var json = {
         code: 200,
         msg: '成功'
-    });
+    };
+    if (newCase.length > 0) {
+        json.caseID = newCase[0].id;
+    } else {
+        json = {
+            code: 500,
+            msg: '新增病例失败'
+        };
+    }
+    res.send(json);
 });
 
 
@@ -221,17 +231,15 @@ router_case.post('/insert', function (req, res) {
  * @apiUse CommonResponse
  */
 router_case.post('/startConsultation', function (req, res) {
-    // todo 需要检查该病例的各个必填项是否为空,包括病理号,病人名,专家名,切片url等等
-    // ["病理号","病人名","专家名","切片url"]
     let caseData = req.body.data;
     let flag = true;
     ["pathologyNum", "patName", "expert", "slideUrl"].forEach(element => {
         if (caseData[element] === "" || caseData[element] === undefined || caseData[element] === null) {
             flag = false;
         }
-    });
+    }); // * 需要检查该病例的各个必填项是否为空,包括病理号,病人名,专家名,切片url等等
     if (flag) {
-        let result = sqlMacros.sqlMultiUpdate(['status'], ['诊断中'], 'pathCase', 'id', caseData.id);
+        let result = sqlMacros.sqlMultiUpdate(['status'], ['等待诊断'], 'pathCase', 'id', caseData.id);
         res.send({
             code: 200,
             msg: '成功'
@@ -247,11 +255,7 @@ router_case.post('/startConsultation', function (req, res) {
 /*** @note  选择专家
  * @api {post} /api/case/chooseExpert 选择专家
  * @apiName chooseExpert
- * @apiGroup 选择专家
- * @apiParam {Object} data                  数据对象
- * @apiParam {String} data.pathologyNum     病理号
- * @apiParam {String} data.patName          病人姓名
- * @apiParam {String} data.hosName          医院名 
+ * @apiGroup 病例管理
  * @apiUse CommonResponse
  */
 router_case.post('/chooseExpert', function (req, res) {
@@ -271,16 +275,69 @@ router_case.post('/chooseExpert', function (req, res) {
     });
 });
 
+
+/*** @note  选择切片
+ * @api {post} /api/case/chooseExpert 选择切片
+ * @apiName chooseExpert
+ * @apiGroup 病例管理
+ * @apiUse CommonResponse
+ */
+router_case.post('/chooseSlide', function (req, res) {
+    let data = req.body.data;
+    let caseID = req.body.caseID;
+    let slides = [];
+    let result = sqlMacros.sqlMultiUpdate(['slideUrl'], [data.slideUrl], 'pathCase', 'id', caseID);
+    res.send({
+        code: 200,
+        msg: '成功'
+    });
+});
+
 // @note 更新病例数据
 router_case.post('/update', function (req, res) {
     let data = req.body.data;
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
     let result = sqlMacros.sqlMultiUpdate(reqKeys, reqValues,
-        'pathCase', 'id', data.caseID);
+        'pathCase', 'id', req.body.caseID);
     var json = {
         code: 200,
         msg: '成功'
+    };
+    res.send(json);
+});
+
+/*** @note  生成报告
+ * @description: 生成报告
+ * @param {*} openReport
+ * @param {*} res
+ * @return {*}
+ */
+router_case.get('/openReport', function (req, res) {
+    let data = req.query;
+    console.log(data);
+
+    var html = fs.readFileSync('./reportTemplate.html', 'utf8'); //caseForm  reportTemplate
+    var options = {
+        format: 'A4',
+        border: {
+            top: '30px',
+            bottom: '30px',
+            left: '10px'
+        }
+    }; // html-pdf 转换参数配置
+    html2pdf.create(html, options).toFile('./report.pdf', function (err, res) {
+        if (err) {
+            console.log(res);
+        } else {
+            console.log(res);
+        }
+    });
+
+    var json = {
+        code: 200,
+        msg: '成功',
+        path: ''
     };
     res.send(json);
 });

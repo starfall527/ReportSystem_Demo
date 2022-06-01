@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-27 17:47:20
+ * @LastEditTime: 2022-05-31 15:25:32
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -63,6 +63,10 @@
                         <div class="layui-field-box" id="samplePart">无</div>
                     </fieldset>
                     <fieldset class="layui-elem-field" style="margin-top:20px;">
+                        <legend>大体所见</legend>
+                        <div class="layui-field-box" id="general">无</div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field" style="margin-top:20px;">
                         <legend>病史</legend>
                         <div class="layui-field-box" id="history">无</div>
                     </fieldset>
@@ -72,7 +76,9 @@
                     </fieldset>
                     <fieldset class="layui-elem-field" style="margin-top:20px;">
                         <legend>附件</legend>
-                        <div class="layui-field-box" id="appendix">无</div>
+                        <button class="layui-btn" id="openSlide" lay-filter="openSlide"
+                            style="margin-top:10px;margin-bottom: 5px;margin-left: 5px">查看切片</button>
+                        <!-- <div class="layui-field-box" id="appendix">无</div> -->
                     </fieldset>
                 </div>
             </div>
@@ -85,10 +91,8 @@
                 <div class="layui-card-body">
                     <form class="layui-form" lay-filter="form-report">
                         <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <textarea name="diagnosis" placeholder="请输入诊断意见" class="layui-textarea"
-                                    id="diagnosis"></textarea>
-                            </div>
+                            <textarea name="diagnosis" placeholder="请输入诊断意见" class="layui-textarea"
+                                id="diagnosis"></textarea>
                         </div>
                         <div class="layui-label" id="sign-label" style="margin-top:30px;margin-bottom:30px;">医生签名:</div>
                         <div class="layui-row layui-col-space15">
@@ -153,7 +157,9 @@
             form = layui.form,
             setter = layui.setter;
         var router = layui.router();
-
+        var slideUrl = '';
+        var caseData = {};
+        var caseStatus = "诊断完成";
         // @note 初始化报告
         admin.req({
             url: 'api/case/query',
@@ -164,16 +170,17 @@
                     id: router.search.caseID
                 }
             }),
-            success: function (res) {
+            success: function (res) { // 查询到病例数据,设置各种监听,以及html文本
                 if (res.count > 0) {
                     console.log(JSON.stringify(res.data[0]));
-                    let caseData = res.data[0];
+                    caseData = res.data[0];
                     document.getElementById("name").innerHTML += caseData.patName;
                     document.getElementById("gender").innerHTML += caseData.gender;
                     document.getElementById("age").innerHTML += caseData.age;
                     document.getElementById("pathologyNum").innerHTML += caseData.pathologyNum;
                     document.getElementById("hosName").innerHTML += caseData.hosName;
                     document.getElementById("uploadDate").innerHTML += caseData.date;
+                    document.getElementById("general").innerHTML = caseData.general;
                     document.getElementById("unit").innerHTML += caseData.unit;
                     document.getElementById("samplePart").innerHTML = caseData.samplePart;
 
@@ -185,6 +192,46 @@
                     document.getElementById("report-uploadDate").innerHTML += caseData.date;
                     document.getElementById("expert-label").innerHTML += layui.data('layuiAdmin')
                         .userName;
+                    slideUrl = caseData.slideUrl;
+                    
+                    // @note 查看切片
+                    $('#openSlide').on('click', function () {
+                        layer.open({
+                            type: 2,
+                            title: '切片',
+                            shade: false,
+                            maxmin: true,
+                            area: ['90%', '90%'],
+                            content: slideUrl
+                        }); // iframe弹窗
+                    });
+
+                    // @note 表格提交
+                    form.on('submit(form-report)', function (data) {
+                        data.field.status = caseStatus;
+                        admin.req({
+                            url: 'api/case/update',
+                            type: 'POST',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: JSON.stringify({
+                                data: data.field,
+                                caseID: caseData.id
+                            }),
+                            success: function (res) {
+                                if (caseStatus === "专家退回") {
+                                    layer.msg("退回成功,将返回列表");
+                                } else if (caseStatus === "诊断完成") {
+                                    layer.msg('提交成功,将返回病例列表');
+                                }
+                                setTimeout(() => {
+                                    window.location.href =
+                                        `./#/case/caseExpert`;
+                                }, 2000);
+                            },
+                            done: function (res) {}
+                        })
+                        return false;
+                    });
                 } else {
                     layer.alert("查询不到病例,将返回列表");
                     window.location.href = `./#/case/caseExpert`;
@@ -193,26 +240,6 @@
             done: function (res) {}
         })
 
-        // @note 表格提交
-        form.on('submit(form-report)', function (data) {
-            admin.req({
-                url: 'api/case/update',
-                type: 'POST',
-                contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify({
-                    data: data.field
-                }),
-                success: function (res) {
-                    layer.msg('提交成功,将返回病例列表');
-                    setTimeout(() => {
-                        window.location.href = `./#/case/caseExpert`;
-                    }, 2000);
-                },
-                done: function (res) {}
-            })
-            return false;
-        });
-
         // @note 按钮监听
         $('.operation-btn .layui-btn').on('click', function () {
             var type = $(this).data('type');
@@ -220,25 +247,7 @@
         });
         var active = {
             returnReport: function () {
-                admin.req({
-                    url: 'api/case/update',
-                    type: 'POST',
-                    contentType: 'application/json;charset=UTF-8',
-                    data: JSON.stringify({
-                        data: {
-                            caseID: router.search.caseID,
-                            field: ['status'],
-                            value: ['专家退回']
-                        }
-                    }),
-                    success: function (res) {
-                        layer.msg("退回成功,将返回列表");
-                        setTimeout(() => {
-                            window.location.href = `./#/case/caseExpert`;
-                        }, 2000);
-                    },
-                    done: function (res) {}
-                });
+                caseStatus = '专家退回';
             }
         }
     });

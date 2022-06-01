@@ -2,8 +2,8 @@
  * @Author cwx
  * @Description 
  * @Date 2021-12-28 11:34:16
- * @LastEditTime 2022-03-23 10:44:13
- * @FilePath \IHC_layuiAdmin_Demo\webContent\index.js
+ * @LastEditTime 2022-05-30 17:34:59
+ * @FilePath \ReportSystem_Demo\webContent\index.js
  */
 
 layui.config({
@@ -11,7 +11,7 @@ layui.config({
         ,
     version: '1.4.0'
 }).extend({
-    slideCenter: 'slideCenter'
+    
 }).use('index', function () {
     var layer = layui.layer,
         admin = layui.admin;

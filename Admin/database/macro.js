@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-25 10:44:40
+ * @LastEditTime 2022-05-29 11:50:44
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -204,7 +204,7 @@ function sqlMultiUpdate(keys1, keys1value, tableName, keys2, keys2value, type) {
         sqlString += `${keys2} = '${keys2value}' `;
     }
 
-    // logger.warn(sqlString);
+    logger.warn(sqlString);
     return db.prepare(sqlString).run();
 }
 

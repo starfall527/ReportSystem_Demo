@@ -1,0 +1,124 @@
+<!--
+ * @Author: cwx
+ * @Description: 
+ * @Date: 2022-05-30 14:30:59
+ * @LastEditTime: 2022-05-30 16:19:10
+ * @FilePath: \ReportSystem_Demo\reportTemplate.html
+-->
+<html>
+
+<head>
+    <meta charset="utf8">
+    <title>报告</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'SimSun';
+            font-weight: 500;
+            font-size: 20px;
+            background: rgb(241, 241, 241);
+            box-sizing: border-box;
+        }
+
+        .page {
+            position: relative;
+            display: block;
+            background: white;
+            page-break-after: auto;
+            margin: 50px;
+            overflow: hidden;
+        }
+
+        @media print {
+            body {
+                background: black;
+            }
+
+            .page {
+                margin: 0;
+                height: 100%;
+                width: 100%;
+            }
+        }
+
+        .page.first {
+            border-left: 5px solid green;
+        }
+
+        .bottom {
+            position: absolute;
+            left: 5mm;
+            right: 5mm;
+            bottom: 5mm;
+        }
+
+        .group {
+            margin-top: 3mm;
+        }
+
+        .title {
+            color: black;
+            position: relative;
+            font-family: 'SimSun';
+            font-weight: bold;
+            font-size: 45px;
+            text-align: center;
+        }
+
+        .label {
+            color: black;
+            position: relative;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .line {
+            color: black;
+            position: relative;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .logo {
+            position: relative;
+            width: 80%;
+            left: 10%;
+            top: 15%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="title">诊断报告</div>
+        <div class="group">
+            <div class="label" id="patName">病人姓名:</div>
+            <div class="label" id="gender">性别:</div>
+            <div class="label" id="age">年龄:</div>
+        </div>
+        <HR>
+        <div class="group">
+            <div class="label" id="samplePart">取材部位:</div>
+            <div class="label" id="clinicalData">临床资料:</div>
+            <div class="label" id="imgCheck">影像学检查:</div>
+            <div class="label" id="general">大体所见:</div>
+            <div class="label" id="originDiagnosis">初诊意见:</div>
+        </div>
+        <HR>
+        <div class="label" id="markPicture">病理图像:</div>
+        <div class="label" id="diagnosis">诊断意见:</div>
+        <HR>
+    </div>
+    <!-- <div class="page">
+        <img class="logo" src="{{image}}">
+        <div class="bottom">
+            <div class="line center">8045 zürich</div>
+        </div>
+    </div> -->
+</body>
+
+</html>
