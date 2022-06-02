@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-02 15:51:05
+ * @LastEditTime: 2022-06-02 18:30:26
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -106,10 +106,109 @@
                 <div class="layui-card-body">
 
                     <form class="layui-form" lay-filter="form-report">
-                        <div class="layui-form-item">
-                            <textarea name="diagnosis" placeholder="请输入诊断意见" class="layui-textarea"
-                                id="diagnosis"></textarea>
+                        <!-- @note 折叠面板    -->
+                        <div class="layui-collapse" lay-filter="component-panel">
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">标本素质/细胞成分</h2>
+                                <div class="layui-colla-content">
+                                    <p>有不少其他答案说是因为JS太差。我下面的答案已经说了，这不是根本性的原因。但除此之外，我还要纠正一些对JS具体问题的误解。JS当初是被作为脚本语言设计的，所以某些问题并不是JS设计得差或者是JS设计者的失误。比如var的作用域问题，并不是“错误”，而是当时绝大部分脚本语言都是这样的，如perl/php/sh等。模块的问题也是，脚本语言几乎都没有模块/命名空间功能。弱类型、for-in之类的问题也是，只不过现在用那些老的脚本语言的人比较少，所以很多人都误以为是JS才有的坑。另外有人说JS是半残语言，满足不了开发需求，1999年就该死。半残这个嘛，就夸张了。JS虽然有很多问题，但是设计总体还是优秀的。——来自知乎@贺师俊
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">炎症/反应性改变/病原体</h2>
+                                <div class="layui-colla-content">
+                                    <div class="layui-row" style="margin-top: 15px;">
+                                        <label class="layui-form-label"
+                                            style="margin-right: 10px;width: 100px;text-align:left">炎症:</label>
+                                        <div class="layui-input-inline" style="width: 320px;">
+                                            <select name="subspecialty" lay-verify="">
+                                                <option value="无">无</option>
+                                                <option value="轻度">轻度</option>
+                                                <option value="中度">中度</option>
+                                                <option value="高度">高度</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-row" style="margin-top: 15px;">
+                                        <label class="layui-form-label"
+                                            style="margin-right: 10px;width: 100px;text-align:left">反应性改变:</label>
+                                        <div class="layui-input-inline" style="width: 320px;">
+                                            <select name="subspecialty" lay-verify="">
+                                                <option value="无">无</option>
+                                                <option value="萎缩">萎缩</option>
+                                                <option value="宫内节育器(IUD)">宫内节育器(IUD)</option>
+                                                <option value="放疗">放疗</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-row" style="margin-top: 15px;">
+                                        <label class="layui-form-label"
+                                            style="margin-right: 10px;width: 100px; text-align:left">病原体:</label>
+                                        <div class="layui-input-inline" style="width: 320px;">
+                                            <div id="pathogen-select" class="xm-select-demo"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">细胞分析</h2>
+                                <div class="layui-colla-content">
+                                    <div class="layui-row" style="margin-top: 15px;">
+                                        <label class="layui-form-label"
+                                            style="margin-right: 10px;width: 120px;text-align:left">鳞状上皮细胞分析:</label>
+                                        <div class="layui-input-inline" style="width: 320px;">
+                                            <select name="subspecialty" lay-verify="">
+                                                <option value="未见异常"></option>
+                                                <option value="非典型鳞状细胞,不能明确意义(ASC-US)">非典型鳞状细胞,不能明确意义(ASC-US)</option>
+                                                <option value="非典型鳞状细胞,倾向于上皮内高度病变(ASC-H)">非典型鳞状细胞,倾向于上皮内高度病变(ASC-H)
+                                                </option>
+                                                <option value="低度鳞状上皮内病变(LSIL)">低度鳞状上皮内病变(LSIL)</option>
+                                                <option value="高度鳞状上皮内病变(HSIL)">高度鳞状上皮内病变(HSIL)</option>
+                                                <option value="鳞状细胞癌">鳞状细胞癌</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-row" style="margin-top: 15px;">
+                                        <label class="layui-form-label"
+                                            style="margin-right: 10px;width: 120px;text-align:left">腺上皮细胞分析:</label>
+                                        <div class="layui-input-inline" style="width: 320px;">
+                                            <select name="subspecialty" lay-verify="">
+                                                <option value="未见异常"></option>
+                                                <option value="非典型腺细胞，宫颈管-非特异性改变">非典型腺细胞，宫颈管-非特异性改变</option>
+                                                <option value="非典型腺细胞，宫颈管-倾向于肿瘤性病变">非典型腺细胞，宫颈管-倾向于肿瘤性病变</option>
+                                                <option value="非典型腺细胞，宫内膜-非特异性改变">非典型腺细胞，宫内膜-非特异性改变</option>
+                                                <option value="非典型腺细胞，宫内膜-倾向于肿瘤性病变">非典型腺细胞，宫内膜-倾向于肿瘤性病变</option>
+                                                <option value="非典型腺细胞，来源不明">非典型腺细胞，来源不明</option>
+                                                <option value="腺癌，宫颈管">腺癌，宫颈管</option>
+                                                <option value="腺癌，宫内膜">腺癌，宫内膜</option>
+                                                <option value="腺癌，其它">腺癌，其它</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-row" style="margin-top: 15px;">
+                                        <label class="layui-form-label"
+                                            style="margin-right: 10px;width: 120px; text-align:left">其它:</label>
+                                        <div class="layui-input-inline">
+                                            <select name="subspecialty" lay-verify="">
+                                                <option value="子宫内膜细胞">子宫内膜细胞</option>
+                                                <option value="其它恶性肿瘤">其它恶性肿瘤</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">诊断意见</h2>
+                                <div class="layui-colla-content">
+                                    <div class="layui-form-item">
+                                        <textarea name="diagnosis" placeholder="请输入诊断意见" class="layui-textarea"
+                                            id="diagnosis"></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                         <div class="layui-label" id="sign-label" style="margin-top:30px;margin-bottom:30px;">医生签名:</div>
                         <div class="layui-row layui-col-space15">
                             <div class="layui-panel" style=" background-color: #e2e0e0; 
@@ -169,8 +268,13 @@
     </div>
 </div>
 
+
+<!-- <script>
+    layui.use('caseReport', layui.factory('caseReport'));
+</script> -->
+
 <script>
-    layui.use(['admin', 'form', 'laydate', 'view'], function () {
+    layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
@@ -178,7 +282,34 @@
             laydate = layui.laydate,
             view = layui.view,
             form = layui.form,
-            setter = layui.setter;
+            xmSelect = layui.xmSelect;
+        setter = layui.setter;
+
+        // @note 下拉框渲染
+        xmSelect.render({
+            el: '#pathogen-select',
+            data: [{
+                name: '滴虫',
+                value: '滴虫'
+            }, {
+                name: '念珠菌',
+                value: '念珠菌'
+            }, {
+                name: '放线菌',
+                value: '放线菌'
+            }, {
+                name: '菌群变化',
+                value: '菌群变化'
+            }, {
+                name: '疱疹病毒',
+                value: '疱疹病毒'
+            }, {
+                name: '巨细胞病毒',
+                value: '巨细胞病毒'
+            }, ]
+        });
+        element.render('collapse');
+
         var router = layui.router();
         var slideUrl = '';
         var caseData = {};
