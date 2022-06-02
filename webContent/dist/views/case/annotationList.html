@@ -2,18 +2,18 @@
  * @Author: cwx
  * @Description: 选择报告用图
  * @Date: 2022-05-31 17:40:21
- * @LastEditTime: 2022-05-31 18:01:58
+ * @LastEditTime: 2022-06-02 15:51:23
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\annotationList.html
 -->
 
-
+<meta name="referrer" content="no-referrer">
 
 <div class="layui-fluid">
     <div class="layui-row layui-col-space15">
         <div class="layui-card">
-            <div class="layui-card-header">专家列表</div>
+            <div class="layui-card-header">标注列表</div>
             <div class="layui-card-body">
-                <table class="layui-show" id="expert-table" lay-filter="expert-table"></table>
+                <table class="layui-show" id="annotation-table" lay-filter="annotation-table"></table>
                 <div class="layui-btn-container case-table-btn" style="margin-top: 20px;">
                     <!-- <a href="./#/case/caseForm" class="layui-btn layui-btn-sm" target="_self">新建病例</a> -->
                     <button class="layui-btn layui-btn-sm" data-type="submit">提交</button>
@@ -22,47 +22,61 @@
         </div>
     </div>
 </div>
+<style type="text/css">
+    .laytable-cell-checkbox {
+        height: auto;
+    }
 
+    .layui-table-cell {
+        text-align: center;
+        height: auto;
+        white-space: normal;
+    }
 
-
+    .layui-table img {
+        max-width: 200px
+    }
+</style>
 
 <script type="text/html" template lay-done="layui.data.sendParams(d.params)"></script>
 <!-- 定义一个 lay-done 对应的全局方法，以供动态模板执行 -->
 <script>
     layui.data.sendParams = function (params) {
-        layui.use(['admin', 'form', 'laydate'], function () {
+        layui.define(['admin', 'form', 'laydate', 'table', 'laytpl'], function () {
             var $ = layui.$,
                 admin = layui.admin,
                 element = layui.element,
                 layer = layui.layer,
                 laydate = layui.laydate,
                 table = layui.table,
+                laytpl = layui.laytpl,
                 form = layui.form;
             setter = layui.setter;
 
             table.render({
-                elem: '#expert-table',
-                url: 'api/user/expertTable', //使用后端数据
-                height: 'full-400',
+                elem: '#annotation-table',
+                url: 'api/slideCenter/annotationTable', //使用后端数据
                 response: {
                     statusCode: 200
                 },
                 where: {
-                    slideUrl: params.slideUrl
+                    data: params.path
                 },
                 cols: [
                     [{
-                            field: 'radio',
-                            type: 'radio',
-                            fixed: 'left'
+                            field: 'checkbox',
+                            type: 'checkbox',
                         },
                         {
-                            field: 'userName',
-                            title: '专家名',
+                            field: 'slideUrl',
+                            title: '标注图',
+                            templet: function (d) {
+                                return `<div><img src="${d.slideUrl}" width="80" height="80"></div>`
+                            },
                             minWidth: 120
                         }, {
-                            field: 'subspecialty',
-                            title: '擅长亚专科',
+                            field: 'comments',
+                            title: '描述',
                             minWidth: 120
                         }
                     ]
@@ -73,7 +87,6 @@
 
             /* 监听提交 */
             form.on('submit(query)', function (data) {
-                data.field.role = '专家端';
                 table.reload('expert-table', {
                     where: data.field,
                     url: 'api/user/queryExpert',

@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-06-01 18:07:03
+ * @LastEditTime 2022-06-02 15:23:24
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 layui.define(['tree', 'util', 'table'], function (exports) {
@@ -180,21 +180,16 @@ layui.define(['tree', 'util', 'table'], function (exports) {
             if (checkData === undefined) {
                 return layer.msg('请选择数据');
             } else {
-                admin.req({
-                    url: 'api/slideCenter/getAnnotationImgs',
-                    type: 'get',
-                    contentType: 'application/json;charset=UTF-8',
-                    data: checkData,
-                    success: function (res) {
-                        console.log(res.data.annotationImg);
-
-                        // var reader = new FileReader();
-                        // reader.readAsDataURL(res.data.annotationImg[0]);
-                        // reader.onload = function () {
-                        //     document.getElementById("file_img").src = this.result;
-                        // }
-                    },
-                    done: function (res) {}
+                admin.popup({
+                    title: '选择报告用图',
+                    area: ['800px','600px'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                    id: 'popup-chooseExpert',
+                    success: function (layero, index) {
+                        view(this.id).render(
+                            'case/annotationList', {
+                                path: checkData
+                            }).done(function () {})
+                    }
                 })
             }
         }

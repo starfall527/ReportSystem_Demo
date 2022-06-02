@@ -312,10 +312,10 @@ async function getAnnotations(path, tenantName) {
  * @param {*} AnnotationId
  * @return {*}
  */
-async function getAnnotationImage(path, tenantName, AnnotationId) {
-    options.path = `/api/app/odm-slide/annotation-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&AnnotationId=${AnnotationId}`;
-    let uri = await sendRequest(options.path);
-    uri = `${options.hostname}:${options.port}${options.path}` // * 只传地址给前端
+function getAnnotationImage(path, tenantName, AnnotationId) {
+    options.path = `/api/app/odm-slide/annotation-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&AnnotationId=${encodeURI(AnnotationId)}`;
+    // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
+    let uri = `http://127.0.0.1:${options.port}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
     return uri;
 }
 
@@ -435,44 +435,53 @@ router_slideCenter.get('/table', function (req, res) {
 });
 
 // 获取切片的标注数据图
-router_slideCenter.get('/getAnnotationImgs', function (req, res) {
-    let data = req.query;
+router_slideCenter.get('/annotationTable', function (req, res) { // getAnnotationImgs annotationTable
+    let data = req.query.data;
     let tableData = [];
     let annotationImg = [];
-    getAnnotations(data.path, '').then(res => {
-        logger.info(res);
-        let annotations = JSON.parse(res);
+    let checkFlag = false;
+    getAnnotations(data.path, '').then(annoRes => {
+        let annotations = JSON.parse(annoRes);
         annotations.forEach(element => {
-            getAnnotationImage(data.path, '', element.id).then(imgRes => {
-                annotationImg.push(imgRes); // 返回的是uri,不是base64
-            })
+            element.slideUrl = getAnnotationImage(data.path, '', element.id);
+            if (element.id === annotations[annotations.length - 1].id) {
+                tableData = annotations;
+                checkFlag = true;
+            };
         });
-    })
+    });
 
-    setTimeout(() => {
-        let pageData = getPageData(tableData, req.query.page, req.query.limit)
-        var json = {
-            code: 200,
-            msg: '成功',
-            data: {
-                pageData: pageData,
-                annotationImg: annotationImg
-            },
-            count: tableData.length
-        };
-        if (res.length == 0) {
-            json.msg = '查询无数据';
+    let check = setInterval(() => {
+        let timeout = 0;
+        if (checkFlag) {
+            let pageData = getPageData(tableData, req.query.page, req.query.limit);
+            var json = {
+                code: 200,
+                msg: '成功',
+                data: pageData,
+                count: tableData.length
+            };
+            if (res.length == 0) {
+                json.msg = '查询无数据';
+            }
+            clearInterval(check);
+            res.send(json);
+        } else {
+            timeout += 200;
         }
-        res.send(json);
-    }, 500);
+        if (timeout > 2000) {
+            clearInterval(check);
+            res.send({
+                code: 500,
+                msg: '无切片标注数据/slideCenter未连接'
+            });
+        }
+    }, 200);
 });
 
 
 const qrImage = require('qr-image');
 const path = require('path');
-const {
-    Base64
-} = require("js-base64");
 router_slideCenter.get('/openSlide', function (req, res) {
     let data = req.query;
     getSlideUri(data.path, '', false).then(apiRes => {
@@ -485,7 +494,6 @@ router_slideCenter.get('/openSlide', function (req, res) {
         });
         // 创建可以写入流，当有pipe它的时候就会生成一个userStr.png的文件
         var img = fs.createWriteStream(qrImgPath);
-        console.log(apiRes)
         // 将生成的二维码流pipe进入刚刚创建的可写入流，并生成文件
         qrcodeImg.pipe(img).on('finish', function () {
             var json = {
