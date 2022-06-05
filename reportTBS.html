@@ -2,8 +2,8 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-05-30 14:30:59
- * @LastEditTime: 2022-05-30 16:19:10
- * @FilePath: \ReportSystem_Demo\reportTemplate.html
+ * @LastEditTime: 2022-06-04 15:51:18
+ * @FilePath: \ReportSystem_Demo\testReport.html
 -->
 <html>
 
@@ -18,7 +18,8 @@
             font-family: 'SimSun';
             font-weight: 500;
             font-size: 20px;
-            background: rgb(241, 241, 241);
+            /* background: rgb(241, 241, 241); */
+            background: rgb(255, 255, 255);
             box-sizing: border-box;
         }
 
@@ -63,20 +64,41 @@
             position: relative;
             font-family: 'SimSun';
             font-weight: bold;
-            font-size: 45px;
+            font-size: 40px;
             text-align: center;
         }
 
         .label {
             color: black;
             position: relative;
+            font-family: 'SimSun';
             font-weight: bold;
-            font-size: 20px;
+            font-size: 12px;
+
         }
 
         .line {
             color: black;
             position: relative;
+        }
+
+        .col1 {
+            position: relative;
+            text-align: left;
+            float: left;
+        }
+
+        .col2 {
+            position: relative;
+            left: 40%;
+            text-align: left;
+            float: left;
+        }
+
+        .col3 {
+            position: relative;
+            left: 80%;
+            text-align: left;
         }
 
         .center {
@@ -95,15 +117,17 @@
 <body>
     <div class="page">
         <div class="title">诊断报告</div>
-        <div class="group">
-            <div class="label" id="patName">病人姓名:</div>
-            <div class="label" id="gender">性别:</div>
-            <div class="label" id="age">年龄:</div>
-        </div>
+        <br>
+
+        <div class="label col1" id="patName" style="float:left">病人姓名:</div>
+        <div class="label col2" id="gender">性别:</div>
+        <div class="label col3" id="age">年龄:</div>
+
         <HR>
         <div class="group">
-            <div class="label" id="samplePart">取材部位:</div>
-            <div class="label" id="clinicalData">临床资料:</div>
+            <div class="label " id="samplePart">取材部位:</div>
+            <br>
+            <div class="label col1" id="clinicalData">临床资料:</div>
             <div class="label" id="imgCheck">影像学检查:</div>
             <div class="label" id="general">大体所见:</div>
             <div class="label" id="originDiagnosis">初诊意见:</div>

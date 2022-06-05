@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-31 11:36:00
+ * @LastEditTime 2022-06-05 08:46:11
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -23,7 +23,8 @@ const sqlMacros = require("../database/macro.js");
 const router_case = express.Router();
 const logger = require('log4js').getLogger();
 const fs = require('fs');
-const html2pdf = require('html-pdf')
+const html2pdf = require('html-pdf');
+const path = require('path');
 
 /*** @note sql表定义
  * @description: pathCase表定义
@@ -56,6 +57,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "CREATE TABLE IF NOT EXISTS pathCase(" +
     "id INTEGER not null PRIMARY KEY AUTOINCREMENT ," + // id 唯一标识
     "status VARCHAR(255) NOT NULL ," + // 病例状态
+    "type VARCHAR(255) NOT NULL ," + // 病例类型
     "pathologyNum VARCHAR(255) NOT NULL ," + // 病理号
     "patName VARCHAR(255) NOT NULL ," + // 病人姓名
     "patientInfo VARCHAR(255) ," + // 病人信息
@@ -314,25 +316,62 @@ router_case.post('/update', function (req, res) {
  * @return {*}
  */
 router_case.get('/openReport', function (req, res) {
-    let data = req.query;
-    console.log(data);
+    var caseData = req.query;
+    // wkHtml(fs.createReadStream('./reportTemplate.html'), {
+    //     output: 'wkReport.pdf',
+    // });
 
-    var html = fs.readFileSync('./reportTemplate.html', 'utf8'); //caseForm  reportTemplate
-    var options = {
-        format: 'A4',
-        border: {
-            top: '30px',
-            bottom: '30px',
-            left: '10px'
+    const puppeteer = require("puppeteer");
+    const option = process.argv;
+    var address = path.join('file:///', __dirname, '../../reportNormal.html'); //  等价于 'file:///E:/ReportSystem_Demo/reportNormal.html';
+
+    (async () => {
+        if (option.length >= 3) {
+            address = option[2];
         }
-    }; // html-pdf 转换参数配置
-    html2pdf.create(html, options).toFile('./report.pdf', function (err, res) {
-        if (err) {
-            console.log(res);
-        } else {
-            console.log(res);
-        }
-    });
+        console.log(option);
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.setViewport({
+            width: 1920,
+            height: 720
+        }); // 设置视窗
+        await page.goto(
+            address, //
+            {
+                waitUntil: "networkidle2"
+            }
+        );
+        await page.evaluate((caseData) => {
+            document.getElementById("patNameLabel").innerHTML += caseData.patName; // 修改html内容
+        }, caseData);
+        await page.pdf({
+            path: "report.pdf",
+            format: "letter",
+            printBackground: true,
+            "-webkit-print-color-adjust": "exact",
+        });
+        await browser.close();
+    })();
+
+    // var html = fs.readFileSync('./reportNormal.html', 'utf8'); //caseForm  reportNormal
+    // console.log(html);    
+
+    // var options = {
+    //     format: 'A4',
+    //     border: {
+    //         top: '30px',
+    //         bottom: '30px',
+    //         left: '10px'
+    //     }
+    // }; // html-pdf 转换参数配置
+    // html2pdf.create(html, options).toFile('./report.pdf', function (err, res) {
+    //     if (err) {
+    //         console.log(res);
+    //     } else {
+    //         console.log(res);
+    //     }
+    // });
 
     var json = {
         code: 200,

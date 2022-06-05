@@ -34,9 +34,11 @@
         "lz-string": "^1.4.4",
         "md5": "^2.3.0",
         "phantomjs-prebuilt": "^2.1.16",
+        "puppeteer": "^14.2.0",
         "qr-image": "^3.2.0",
         "qrcode-reader": "^1.0.4",
-        "tape": "^5.5.3"
+        "tape": "^5.5.3",
+        "wkhtmltopdf": "^0.4.0"
     },
     "bin": "app.js",
     "pkg": {

@@ -22,6 +22,7 @@
         "localtime",
         "LSIL",
         "maxmin",
+        "networkidle",
         "newmsg",
         "nobackfeed",
         "openport",
@@ -41,6 +42,7 @@
         "useradmin",
         "useradminrole",
         "windowsfont",
+        "wkhtmltopdf",
         "wscript",
         "xmul",
         "ymul"

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-02 18:30:26
+ * @LastEditTime: 2022-06-04 11:29:10
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -111,8 +111,30 @@
                             <div class="layui-colla-item">
                                 <h2 class="layui-colla-title">标本素质/细胞成分</h2>
                                 <div class="layui-colla-content">
-                                    <p>有不少其他答案说是因为JS太差。我下面的答案已经说了，这不是根本性的原因。但除此之外，我还要纠正一些对JS具体问题的误解。JS当初是被作为脚本语言设计的，所以某些问题并不是JS设计得差或者是JS设计者的失误。比如var的作用域问题，并不是“错误”，而是当时绝大部分脚本语言都是这样的，如perl/php/sh等。模块的问题也是，脚本语言几乎都没有模块/命名空间功能。弱类型、for-in之类的问题也是，只不过现在用那些老的脚本语言的人比较少，所以很多人都误以为是JS才有的坑。另外有人说JS是半残语言，满足不了开发需求，1999年就该死。半残这个嘛，就夸张了。JS虽然有很多问题，但是设计总体还是优秀的。——来自知乎@贺师俊
-                                    </p>
+                                    <div class="layui-row" style="margin-top: 15px;">
+                                        <label class="layui-form-label"
+                                            style="margin-right: 10px;width: 100px; text-align:left">是否满意:</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="isSatisfied" value="满意" title="满意" checked=""
+                                                lay-filter="isSatisfied">
+                                            <input type="radio" name="isSatisfied" value="不满意" title="不满意"
+                                                lay-filter="isSatisfied">
+                                        </div>
+                                    </div>
+                                    <div class="layui-row" style="margin-top: 15px;">
+                                        <label class="layui-form-label"
+                                            style="margin-right: 10px;width: 100px; text-align:left">不满意原因:</label>
+                                        <div class="layui-input-inline" style="width: 320px;">
+                                            <div id="reason-select" class="xm-select-demo"></div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-row" style="margin-top: 15px;">
+                                        <label class="layui-form-label"
+                                            style="margin-right: 10px;width: 100px; text-align:left">细胞成分:</label>
+                                        <div class="layui-input-inline" style="width: 320px;">
+                                            <div id="component-select" class="xm-select-demo"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="layui-colla-item">
@@ -134,12 +156,7 @@
                                         <label class="layui-form-label"
                                             style="margin-right: 10px;width: 100px;text-align:left">反应性改变:</label>
                                         <div class="layui-input-inline" style="width: 320px;">
-                                            <select name="subspecialty" lay-verify="">
-                                                <option value="无">无</option>
-                                                <option value="萎缩">萎缩</option>
-                                                <option value="宫内节育器(IUD)">宫内节育器(IUD)</option>
-                                                <option value="放疗">放疗</option>
-                                            </select>
+                                            <div id="reactChange-select" class="xm-select-demo"></div>
                                         </div>
                                     </div>
                                     <div class="layui-row" style="margin-top: 15px;">
@@ -157,7 +174,7 @@
                                     <div class="layui-row" style="margin-top: 15px;">
                                         <label class="layui-form-label"
                                             style="margin-right: 10px;width: 120px;text-align:left">鳞状上皮细胞分析:</label>
-                                        <div class="layui-input-inline" style="width: 320px;">
+                                        <div class="layui-input-inline" style="width: 350px;">
                                             <select name="subspecialty" lay-verify="">
                                                 <option value="未见异常"></option>
                                                 <option value="非典型鳞状细胞,不能明确意义(ASC-US)">非典型鳞状细胞,不能明确意义(ASC-US)</option>
@@ -172,7 +189,7 @@
                                     <div class="layui-row" style="margin-top: 15px;">
                                         <label class="layui-form-label"
                                             style="margin-right: 10px;width: 120px;text-align:left">腺上皮细胞分析:</label>
-                                        <div class="layui-input-inline" style="width: 320px;">
+                                        <div class="layui-input-inline" style="width: 350px;">
                                             <select name="subspecialty" lay-verify="">
                                                 <option value="未见异常"></option>
                                                 <option value="非典型腺细胞，宫颈管-非特异性改变">非典型腺细胞，宫颈管-非特异性改变</option>
@@ -189,11 +206,8 @@
                                     <div class="layui-row" style="margin-top: 15px;">
                                         <label class="layui-form-label"
                                             style="margin-right: 10px;width: 120px; text-align:left">其它:</label>
-                                        <div class="layui-input-inline">
-                                            <select name="subspecialty" lay-verify="">
-                                                <option value="子宫内膜细胞">子宫内膜细胞</option>
-                                                <option value="其它恶性肿瘤">其它恶性肿瘤</option>
-                                            </select>
+                                        <div class="layui-input-inline" style="width: 350px;">
+                                            <div id="other-select" class="xm-select-demo"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -284,9 +298,68 @@
             form = layui.form,
             xmSelect = layui.xmSelect;
         setter = layui.setter;
-
+        form.on('radio(isSatisfied)', function (data) {
+            if (data.value === '满意') {
+                reasonSelect.setValue([]);
+                reasonSelect.update({
+                    disabled: true,
+                });
+            } else if (data.value === '不满意') {
+                reasonSelect.update({
+                    disabled: false
+                });
+            }
+        })
         // @note 下拉框渲染
-        xmSelect.render({
+        var reasonSelect = xmSelect.render({ // 细胞成分
+            el: '#reason-select',
+            data: [{
+                name: '无宫颈成分',
+                value: '无宫颈成分'
+            }, {
+                name: '鳞状细胞过少',
+                value: '鳞状细胞过少'
+            }, {
+                name: '炎性渗出物',
+                value: '炎性渗出物'
+            }, {
+                name: '血液过多',
+                value: '血液过多'
+            }, {
+                name: '抹片过厚或人为渣子过多',
+                value: '抹片过厚或人为渣子过多'
+            }, ]
+        });
+        var componentSelect = xmSelect.render({ // 细胞成分
+            el: '#component-select',
+            data: [{
+                name: '鳞状细胞',
+                value: '萎缩'
+            }, {
+                name: '颈管细胞',
+                value: '颈管细胞'
+            }, {
+                name: '化生细胞',
+                value: '化生细胞'
+            }, ]
+        });
+        var reactChangeSelect = xmSelect.render({ // 反应性改变
+            el: '#reactChange-select',
+            data: [{
+                name: '萎缩',
+                value: '萎缩'
+            }, {
+                name: '宫内节育器(IUD)',
+                value: '宫内节育器(IUD)'
+            }, {
+                name: '放疗',
+                value: '放疗'
+            }, {
+                name: '其它',
+                value: '其它'
+            }, ]
+        });
+        var pathogenSelect = xmSelect.render({ // 病原体
             el: '#pathogen-select',
             data: [{
                 name: '滴虫',
@@ -307,6 +380,16 @@
                 name: '巨细胞病毒',
                 value: '巨细胞病毒'
             }, ]
+        });
+        var otherSelect = xmSelect.render({ // 其它
+            el: '#other-select',
+            data: [{
+                name: '子宫内膜细胞',
+                value: '子宫内膜细胞'
+            }, {
+                name: '其它恶性肿瘤',
+                value: '其它恶性肿瘤'
+            }]
         });
         element.render('collapse');
 
