@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2021-12-28 11:34:16
- * @LastEditTime 2022-05-30 17:34:59
+ * @LastEditTime 2022-06-08 10:08:06
  * @FilePath \ReportSystem_Demo\webContent\index.js
  */
 
@@ -10,8 +10,12 @@ layui.config({
     base: '/dist/' //指定 layuiAdmin 项目路径
         ,
     version: '1.4.0'
-}).extend({
-    
+}).extend({        
+    soulTable: '../lib/extend/soulTable/ext/soulTable',
+    tableChild: '../lib/extend/soulTable/ext/tableChild',
+    tableMerge: '../lib/extend/soulTable/ext/tableMerge',
+    tableFilter: '../lib/extend/soulTable/ext/tableFilter',
+    excel: '../lib/extend/soulTable/ext/excel',    
 }).use('index', function () {
     var layer = layui.layer,
         admin = layui.admin;

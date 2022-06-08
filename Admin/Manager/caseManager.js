@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-05 08:46:11
+ * @LastEditTime 2022-06-08 11:13:30
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -118,6 +118,34 @@ router_case.get('/table', function (req, res) {
     }
     res.send(json);
 });
+
+
+/***
+ * @description:@note 查询病例
+ * @param {*} res
+ * @return {*}
+ */
+ router_case.post('/table', function (req, res) {
+    let userName = req.body.userName;
+    let result = [];
+    let cases = sqlMacros.sqlSelect('*', 'pathCase');
+    cases.forEach(element => {
+        if (element.doctor === userName) {
+            result.push(element);
+        }
+    });
+    var json = {
+        code: 200,
+        msg: '成功',
+        data: sqlMacros.getPageData(result, req.query.page, req.query.limit),
+        count: result.length
+    };
+    if (result.length == 0) {
+        json.msg = '查询无数据';
+    }
+    res.send(json);
+});
+
 
 /***
  * @description:@note 专家端查询病例
@@ -347,7 +375,7 @@ router_case.get('/openReport', function (req, res) {
         }, caseData);
         await page.pdf({
             path: "report.pdf",
-            format: "letter",
+            format: "A4",
             printBackground: true,
             "-webkit-print-color-adjust": "exact",
         });

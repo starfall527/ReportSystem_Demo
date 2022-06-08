@@ -2,13 +2,13 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-04 11:29:10
+ * @LastEditTime: 2022-06-07 17:33:26
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
     <div class="layui-breadcrumb" lay-filter="breadcrumb">
         <a lay-href="">主页</a>
-        <a><cite>病例管理</cite></a>
+        <a lay-href="./case/caseExpert"><cite>病例管理</cite></a>
         <a><cite>病例详情</cite></a>
     </div>
 </div>
@@ -391,6 +391,8 @@
                 value: '其它恶性肿瘤'
             }]
         });
+        form.render('select');
+        form.render('radio');
         element.render('collapse');
 
         var router = layui.router();

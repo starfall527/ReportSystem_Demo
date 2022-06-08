@@ -2,13 +2,13 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-05-31 15:21:55
+ * @LastEditTime: 2022-06-08 10:58:45
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
     <div class="layui-breadcrumb" lay-filter="breadcrumb">
         <a lay-href="">主页</a>
-        <a><cite>病例管理</cite></a>
+        <a lay-href="./case/caseUpload"><cite>病例管理</cite></a>
     </div>
 </div>
 
@@ -35,8 +35,9 @@
     </div>
 </div>
 
+<link rel="stylesheet" type="text/css" href="../../../dist/lib/extend/soulTable/soulTable.css" media="all">
 <script>
-    layui.use(['admin', 'form', 'laydate', 'table'], function () {
+    layui.use(['admin', 'form', 'laydate', 'table', 'soulTable'], function () {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
@@ -45,7 +46,8 @@
             table = layui.table,
             view = layui.view,
             setter = layui.setter,
-            form = layui.form;
+            form = layui.form,
+            soulTable = layui.soulTable;
 
         table.render({
             elem: '#case-table',
@@ -57,6 +59,10 @@
             where: {
                 userName: layui.data('layuiAdmin').userName,
             },
+            filter: {
+                items: ['column', 'data'],
+                bottom: false
+            },
             cols: [
                 [{
                         field: 'radio',
@@ -66,12 +72,14 @@
                     {
                         field: 'pathologyNum',
                         title: '病理号',
-                        minWidth: 120
+                        minWidth: 120,
+                        filter: true
                     }, {
                         field: 'status',
                         title: '状态',
                         minWidth: 120,
-                        width: 120
+                        width: 120,
+                        filter: true
                     }, {
                         field: 'patName',
                         title: '病人姓名',
@@ -104,6 +112,9 @@
             ],
             page: true,
             limit: 20,
+            done: function (res) {
+                soulTable.render(this);
+            }
         });
 
 

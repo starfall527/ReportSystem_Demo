@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-06-02 15:23:24
+ * @LastEditTime 2022-06-06 10:48:34
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 layui.define(['tree', 'util', 'table'], function (exports) {
@@ -194,6 +194,5 @@ layui.define(['tree', 'util', 'table'], function (exports) {
             }
         }
     }
-    exports('slideCenter', {})
-
+    exports('slideCenter', {});
 });

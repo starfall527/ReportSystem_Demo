@@ -3,7 +3,7 @@
 <div class="layui-card layadmin-header">
     <div class="layui-breadcrumb" lay-filter="breadcrumb">
         <a lay-href="">主页</a>
-        <a><cite>病例管理</cite></a>
+        <a lay-href="./case/caseUpload"><cite>病例管理</cite></a>
         <a><cite>新建病例</cite></a>
     </div>
 </div>
@@ -149,6 +149,7 @@
                                 <div class="layui-row layui-col-space5" style="margin-right:20px;">
                                     <div class="layui-col-md6">
                                         <div class="layui-form-item">
+                                            <!-- 大体所见 TBS系统中没有这个 需要设置隐藏 -->
                                             <label class="layui-form-label">大体所见</label>
                                             <div class="layui-input-block">
                                                 <textarea name="general" class="layui-textarea" placeholder="必选项,请填写"
@@ -207,7 +208,8 @@
                                     <div class="layui-card-body">
                                         <div id="tree"></div>
 
-                                        <div class="layui-btn-container form-step-btn" style="padding-bottom: 10px;">
+                                        <div class="layui-btn-container form-step-btn"
+                                            style="margin-top: 575px;padding-bottom: 10px;">
                                             <button class="layui-btn pre" lay-submit
                                                 lay-filter="formStep2-pre">上一步</button>
                                             <button class="layui-btn next" lay-submit
@@ -300,8 +302,6 @@
 
                 </form>
             </div>
-
-
         </div>
     </div>
 
@@ -320,6 +320,7 @@
             form = layui.form;
 
         var caseData = {};
+        form.render('select');
 
         step.render({
             elem: '#stepForm',
