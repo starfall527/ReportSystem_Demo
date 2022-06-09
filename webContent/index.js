@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2021-12-28 11:34:16
- * @LastEditTime 2022-06-08 10:08:06
+ * @LastEditTime 2022-06-09 10:07:52
  * @FilePath \ReportSystem_Demo\webContent\index.js
  */
 
@@ -16,6 +16,7 @@ layui.config({
     tableMerge: '../lib/extend/soulTable/ext/tableMerge',
     tableFilter: '../lib/extend/soulTable/ext/tableFilter',
     excel: '../lib/extend/soulTable/ext/excel',    
+    cardTable: '../lib/extend/cardTable/cardTable',    
 }).use('index', function () {
     var layer = layui.layer,
         admin = layui.admin;

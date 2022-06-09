@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-08 11:13:30
+ * @LastEditTime 2022-06-09 17:58:12
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -57,7 +57,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "CREATE TABLE IF NOT EXISTS pathCase(" +
     "id INTEGER not null PRIMARY KEY AUTOINCREMENT ," + // id 唯一标识
     "status VARCHAR(255) NOT NULL ," + // 病例状态
-    "type VARCHAR(255) NOT NULL ," + // 病例类型
+    "type VARCHAR(255) ," + // 病例类型
     "pathologyNum VARCHAR(255) NOT NULL ," + // 病理号
     "patName VARCHAR(255) NOT NULL ," + // 病人姓名
     "patientInfo VARCHAR(255) ," + // 病人信息
@@ -87,6 +87,8 @@ const createCaseTable = sqlMacros.sqlExecute(
 
     "note VARCHAR(255)," + // 备注
     "slideUrl TEXT," + // 切片url json数组
+    "annotation TEXT," + // 报告用图
+
     "uploadDate timestamp," + // 上传时间
     "diagnoseDate timestamp," + // 诊断时间
     "confirmDate timestamp," + // 确认诊断时间
@@ -125,7 +127,7 @@ router_case.get('/table', function (req, res) {
  * @param {*} res
  * @return {*}
  */
- router_case.post('/table', function (req, res) {
+router_case.post('/table', function (req, res) {
     let userName = req.body.userName;
     let result = [];
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
@@ -317,6 +319,25 @@ router_case.post('/chooseSlide', function (req, res) {
     let caseID = req.body.caseID;
     let slides = [];
     let result = sqlMacros.sqlMultiUpdate(['slideUrl'], [data.slideUrl], 'pathCase', 'id', caseID);
+    res.send({
+        code: 200,
+        msg: '成功'
+    });
+});
+
+/*** @note  选择报告用图
+ * @api {post} /api/case/chooseExpert 选择报告用图
+ * @apiName chooseExpert
+ * @apiGroup 病例管理
+ * @apiUse CommonResponse
+ */
+router_case.post('/chooseAnnotation', function (req, res) {
+    let data = req.body.data;
+    let annotation = [];
+    data.forEach(element => {
+        annotation.push(element.annotationUrl);
+    });
+    sqlMacros.sqlMultiUpdate(['annotationUrl'], [JSON.stringify(annotation)], 'pathCase', 'id', req.body.caseID);
     res.send({
         code: 200,
         msg: '成功'

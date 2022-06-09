@@ -391,7 +391,9 @@
                         success: function (res) {
                             caseData.slideUrl.push({
                                 path: res.path,
-                                slideUrl: res.data
+                                fileName: res.fileName,
+                                slideUrl: res.data,
+                                thumbnail: res.thumbnail
                             });
                         },
                         done: function (res) {}

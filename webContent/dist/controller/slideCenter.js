@@ -2,10 +2,11 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-06-06 10:48:34
+ * @LastEditTime 2022-06-09 17:07:27
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
-layui.define(['tree', 'util', 'table'], function (exports) {
+
+layui.define(['tree', 'util', 'table', 'laytpl'], function (exports) {
     var tree = layui.tree,
         layer = layui.layer,
         util = layui.util,
@@ -37,7 +38,15 @@ layui.define(['tree', 'util', 'table'], function (exports) {
                     field: 'fileName',
                     title: '切片名',
                     minWidth: 80
-                }
+                },
+                {
+                    field: 'slideUrl',
+                    title: '标注图',
+                    templet: function (d) {
+                        return `<div><img src="${d.slideUrl}" width="80" height="80"></div>`
+                    },
+                    minWidth: 120
+                },
                 // , {
                 //     title: "操作",
                 //     width: 150,
@@ -49,6 +58,19 @@ layui.define(['tree', 'util', 'table'], function (exports) {
         ],
         page: true,
         limit: 20,
+        done: function (params) {
+            $(".layui-table-main tr").each(function (index, val) {
+                $(".layui-table-fixed").each(function () {
+                    $($(this).find(".layui-table-body tbody tr")[index]).height($(val).height())
+                })
+            });
+            $(".layui-table-header tr").each(function (index, val) {
+                $(".layui-table-fixed").each(function () {
+                    $($(this).find(".layui-table-header thead tr")[index]).height($(val).height())
+                })
+            });
+            // 解决checkBox和行高度不一致的问题
+        }
     })
     // table.on('tool(table-toolbar)')
 
@@ -182,7 +204,7 @@ layui.define(['tree', 'util', 'table'], function (exports) {
             } else {
                 admin.popup({
                     title: '选择报告用图',
-                    area: ['800px','600px'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                    area: ['800px', '600px'], // 为防止窗口变形,设置弹窗宽度至少为400px
                     id: 'popup-chooseExpert',
                     success: function (layero, index) {
                         view(this.id).render(

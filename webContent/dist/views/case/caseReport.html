@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-07 17:33:26
+ * @LastEditTime: 2022-06-09 17:59:46
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -79,7 +79,7 @@
                         <!-- <button class="layui-btn" id="openSlide" lay-filter="openSlide"
                             style="margin-top:10px;margin-bottom: 5px;margin-left: 5px">查看切片</button> -->
                         <div class="layui-field-box" id="appendix">
-
+                            <div id="currentTableId" lay-filter="currentTableFilter"></div>
                         </div>
                     </fieldset>
                 </div>
@@ -256,8 +256,7 @@
                             <div class="layui-row layui-col-space15">
                                 <div class="layui-col-md4"></div>
                                 <div class="layui-col-md8">
-                                    <div class="layui-btn-container operation-btn"
-                                        style="margin-left: 40px;margin-top: 10px">
+                                    <div class="layui-btn-container operation-btn" style="margin-top: 10px">
                                         <button class="layui-btn layui-btn-radius" lay-submit
                                             lay-filter="form-report">提交报告</button>
                                         <button class="layui-btn layui-btn-normal layui-btn-radius">加做医嘱</button>
@@ -288,7 +287,7 @@
 </script> -->
 
 <script>
-    layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
+    layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect', 'cardTable'], function () {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
@@ -296,7 +295,8 @@
             laydate = layui.laydate,
             view = layui.view,
             form = layui.form,
-            xmSelect = layui.xmSelect;
+            xmSelect = layui.xmSelect,
+            cardTable = layui.cardTable;
         setter = layui.setter;
         form.on('radio(isSatisfied)', function (data) {
             if (data.value === '满意') {
@@ -310,6 +310,7 @@
                 });
             }
         })
+
         // @note 下拉框渲染
         var reasonSelect = xmSelect.render({ // 细胞成分
             el: '#reason-select',
@@ -411,7 +412,6 @@
             }),
             success: function (res) { // 查询到病例数据,设置各种监听,以及html文本
                 if (res.count > 0) {
-                    console.log(JSON.stringify(res.data[0]));
                     caseData = res.data[0];
                     document.getElementById("name").innerHTML += caseData.patName;
                     document.getElementById("gender").innerHTML += caseData.gender;
@@ -434,13 +434,52 @@
 
                     slideUrl = JSON.parse(caseData.slideUrl);
 
-                    // document.getElementById("appendix").innerHTML = `<div class=\"layui-col-md2 layui-col-sm4\">
-                    //     <div class=\"slide-container\">
-                    //         <a href=\"javascript:;\">
-                    //             <script type=\"text\/html\" template><img src=\"{{ layui.setter.base }}style\/res\/template\/portrait.png\"><\/script>
-                    //         <\/a>
-                    //     <\/div>
-                    // <\/div>`
+                    var cardTableData = [];
+                    let cardID = 1;
+                    slideUrl.forEach(element => {
+                        cardTableData.push({
+                            "id": cardID++,
+                            "image": element.thumbnail,
+                            "title": "",
+                            "remark": element.fileName,
+                            "time": "",
+                            data: element
+                        });
+                    });
+                    // @note 下拉框渲染
+                    var slideCardTable = cardTable.render({
+                        elem: '#currentTableId',
+                        linenum: 3,
+                        data: cardTableData,
+                        page: false
+                    });
+                    slideCardTable.on('row(currentTableFilter)', function (
+                        obj) { // 单击事件,打开iframe显示切片
+                        let thumbnailData = cardTable.getChecked("currentTableId");
+                        layer.confirm('将打开选中切片，确定？', {
+                            btn: ['确定', '取消']
+                        }, function (index) {
+                            admin.req({
+                                url: 'api/slideCenter/openSlide',
+                                type: 'get',
+                                contentType: 'application/json;charset=UTF-8',
+                                data: thumbnailData.data,
+                                success: function (res) {
+                                    layer.open({
+                                        type: 2,
+                                        title: res.fileName,
+                                        shade: false,
+                                        maxmin: true,
+                                        area: ['90%', '90%'],
+                                        content: res.data
+                                    }); // iframe弹窗
+                                },
+                                done: function (res) {}
+                            })
+                            layer.close(index);
+                        });
+                        return false;
+                    });
 
                     // @note 查看切片
                     $('#openSlide').on('click', function () {
@@ -481,18 +520,24 @@
                         return false;
                     });
 
-                    // @note 表格提交
+                    // @note 表格提交 选择报告用图
                     form.on('submit(chooseReportImg)', function (data) {
                         admin.popup({
                             title: '选择报告用图',
-                            area: ['800px', '600px'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                            area: ['800px', '740px'], // 为防止窗口变形,设置弹窗宽度至少为400px
                             id: 'popup-chooseReportImg',
                             success: function (layero, index) {
+                                let annotationPath = [];
+                                slideUrl.forEach(element => {
+                                    annotationPath.push(element.path);
+                                });
                                 view(this.id).render(
                                     'case/annotationList', {
                                         path: {
-                                            path: slideUrl[0].path
-                                        }
+                                            path: annotationPath
+                                        },
+                                        index: index,
+                                        caseID: caseData.id
                                     }).done(function () {})
                             }
                         })

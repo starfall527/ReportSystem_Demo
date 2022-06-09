@@ -2,12 +2,11 @@
  * @Author: cwx
  * @Description: 选择报告用图
  * @Date: 2022-05-31 17:40:21
- * @LastEditTime: 2022-06-02 15:51:23
+ * @LastEditTime: 2022-06-09 17:57:24
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\annotationList.html
 -->
 
 <meta name="referrer" content="no-referrer">
-
 <div class="layui-fluid">
     <div class="layui-row layui-col-space15">
         <div class="layui-card">
@@ -15,8 +14,8 @@
             <div class="layui-card-body">
                 <table class="layui-show" id="annotation-table" lay-filter="annotation-table"></table>
                 <div class="layui-btn-container case-table-btn" style="margin-top: 20px;">
-                    <!-- <a href="./#/case/caseForm" class="layui-btn layui-btn-sm" target="_self">新建病例</a> -->
-                    <button class="layui-btn layui-btn-sm" data-type="submit">提交</button>
+                    <!-- <button class="layui-btn layui-btn-sm" data-type="submit">提交</button> -->
+                    <button class="layui-btn" lay-submit lay-filter="annotation-form-submit">提交</button>
                 </div>
             </div>
         </div>
@@ -68,10 +67,10 @@
                             type: 'checkbox',
                         },
                         {
-                            field: 'slideUrl',
+                            field: 'annotation',
                             title: '标注图',
                             templet: function (d) {
-                                return `<div><img src="${d.slideUrl}" width="80" height="80"></div>`
+                                return `<div><img src="${d.annotationUrl}" width="80" height="80"></div>`
                             },
                             minWidth: 120
                         }, {
@@ -81,22 +80,30 @@
                         }
                     ]
                 ],
-                page: true,
-                limit: 20,
+                page: false,
+                limit: 10,
             });
 
-            /* 监听提交 */
-            form.on('submit(query)', function (data) {
-                table.reload('expert-table', {
-                    where: data.field,
-                    url: 'api/user/queryExpert',
-                    method: 'POST',
-                    data: JSON.stringify({
-                        data: data.field,
-                    }),
+            form.on('submit(annotation-form-submit)', function (data) {
+                var checkStatus = table.checkStatus('annotation-table'),
+                    checkData = checkStatus.data;
+                admin.req({
+                    url: 'api/case/chooseAnnotation',
+                    type: 'POST',
                     contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({
+                        data: checkData,
+                        caseID: params.caseID
+                    }),
+                    success: function (res) {
+                        layer.msg('选择标注成功');
+                    },
+                    done: function (res) {
+                        layer.close(params.index);
+                        return false;
+                    }
                 })
-                return false;
+
             });
 
             // 按钮监听
@@ -106,10 +113,10 @@
             });
             var active = {
                 submit: function () {
-                    var checkStatus = table.checkStatus('expert-table'),
+                    var checkStatus = table.checkStatus('annotation-table'),
                         checkData = checkStatus.data;
                     if (checkData === undefined) {
-                        return layer.msg('请选择专家');
+                        return layer.msg('请选择标注');
                     } else {
                         admin.req({
                             url: 'api/case/chooseExpert',

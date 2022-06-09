@@ -310,10 +310,24 @@ async function getAnnotations(path, tenantName) {
  * @param {*} path
  * @param {*} tenantName
  * @param {*} AnnotationId
- * @return {*}
+ * @return {*} uri
  */
 function getAnnotationImage(path, tenantName, AnnotationId) {
     options.path = `/api/app/odm-slide/annotation-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&AnnotationId=${encodeURI(AnnotationId)}`;
+    // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
+    let uri = `http://127.0.0.1:${options.port}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
+    return uri;
+}
+
+/***
+ * @description: 获取切片缩略图
+ * @param {*} path
+ * @param {*} tenantName
+ * @return {*} uri
+ */
+function getThumbnailUrl(path, tenantName, imageName) {
+    imageName = 'thumbnail';
+    options.path = `/api/app/odm-slide/named-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&ImageName=${encodeURI(imageName)}`;
     // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
     let uri = `http://127.0.0.1:${options.port}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
     return uri;
@@ -440,14 +454,18 @@ router_slideCenter.get('/annotationTable', function (req, res) { // getAnnotatio
     let tableData = [];
     let annotationImg = [];
     let checkFlag = false;
-    getAnnotations(data.path, '').then(annoRes => {
-        let annotations = JSON.parse(annoRes);
-        annotations.forEach(element => {
-            element.slideUrl = getAnnotationImage(data.path, '', element.id);
-            if (element.id === annotations[annotations.length - 1].id) {
-                tableData = annotations;
-                checkFlag = true;
-            };
+    data.path.forEach(annotationPath => {
+        getAnnotations(annotationPath, '').then(annoRes => {
+            let annotations = JSON.parse(annoRes);
+            annotations.forEach(element => {
+                element.annotationUrl = getAnnotationImage(annotationPath, '', element.id);
+                tableData.push(element);
+                if (element.id === annotations[annotations.length - 1].id) {
+                    if (annotationPath === data.path[data.path.length - 1]) {
+                        checkFlag = true;
+                    }
+                };
+            });
         });
     });
 
@@ -501,6 +519,7 @@ router_slideCenter.get('/openSlide', function (req, res) {
                 msg: '成功',
                 data: apiRes,
                 path: data.path,
+                thumbnail: getThumbnailUrl(data.path),
                 fileName: data.fileName,
                 qrcodeName: qrcodeName
             };
