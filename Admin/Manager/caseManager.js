@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-09 17:58:12
+ * @LastEditTime 2022-06-10 18:12:12
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -23,7 +23,6 @@ const sqlMacros = require("../database/macro.js");
 const router_case = express.Router();
 const logger = require('log4js').getLogger();
 const fs = require('fs');
-const html2pdf = require('html-pdf');
 const path = require('path');
 
 /*** @note sql表定义
@@ -84,6 +83,16 @@ const createCaseTable = sqlMacros.sqlExecute(
     "general VARCHAR(255)," + // 大体所见
     "originDiagnosis VARCHAR(255)," + // 原诊断意见
     "diagnosis VARCHAR(255)," + // 诊断意见
+    
+    "isSatisfied VARCHAR(255)," + // 标本是否满意
+    "component VARCHAR(255)," + // 细胞成分 
+    "unsatisfiedReason VARCHAR(255)," + // 不满意理由
+    "inflammation VARCHAR(255)," + // 炎症
+    "reactChange VARCHAR(255)," + // 反应性改变
+    "pathogen VARCHAR(255)," + // 病原体
+    "squamousCell VARCHAR(255)," + // 鳞状上皮细胞分析
+    "glandularCell VARCHAR(255)," + // 腺上皮细胞分析
+    "otherAnalysis VARCHAR(255)," + // 其它分析
 
     "note VARCHAR(255)," + // 备注
     "slideUrl TEXT," + // 切片url json数组
@@ -335,7 +344,7 @@ router_case.post('/chooseAnnotation', function (req, res) {
     let data = req.body.data;
     let annotation = [];
     data.forEach(element => {
-        annotation.push(element.annotationUrl);
+        annotation.push(element);
     });
     sqlMacros.sqlMultiUpdate(['annotationUrl'], [JSON.stringify(annotation)], 'pathCase', 'id', req.body.caseID);
     res.send({
@@ -358,6 +367,7 @@ router_case.post('/update', function (req, res) {
     res.send(json);
 });
 
+const puppeteer = require("puppeteer");
 /*** @note  生成报告
  * @description: 生成报告
  * @param {*} openReport
@@ -366,34 +376,56 @@ router_case.post('/update', function (req, res) {
  */
 router_case.get('/openReport', function (req, res) {
     var caseData = req.query;
-    // wkHtml(fs.createReadStream('./reportTemplate.html'), {
-    //     output: 'wkReport.pdf',
-    // });
-
-    const puppeteer = require("puppeteer");
     const option = process.argv;
-    var address = path.join('file:///', __dirname, '../../reportNormal.html'); //  等价于 'file:///E:/ReportSystem_Demo/reportNormal.html';
+    // var address = path.join('file:///', __dirname, '../../reportNormal.html'); //  等价于 'file:///E:/ReportSystem_Demo/reportNormal.html';
+    var address = path.join('file:///', __dirname, '../../reportTBS.html');
 
     (async () => {
         if (option.length >= 3) {
             address = option[2];
         }
-        console.log(option);
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
         await page.setViewport({
             width: 1920,
-            height: 720
+            height: 1080
         }); // 设置视窗
         await page.goto(
-            address, //
-            {
+            address, {
                 waitUntil: "networkidle2"
             }
         );
         await page.evaluate((caseData) => {
+            let annotationUrl = JSON.parse(caseData.annotationUrl);
+
+            document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
+
             document.getElementById("patNameLabel").innerHTML += caseData.patName; // 修改html内容
+            document.getElementById("genderLabel").innerHTML += caseData.gender;
+            document.getElementById("ageLabel").innerHTML += caseData.age;
+            document.getElementById("unitLabel").innerHTML += caseData.unit;
+            document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate;
+            document.getElementById("doctorLabel").innerHTML += caseData.doctor;
+            document.getElementById("samplePartLabel").innerHTML += caseData.samplePart;
+
+            document.getElementById("clinicalData").innerHTML = caseData.general;
+            document.getElementById("general").innerHTML = caseData.general;
+            document.getElementById("imgCheck").innerHTML = caseData.imgCheck;
+            document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis;
+
+            document.getElementById("diagnosis").innerHTML = caseData.diagnosis;
+
+            if (annotationUrl.length > 0) {
+                document.getElementById("annotation").setAttribute('src', annotationUrl[0].annotationUrl); // 标注图  
+                // document.getElementById("annotation").setAttribute('title', annotationUrl[0].comments); // 标注图title    
+                return annotationUrl[0].annotationUrl;
+            }
         }, caseData);
+        // await page.waitForSelector('#annotation'); // 等待图片加载完成 未生效
+        await page.waitForTimeout(1000); // 等待图片加载完成
+        // await page.screenshot({
+        //     path: './' + caseData.pathologyNum + '.png'
+        // }); // 截图
         await page.pdf({
             path: "report.pdf",
             format: "A4",
@@ -402,25 +434,6 @@ router_case.get('/openReport', function (req, res) {
         });
         await browser.close();
     })();
-
-    // var html = fs.readFileSync('./reportNormal.html', 'utf8'); //caseForm  reportNormal
-    // console.log(html);    
-
-    // var options = {
-    //     format: 'A4',
-    //     border: {
-    //         top: '30px',
-    //         bottom: '30px',
-    //         left: '10px'
-    //     }
-    // }; // html-pdf 转换参数配置
-    // html2pdf.create(html, options).toFile('./report.pdf', function (err, res) {
-    //     if (err) {
-    //         console.log(res);
-    //     } else {
-    //         console.log(res);
-    //     }
-    // });
 
     var json = {
         code: 200,

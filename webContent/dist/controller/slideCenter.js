@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-06-09 17:07:27
+ * @LastEditTime 2022-06-10 15:45:35
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 
@@ -21,7 +21,7 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function (exports) {
     table.render({
         elem: '#slide-table-list',
         url: 'api/slideCenter/table', //使用后端数据
-        height: 'full-320',
+        height: 'full-340',
         response: {
             statusCode: 200
         },

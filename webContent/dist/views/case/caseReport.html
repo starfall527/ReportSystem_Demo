@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-09 17:59:46
+ * @LastEditTime: 2022-06-10 18:09:22
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -96,14 +96,15 @@
                         </div>
                         <div class="layui-col-md3">
                             <div class="layui-btn-container report-support-btn" style="margin-top: 10px;">
-                                <button class="layui-btn layui-btn-sm" lay-filter="chooseReportImg"
-                                    lay-submit>选择报告用图</button>
-                                <button class="layui-btn layui-btn-normal layui-btn-sm" lay-submit>报告常用语</button>
+                                <button class="layui-btn layui-btn" lay-filter="chooseReportImg" lay-submit
+                                    type="button">选择报告用图</button>
+                                <button class="layui-btn layui-btn-normal layui-btn" lay-submit
+                                    type="button">报告常用语</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="layui-card-body">
+                <div class="layui-card-body" style="margin-top: 10px;">
 
                     <form class="layui-form" lay-filter="form-report">
                         <!-- @note 折叠面板    -->
@@ -140,42 +141,43 @@
                             <div class="layui-colla-item">
                                 <h2 class="layui-colla-title">炎症/反应性改变/病原体</h2>
                                 <div class="layui-colla-content">
-                                    <div class="layui-row" style="margin-top: 15px;">
+                                    <div class="layui-form-item" style="margin-top: 15px;">
                                         <label class="layui-form-label"
                                             style="margin-right: 10px;width: 100px;text-align:left">炎症:</label>
                                         <div class="layui-input-inline" style="width: 320px;">
-                                            <select name="subspecialty" lay-verify="">
+                                            <select name="inflammation" lay-verify="">
                                                 <option value="无">无</option>
-                                                <option value="轻度">轻度</option>
-                                                <option value="中度">中度</option>
-                                                <option value="高度">高度</option>
+                                                <option value="轻度炎症">轻度</option>
+                                                <option value="中度炎症">中度</option>
+                                                <option value="高度炎症">高度</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="layui-row" style="margin-top: 15px;">
+                                    <div class="layui-form-item" style="margin-top: 15px;">
                                         <label class="layui-form-label"
                                             style="margin-right: 10px;width: 100px;text-align:left">反应性改变:</label>
                                         <div class="layui-input-inline" style="width: 320px;">
                                             <div id="reactChange-select" class="xm-select-demo"></div>
                                         </div>
                                     </div>
-                                    <div class="layui-row" style="margin-top: 15px;">
+                                    <div class="layui-form-item" style="margin-top: 15px;">
                                         <label class="layui-form-label"
                                             style="margin-right: 10px;width: 100px; text-align:left">病原体:</label>
                                         <div class="layui-input-inline" style="width: 320px;">
-                                            <div id="pathogen-select" class="xm-select-demo"></div>
+                                            <div id="pathogen-select" name="pathogen" class="xm-select-demo"></div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                             <div class="layui-colla-item">
                                 <h2 class="layui-colla-title">细胞分析</h2>
                                 <div class="layui-colla-content">
-                                    <div class="layui-row" style="margin-top: 15px;">
+                                    <div class="layui-form-item" style="margin-top: 15px;">
                                         <label class="layui-form-label"
                                             style="margin-right: 10px;width: 120px;text-align:left">鳞状上皮细胞分析:</label>
                                         <div class="layui-input-inline" style="width: 350px;">
-                                            <select name="subspecialty" lay-verify="">
+                                            <select name="squamousCell" lay-verify="">
                                                 <option value="未见异常"></option>
                                                 <option value="非典型鳞状细胞,不能明确意义(ASC-US)">非典型鳞状细胞,不能明确意义(ASC-US)</option>
                                                 <option value="非典型鳞状细胞,倾向于上皮内高度病变(ASC-H)">非典型鳞状细胞,倾向于上皮内高度病变(ASC-H)
@@ -186,11 +188,11 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="layui-row" style="margin-top: 15px;">
+                                    <div class="layui-form-item" style="margin-top: 15px;">
                                         <label class="layui-form-label"
                                             style="margin-right: 10px;width: 120px;text-align:left">腺上皮细胞分析:</label>
                                         <div class="layui-input-inline" style="width: 350px;">
-                                            <select name="subspecialty" lay-verify="">
+                                            <select name="glandularCell" lay-verify="">
                                                 <option value="未见异常"></option>
                                                 <option value="非典型腺细胞，宫颈管-非特异性改变">非典型腺细胞，宫颈管-非特异性改变</option>
                                                 <option value="非典型腺细胞，宫颈管-倾向于肿瘤性病变">非典型腺细胞，宫颈管-倾向于肿瘤性病变</option>
@@ -203,11 +205,13 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="layui-row" style="margin-top: 15px;">
+
+                                    <div class="layui-form-item" style="margin-top: 15px;">
                                         <label class="layui-form-label"
                                             style="margin-right: 10px;width: 120px; text-align:left">其它:</label>
                                         <div class="layui-input-inline" style="width: 350px;">
-                                            <div id="other-select" class="xm-select-demo"></div>
+                                            <div id="otherAnalysis-select" name="otherAnalysis" class="xm-select-demo">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -226,7 +230,7 @@
                         <div class="layui-label" id="sign-label" style="margin-top:30px;margin-bottom:30px;">医生签名:</div>
                         <div class="layui-row layui-col-space15">
                             <div class="layui-panel" style=" background-color: #e2e0e0; 
-                        margin-top:10px;margin-bottom:20px">
+                                margin-top:10px;margin-bottom:20px">
                                 <div class="layui-row layui-col-space15">
                                     <div class="layui-col-md4">
                                         <div class="layui-label" id="report-unit">送检单位:</div>
@@ -251,13 +255,12 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="layui-form-item">
                             <div class="layui-row layui-col-space15">
                                 <div class="layui-col-md4"></div>
                                 <div class="layui-col-md8">
                                     <div class="layui-btn-container operation-btn" style="margin-top: 10px">
-                                        <button class="layui-btn layui-btn-radius" lay-submit
+                                        <button class="layui-btn layui-btn-radius" lay-submit type="button"
                                             lay-filter="form-report">提交报告</button>
                                         <button class="layui-btn layui-btn-normal layui-btn-radius">加做医嘱</button>
                                         <button class="layui-btn layui-btn-warm layui-btn-radius">转诊</button>
@@ -314,6 +317,7 @@
         // @note 下拉框渲染
         var reasonSelect = xmSelect.render({ // 细胞成分
             el: '#reason-select',
+            disabled: true,
             data: [{
                 name: '无宫颈成分',
                 value: '无宫颈成分'
@@ -383,7 +387,7 @@
             }, ]
         });
         var otherSelect = xmSelect.render({ // 其它
-            el: '#other-select',
+            el: '#otherAnalysis-select',
             data: [{
                 name: '子宫内膜细胞',
                 value: '子宫内膜细胞'
@@ -392,9 +396,9 @@
                 value: '其它恶性肿瘤'
             }]
         });
+        element.render('collapse');
         form.render('select');
         form.render('radio');
-        element.render('collapse');
 
         var router = layui.router();
         var slideUrl = '';
@@ -496,6 +500,12 @@
                     // @note 表格提交
                     form.on('submit(form-report)', function (data) {
                         data.field.status = caseStatus;
+                        delete data.field.select;
+                        data.field.unsatisfiedReason = reasonSelect.getValue('valueStr');
+                        data.field.component = componentSelect.getValue('valueStr');
+                        data.field.reactChange = reactChangeSelect.getValue('valueStr');
+                        data.field.pathogen = pathogenSelect.getValue('valueStr');
+                        data.field.otherAnalysis = otherSelect.getValue('valueStr');
                         admin.req({
                             url: 'api/case/update',
                             type: 'POST',

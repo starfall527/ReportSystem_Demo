@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-06 10:46:39
+ * @LastEditTime: 2022-06-10 11:35:49
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -122,7 +122,7 @@
                     contentType: 'application/json;charset=UTF-8',
                     data: data,
                     success: function (res) {
-                        layer.msg(res.data);
+                        layer.msg(res.msg);
                     },
                     done: function (res) {}
                 })
