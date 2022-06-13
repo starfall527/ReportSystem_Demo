@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-10 18:12:12
+ * @LastEditTime 2022-06-13 14:38:22
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -83,7 +83,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "general VARCHAR(255)," + // 大体所见
     "originDiagnosis VARCHAR(255)," + // 原诊断意见
     "diagnosis VARCHAR(255)," + // 诊断意见
-    
+
     "isSatisfied VARCHAR(255)," + // 标本是否满意
     "component VARCHAR(255)," + // 细胞成分 
     "unsatisfiedReason VARCHAR(255)," + // 不满意理由
@@ -97,6 +97,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "note VARCHAR(255)," + // 备注
     "slideUrl TEXT," + // 切片url json数组
     "annotation TEXT," + // 报告用图
+    "reportPath TEXT," + // 报告路径
 
     "uploadDate timestamp," + // 上传时间
     "diagnoseDate timestamp," + // 诊断时间
@@ -168,7 +169,7 @@ router_case.get('/expertTable', function (req, res) {
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
     let result = [];
     cases.forEach(element => {
-        if (element.expert !== null) {
+        if (element.expert !== null && ['等待诊断', '诊断完成'].includes(element.status)) {
             let experts = element.expert.split('/');
             experts.forEach(expertsElement => {
                 if (expertsElement === userName) {
@@ -176,7 +177,7 @@ router_case.get('/expertTable', function (req, res) {
                 }
             });
         }
-    }); // * 搜索指派给该专家的病例
+    }); // * 搜索指派给该专家的病例 未发起的病例不显示
 
     var json = {
         code: 200,
@@ -346,7 +347,7 @@ router_case.post('/chooseAnnotation', function (req, res) {
     data.forEach(element => {
         annotation.push(element);
     });
-    sqlMacros.sqlMultiUpdate(['annotationUrl'], [JSON.stringify(annotation)], 'pathCase', 'id', req.body.caseID);
+    sqlMacros.sqlMultiUpdate(['annotation'], [JSON.stringify(annotation)], 'pathCase', 'id', req.body.caseID);
     res.send({
         code: 200,
         msg: '成功'
@@ -355,6 +356,20 @@ router_case.post('/chooseAnnotation', function (req, res) {
 
 // @note 更新病例数据
 router_case.post('/update', function (req, res) {
+    let data = req.body.data;
+    var reqKeys = Object.keys(data);
+    var reqValues = Object.values(data);
+    let result = sqlMacros.sqlMultiUpdate(reqKeys, reqValues,
+        'pathCase', 'id', req.body.caseID);
+    var json = {
+        code: 200,
+        msg: '成功'
+    };
+    res.send(json);
+});
+
+// @note 编辑病例数据
+router_case.post('/edit', function (req, res) {
     let data = req.body.data;
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
@@ -379,7 +394,7 @@ router_case.get('/openReport', function (req, res) {
     const option = process.argv;
     // var address = path.join('file:///', __dirname, '../../reportNormal.html'); //  等价于 'file:///E:/ReportSystem_Demo/reportNormal.html';
     var address = path.join('file:///', __dirname, '../../reportTBS.html');
-
+    var reportPath = '';
     (async () => {
         if (option.length >= 3) {
             address = option[2];
@@ -396,7 +411,7 @@ router_case.get('/openReport', function (req, res) {
             }
         );
         await page.evaluate((caseData) => {
-            let annotationUrl = JSON.parse(caseData.annotationUrl);
+            let annotationUrl = JSON.parse(caseData.annotation);
 
             document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
 
@@ -426,11 +441,16 @@ router_case.get('/openReport', function (req, res) {
         // await page.screenshot({
         //     path: './' + caseData.pathologyNum + '.png'
         // }); // 截图
+
+        reportPath = 'report/report_' + caseData.id + '.pdf';
         await page.pdf({
-            path: "report.pdf",
+            path: reportPath,
             format: "A4",
             printBackground: true,
             "-webkit-print-color-adjust": "exact",
+        }).then(() => {
+            sqlMacros.sqlMultiUpdate(['reportPath'], [reportPath], 'pathCase', 'id', caseData.id);
+            logger.info('pdf生成成功,path:' + reportPath);
         });
         await browser.close();
     })();
@@ -438,7 +458,7 @@ router_case.get('/openReport', function (req, res) {
     var json = {
         code: 200,
         msg: '成功',
-        path: ''
+        reportPath: reportPath
     };
     res.send(json);
 });

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-08 10:58:45
+ * @LastEditTime: 2022-06-13 14:25:23
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -29,6 +29,7 @@
                     <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="chooseSlide">选择切片</a> -->
                 <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="openReport">查看报告</a>
                 </script>
             </div>
         </div>
@@ -78,7 +79,7 @@
                         field: 'status',
                         title: '状态',
                         minWidth: 120,
-                        width: 120,
+                        // width: 150, // 优先从这列压缩宽度
                         filter: true
                     }, {
                         field: 'patName',
@@ -103,7 +104,7 @@
                         width: 210
                     }, {
                         title: "操作",
-                        width: 150,
+                        width: 210,
                         align: "center",
                         fixed: "right",
                         toolbar: "#table-toolbar"
@@ -145,39 +146,22 @@
                 layer.msg('还没做=_=');
             } else if (layEvent === 'star') { //收藏
                 //do something
-            } else if (layEvent === 'chooseExpert') { //收藏
-                admin.popup({
-                    title: '选择专家',
-                    area: ['1200px', '800px'], // 为防止窗口变形,设置弹窗宽度至少为400px
-                    id: 'popup-chooseExpert',
-                    success: function (layero, index) {
-                        view(this.id).render('case/chooseExpert', {
-                            caseData: data,
-                            viewID: this.id
-                        }).done(function () {})
-                    }
-                })
-            } else if (layEvent === 'chooseSlide') { //选择切片
-                admin.popup({
-                    title: '选择切片',
-                    area: ['1200px', '850px'], // 为防止窗口变形,设置弹窗宽度至少为400px
-                    id: 'popup-chooseSlide',
-                    success: function (layero, index) {
-                        view(this.id).render('slideCenter/slideCenter', {
-                            caseData: data
-                        }).done(
-                            function () {
-                                $('#title').hide();
-                                $('#getUrl').hide();
-                                setTimeout(() => {
-                                    $('#chooseSlide')
-                                        .show(); // 如果slideCenter界面没有别的地方在用的话,这两个按钮的显隐就能确定,去掉该延时
-                                }, 30);
-                                document.getElementById("openSlide").innerHTML = "预览切片";
-                                document.getElementById("getUrl").innerHTML = data.id;
-                            })
-                    }
-                })
+            } else if (layEvent === 'openReport') { // 查看报告
+                if (![null, '', undefined].includes(data.reportPath)) {
+                    admin.popup({
+                        title: '查看报告',
+                        area: ['100%', '100%'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                        id: 'popup',
+                        success: function (layero, index) {
+                            view(this.id).render(
+                                'case/report', {
+                                    reportPath: data.reportPath
+                                }).done(function () {})
+                        }
+                    })
+                }else{
+                    layer.msg('暂无报告')
+                }
             }
         });
 

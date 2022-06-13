@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-10 18:09:22
+ * @LastEditTime: 2022-06-13 14:22:05
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -91,10 +91,10 @@
             <div class="layui-card">
                 <div class="layui-card-header">
                     <div class="layui-row">
-                        <div class="layui-col-md9">
+                        <div class="layui-col-md8">
                             <div class="layui-label">病例报告</div>
                         </div>
-                        <div class="layui-col-md3">
+                        <div class="layui-col-md4">
                             <div class="layui-btn-container report-support-btn" style="margin-top: 10px;">
                                 <button class="layui-btn layui-btn" lay-filter="chooseReportImg" lay-submit
                                     type="button">选择报告用图</button>
@@ -283,11 +283,6 @@
         </div>
     </div>
 </div>
-
-
-<!-- <script>
-    layui.use('caseReport', layui.factory('caseReport'));
-</script> -->
 
 <script>
     layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect', 'cardTable'], function () {
@@ -518,6 +513,14 @@
                                 if (caseStatus === "专家退回") {
                                     layer.msg("退回成功,将返回列表");
                                 } else if (caseStatus === "诊断完成") {
+                                    admin.req({
+                                        url: 'api/case/openReport',
+                                        type: 'get',
+                                        contentType: 'application/json;charset=UTF-8',
+                                        data: caseData,
+                                        success: function (res) {},
+                                        done: function (res) {}
+                                    });
                                     layer.msg('提交成功,将返回病例列表');
                                 }
                                 setTimeout(() => {

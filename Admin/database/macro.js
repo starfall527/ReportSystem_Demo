@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-29 11:50:44
+ * @LastEditTime 2022-06-13 11:13:30
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -346,10 +346,10 @@ function sqlExecute(sqlString) {
 
 /***
  * @description: 在现有表中增加属性
- * @param {*} table         表名
- * @param {*} property      属性名
- * @param {*} type          属性类型
- * @param {*} additions     附加说明,例如 not null , unique等
+ * @param {string} table         表名
+ * @param {string} property      属性名
+ * @param {string} type          属性类型
+ * @param {string} additions     附加说明,例如 not null , unique等
  * @return {*}
  */
 function sqlAlter(table, property, type, additions) {

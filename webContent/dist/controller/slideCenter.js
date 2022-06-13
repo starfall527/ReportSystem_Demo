@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-06-10 15:45:35
+ * @LastEditTime 2022-06-13 14:43:18
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 
@@ -40,20 +40,28 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function (exports) {
                     minWidth: 80
                 },
                 {
-                    field: 'slideUrl',
-                    title: '标注图',
+                    field: 'labelUrl',
+                    title: '标签图',
                     templet: function (d) {
-                        return `<div><img src="${d.slideUrl}" width="80" height="80"></div>`
+                        return `<div><img src="${d.labelUrl}" width="80" height="80"></div>`
                     },
                     minWidth: 120
                 },
-                // , {
-                //     title: "操作",
-                //     width: 150,
-                //     align: "center",
-                //     fixed: "right",
-                //     toolbar: "#table-toolbar"
-                // }
+                {
+                    field: 'thumbnailUrl',
+                    title: '缩略图',
+                    templet: function (d) {
+                        return `<div><img src="${d.thumbnailUrl}" width="80" height="80"></div>`
+                    },
+                    minWidth: 120
+                },
+                {
+                    title: "操作",
+                    width: 150,
+                    align: "center",
+                    fixed: "right",
+                    toolbar: "#table-toolbar"
+                }
             ]
         ],
         page: true,

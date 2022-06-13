@@ -364,7 +364,7 @@
                         field: 'subspecialty',
                         title: '擅长亚专科',
                         minWidth: 120,
-                        width: 560
+                        width: 780
                     },
                 ]
             ],
@@ -452,7 +452,7 @@
                 layer.msg('请选择数据');
                 return false;
             } else {
-                layer.confirm('将打开选中切片，确定？', {
+                layer.confirm('将打开首个选中切片，确定？', {
                     btn: ['确定', '取消']
                 }, function (index) {
                     admin.req({
