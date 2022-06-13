@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-09 17:00:21
+ * @LastEditTime: 2022-06-13 17:40:11
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\slideCenter\slideCenter.html
 -->
 
@@ -25,12 +25,13 @@
             <div class="layui-card">
                 <div class="layui-card-header">切片列表</div>
                 <div class="layui-card-body">
-                <img id="annotationImg" src="" alt="">
+                    <img id="annotationImg" src="" alt="">
                     <div class="layui-btn-container slide-table-list-btn">
                         <button class="layui-btn layui-btn-sm" data-type="openSlide" id="openSlide">打开选中切片</button>
                         <button class="layui-btn layui-btn-sm" data-type="getUrlQrcode" id="getUrlQrcode">生成二维码</button>
                         <button class="layui-btn layui-btn-sm" data-type="getUrl" id="getUrl">查询切片url</button>
-                        <button class="layui-btn layui-btn-sm" data-type="getAnnotationImgs" id="getAnnotationImgs">查询切片标注</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getAnnotationImgs"
+                            id="getAnnotationImgs">查询切片标注</button>
                     </div>
                 </div>
                 <table class="layui-show" id="slide-table-list" lay-filter="slide-table-list"></table>
@@ -40,16 +41,25 @@
     </div>
 </div>
 
+<script type="text/html" id="thumbnailTpl">
+    <img style="display: inline-block; width: 80px; height:  80px;" src={{ d.thumbnailUrl }}>
+</script>
+<script type="text/html" id="labelTpl">
+    <img style="display: inline-block; width: 80px; height:  80px;" src={{ d.labelUrl }}>
+</script>
+
 <meta name="referrer" content="no-referrer">
 <style type="text/css">
     .laytable-cell-checkbox {
         height: auto;
     }
+
     .layui-table-cell {
         text-align: center;
         height: auto;
         white-space: normal;
     }
+
     .layui-table img {
         max-width: 200px
     }

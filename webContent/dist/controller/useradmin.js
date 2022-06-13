@@ -28,6 +28,12 @@ layui.define(["table", "form", "admin"], function (e) {
                 width: 100,
                 templet: "#imgTpl",
                 hide: true
+            },{
+                field: "signImg",
+                title: "签名图",
+                width: 100,
+                templet: "#imgTpl",
+                hide: true
             }, {
                 field: "phone",
                 title: "手机"

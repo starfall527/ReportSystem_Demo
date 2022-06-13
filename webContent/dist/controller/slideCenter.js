@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-06-13 14:43:18
+ * @LastEditTime 2022-06-13 17:39:41
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 
@@ -42,17 +42,13 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function (exports) {
                 {
                     field: 'labelUrl',
                     title: '标签图',
-                    templet: function (d) {
-                        return `<div><img src="${d.labelUrl}" width="80" height="80"></div>`
-                    },
+                    templet: "#labelTpl",
                     minWidth: 120
                 },
                 {
                     field: 'thumbnailUrl',
                     title: '缩略图',
-                    templet: function (d) {
-                        return `<div><img src="${d.thumbnailUrl}" width="80" height="80"></div>`
-                    },
+                    templet: "#thumbnailTpl",
                     minWidth: 120
                 },
                 {

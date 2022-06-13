@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-13 14:38:22
+ * @LastEditTime 2022-06-13 17:18:05
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -392,8 +392,8 @@ const puppeteer = require("puppeteer");
 router_case.get('/openReport', function (req, res) {
     var caseData = req.query;
     const option = process.argv;
-    // var address = path.join('file:///', __dirname, '../../reportNormal.html'); //  等价于 'file:///E:/ReportSystem_Demo/reportNormal.html';
-    var address = path.join('file:///', __dirname, '../../reportTBS.html');
+    var type = 'TBS';
+    var address = path.join('file:///', __dirname, `../../report${type}.html`); //  等价于 'file:///E:/ReportSystem_Demo/reportTBS.html';
     var reportPath = '';
     (async () => {
         if (option.length >= 3) {
@@ -412,7 +412,6 @@ router_case.get('/openReport', function (req, res) {
         );
         await page.evaluate((caseData) => {
             let annotationUrl = JSON.parse(caseData.annotation);
-
             document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
 
             document.getElementById("patNameLabel").innerHTML += caseData.patName; // 修改html内容

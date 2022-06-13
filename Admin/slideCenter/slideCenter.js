@@ -69,13 +69,15 @@ function getFileList(path, filesList, isRecursive, postfix) {
                 if (file.includes(postfix)) {
                     filesList.push({
                         path: path + "/" + file,
-                        fileName: file
+                        fileName: file,
+                        thumbnailUrl: getThumbnailUrl(path + "/" + file)
                     });
                 }
             } else {
                 filesList.push({
                     path: path + "/" + file,
-                    fileName: file
+                    fileName: file,
+                    thumbnailUrl: getThumbnailUrl(path + "/" + file)
                 });
             }
         }
@@ -435,7 +437,7 @@ router_slideCenter.get('/table', function (req, res) {
     if (data.path !== '') {
         tableData = getFileList(data.path, [], false, '.tron')
     }
-    let pageData = getPageData(tableData, req.query.page, req.query.limit)
+    let pageData = getPageData(tableData, req.query.page, req.query.limit);
     var json = {
         code: 200,
         msg: '成功',
