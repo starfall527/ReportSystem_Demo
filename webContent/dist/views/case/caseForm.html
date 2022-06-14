@@ -20,6 +20,18 @@
                             <div class="layui-card-body">
                                 <div class="layui-form-item">
                                     <div class="layui-inline">
+                                        <label class="layui-form-label">病例类型</label>
+                                        <div class="layui-input-block">
+                                            <select name="caseType" lay-filter="caseType" lay-verify="required">
+                                                <option value="normal">常规病例</option>
+                                                <option value="TBS">TBS病例</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
                                         <label class="layui-form-label">病理号</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="pathologyNum" lay-verify="required"
@@ -104,22 +116,29 @@
                                             <input type="text" name="unit" lay-verify="" class="layui-input">
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="layui-form-item">
                                     <div class="layui-inline">
                                         <label class="layui-form-label">医院名</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="hosName" lay-verify="" class="layui-input">
                                         </div>
                                     </div>
-                                    <!-- <div class="layui-inline">
+                                </div>
+
+                                <!-- <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">医院名</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="hosName" lay-verify="" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
                                         <label class="layui-form-label">医生名</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="doctor" lay-verify="" class="layui-input">
                                         </div>
-                                    </div> -->
-                                </div>
+                                    </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -149,20 +168,18 @@
                                 <div class="layui-row layui-col-space5" style="margin-right:20px;">
                                     <div class="layui-col-md6">
                                         <div class="layui-form-item">
-                                            <!-- 大体所见 TBS系统中没有这个 需要设置隐藏 -->
-                                            <label class="layui-form-label">大体所见</label>
+                                            <label class="layui-form-label">影像学检查</label>
                                             <div class="layui-input-block">
-                                                <textarea name="general" class="layui-textarea" placeholder="必选项,请填写"
-                                                    id="general"></textarea>
+                                                <textarea name="imgCheck" class="layui-textarea"
+                                                    id="imgCheck"></textarea>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="layui-col-md6">
                                         <div class="layui-form-item">
-                                            <label class="layui-form-label">影像学检查</label>
+                                            <label class="layui-form-label">备注</label>
                                             <div class="layui-input-block">
-                                                <textarea name="imgCheck" class="layui-textarea"
-                                                    id="imgCheck"></textarea>
+                                                <textarea name="note" class="layui-textarea" id="note"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -179,9 +196,11 @@
                                     </div>
                                     <div class="layui-col-md6">
                                         <div class="layui-form-item">
-                                            <label class="layui-form-label">备注</label>
+                                            <!-- 大体所见 TBS系统中没有这个 需要设置隐藏 -->
+                                            <label class="layui-form-label" id="generalLabel">大体所见</label>
                                             <div class="layui-input-block">
-                                                <textarea name="note" class="layui-textarea" id="note"></textarea>
+                                                <textarea name="general" class="layui-textarea" placeholder="必选项,请填写"
+                                                    id="general"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -221,10 +240,10 @@
                                             <div class="layui-col-md3">
                                                 <div class="layui-btn-container slide-table-list-btn"
                                                     style="margin-top: 10px;margin-left: 10px;">
-                                                    <button class="layui-btn layui-btn" type="button" lay-submit id="openSlide"
-                                                        lay-filter="openSlide">打开选中切片</button>
-                                                    <button class="layui-btn layui-btn" type="button" lay-submit id="chooseSlide"
-                                                        lay-filter="chooseSlide">选择切片</button>
+                                                    <button class="layui-btn layui-btn" type="button" lay-submit
+                                                        id="openSlide" lay-filter="openSlide">打开选中切片</button>
+                                                    <button class="layui-btn layui-btn" type="button" lay-submit
+                                                        id="chooseSlide" lay-filter="chooseSlide">选择切片</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -326,6 +345,16 @@
 
         var caseData = {};
         form.render('select');
+        // select同步筛选条件
+        form.on('select(caseType)', function (data) {
+            if (data.value === 'normal') {
+                $('#general').attr('style', 'display:block');
+                $('#generalLabel').attr('style', 'display:block');
+            } else if (data.value === 'TBS') {
+                $('#general').attr('style', 'display:none');
+                $('#generalLabel').attr('style', 'display:none');
+            }
+        })
 
         step.render({
             elem: '#stepForm',

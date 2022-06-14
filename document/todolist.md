@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-06-07 17:58:39
- * @LastEditTime: 2022-06-07 18:04:20
+ * @LastEditTime: 2022-06-14 11:59:52
  * @FilePath: \ReportSystem_Demo\document\todolist.md
 -->
 
@@ -18,3 +18,11 @@
 6.17/18将完成系统的demo
 完整流程包括:
 医生上传病例 - 选择切片 - 选择专家 - 专家诊断填报告 - 专家生成报告(或转诊) - 医生查看报告 
+
+6.14 更新进度
+区分tbs和常规病例 (差pdf)
+pdf分文件夹(√)
+医生端查看报告(√)
+诊断中查看报告用图
+电子签名
+标签图 缩略图(√)

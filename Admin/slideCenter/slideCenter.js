@@ -70,7 +70,8 @@ function getFileList(path, filesList, isRecursive, postfix) {
                     filesList.push({
                         path: path + "/" + file,
                         fileName: file,
-                        thumbnailUrl: getThumbnailUrl(path + "/" + file)
+                        thumbnailUrl: getThumbnailUrl(path + "/" + file),
+                        labelUrl: getLabelUrl(path + "/" + file),
                     });
                 }
             } else {
@@ -336,6 +337,20 @@ function getThumbnailUrl(path, tenantName, imageName) {
 }
 
 /***
+ * @description: 获取切片标签图
+ * @param {*} path
+ * @param {*} tenantName
+ * @return {*} uri
+ */
+function getLabelUrl(path, tenantName, imageName) {
+    imageName = 'label';
+    options.path = `/api/app/odm-slide/named-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&ImageName=${encodeURI(imageName)}`;
+    // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
+    let uri = `http://127.0.0.1:${options.port}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
+    return uri;
+}
+
+/***
  * @description: 获取文件夹列表  接口返回的数据有误
  * @param {*} path
  * @param {*} tenantName
@@ -522,6 +537,7 @@ router_slideCenter.get('/openSlide', function (req, res) {
                 data: apiRes,
                 path: data.path,
                 thumbnail: getThumbnailUrl(data.path),
+                label: getLabelUrl(data.path),
                 fileName: data.fileName,
                 qrcodeName: qrcodeName
             };

@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-13 17:18:05
+ * @LastEditTime 2022-06-14 15:39:59
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -56,7 +56,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "CREATE TABLE IF NOT EXISTS pathCase(" +
     "id INTEGER not null PRIMARY KEY AUTOINCREMENT ," + // id 唯一标识
     "status VARCHAR(255) NOT NULL ," + // 病例状态
-    "type VARCHAR(255) ," + // 病例类型
+    "caseType VARCHAR(255) ," + // 病例类型
     "pathologyNum VARCHAR(255) NOT NULL ," + // 病理号
     "patName VARCHAR(255) NOT NULL ," + // 病人姓名
     "patientInfo VARCHAR(255) ," + // 病人信息
@@ -110,7 +110,7 @@ const createCaseTable = sqlMacros.sqlExecute(
  * @param {*} res
  * @return {*}
  */
-router_case.get('/table', function (req, res) {
+router_case.get('/table', function(req, res) {
     let userName = req.query.userName;
     let result = [];
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
@@ -137,7 +137,7 @@ router_case.get('/table', function (req, res) {
  * @param {*} res
  * @return {*}
  */
-router_case.post('/table', function (req, res) {
+router_case.post('/table', function(req, res) {
     let userName = req.body.userName;
     let result = [];
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
@@ -164,7 +164,7 @@ router_case.post('/table', function (req, res) {
  * @param {*} res
  * @return {*}
  */
-router_case.get('/expertTable', function (req, res) {
+router_case.get('/expertTable', function(req, res) {
     let userName = req.query.userName;
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
     let result = [];
@@ -196,7 +196,7 @@ router_case.get('/expertTable', function (req, res) {
  * @param {*} res
  * @return {*}
  */
-router_case.post('/query', function (req, res) {
+router_case.post('/query', function(req, res) {
     let data = req.body.data;
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
@@ -220,7 +220,7 @@ router_case.post('/query', function (req, res) {
  * @param {*} res
  * @return {*}
  */
-router_case.get('/delete', function (req, res) {
+router_case.get('/delete', function(req, res) {
     let data = req.query;
     let result = sqlMacros.sqlDelete('id', data.id, 'pathCase'); //删除所选数据
     var json = {
@@ -237,7 +237,7 @@ router_case.get('/delete', function (req, res) {
  * @apiParam {Object} data                  数据对象,具体字段由表单决定
  * @apiUse CommonResponse
  */
-router_case.post('/insert', function (req, res) {
+router_case.post('/insert', function(req, res) {
     let data = req.body.data;
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
@@ -272,7 +272,7 @@ router_case.post('/insert', function (req, res) {
  * @apiParam {String} data.hosName          医院名 
  * @apiUse CommonResponse
  */
-router_case.post('/startConsultation', function (req, res) {
+router_case.post('/startConsultation', function(req, res) {
     let caseData = req.body.data;
     let flag = true;
     ["pathologyNum", "patName", "expert", "slideUrl"].forEach(element => {
@@ -300,7 +300,7 @@ router_case.post('/startConsultation', function (req, res) {
  * @apiGroup 病例管理
  * @apiUse CommonResponse
  */
-router_case.post('/chooseExpert', function (req, res) {
+router_case.post('/chooseExpert', function(req, res) {
     let data = req.body.data;
     let caseID = req.body.caseID;
     let expertName = '';
@@ -324,7 +324,7 @@ router_case.post('/chooseExpert', function (req, res) {
  * @apiGroup 病例管理
  * @apiUse CommonResponse
  */
-router_case.post('/chooseSlide', function (req, res) {
+router_case.post('/chooseSlide', function(req, res) {
     let data = req.body.data;
     let caseID = req.body.caseID;
     let slides = [];
@@ -341,7 +341,7 @@ router_case.post('/chooseSlide', function (req, res) {
  * @apiGroup 病例管理
  * @apiUse CommonResponse
  */
-router_case.post('/chooseAnnotation', function (req, res) {
+router_case.post('/chooseAnnotation', function(req, res) {
     let data = req.body.data;
     let annotation = [];
     data.forEach(element => {
@@ -355,7 +355,7 @@ router_case.post('/chooseAnnotation', function (req, res) {
 });
 
 // @note 更新病例数据
-router_case.post('/update', function (req, res) {
+router_case.post('/update', function(req, res) {
     let data = req.body.data;
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
@@ -369,7 +369,7 @@ router_case.post('/update', function (req, res) {
 });
 
 // @note 编辑病例数据
-router_case.post('/edit', function (req, res) {
+router_case.post('/edit', function(req, res) {
     let data = req.body.data;
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
@@ -389,7 +389,7 @@ const puppeteer = require("puppeteer");
  * @param {*} res
  * @return {*}
  */
-router_case.get('/openReport', function (req, res) {
+router_case.get('/openReport', function(req, res) {
     var caseData = req.query;
     const option = process.argv;
     var type = 'TBS';
@@ -421,13 +421,25 @@ router_case.get('/openReport', function (req, res) {
             document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate;
             document.getElementById("doctorLabel").innerHTML += caseData.doctor;
             document.getElementById("samplePartLabel").innerHTML += caseData.samplePart;
-
-            document.getElementById("clinicalData").innerHTML = caseData.general;
-            document.getElementById("general").innerHTML = caseData.general;
-            document.getElementById("imgCheck").innerHTML = caseData.imgCheck;
-            document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis;
-
             document.getElementById("diagnosis").innerHTML = caseData.diagnosis;
+
+            if (caseData.caseType === "normal") {
+                document.getElementById("clinicalData").innerHTML = caseData.general;
+                document.getElementById("imgCheck").innerHTML = caseData.imgCheck;
+                document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis;
+                document.getElementById("general").innerHTML = caseData.general;
+            } else if (caseData.caseType === "TBS") {
+                document.getElementById("sampleQuality").innerHTML = `${caseData.isSatisfied};${caseData.unsatisfiedReason}`;
+                document.getElementById("component").innerHTML = caseData.component;
+                document.getElementById("inflammation").innerHTML = caseData.inflammation;
+                document.getElementById("reactChange").innerHTML = caseData.reactChange;
+                document.getElementById("pathogen").innerHTML = caseData.pathogen;
+
+                document.getElementById("squamousCell").innerHTML = caseData.squamousCell;
+                document.getElementById("glandularCell").innerHTML = caseData.glandularCell;
+                document.getElementById("otherAnalysis").innerHTML = caseData.otherAnalysis;
+                document.getElementById("diagnosis").innerHTML = caseData.diagnosis;
+            }
 
             if (annotationUrl.length > 0) {
                 document.getElementById("annotation").setAttribute('src', annotationUrl[0].annotationUrl); // 标注图  
@@ -443,7 +455,7 @@ router_case.get('/openReport', function (req, res) {
 
         reportPath = 'report/report_' + caseData.id + '.pdf';
         await page.pdf({
-            path: reportPath,
+            path: 'upload/' + reportPath,
             format: "A4",
             printBackground: true,
             "-webkit-print-color-adjust": "exact",

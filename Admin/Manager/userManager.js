@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-05-30 09:43:19
+ * @LastEditTime 2022-06-14 18:09:16
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -33,12 +33,12 @@ const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
      name VARCHAR(255) ,
      phone VARCHAR(255) ,
      password VARCHAR(255) ,
+     sign VARCHAR(255) ,
      info VARCHAR(255) ,
      authorization VARCHAR(255) NOT NULL ,
      isExamined INTEGER ,
      date timestamp NOT NULL default (datetime('now','localtime'))
      )`);
-
 
 /***
  * @description: ROLE表定义
@@ -58,7 +58,7 @@ const createRoleTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS ROLE(
     )`);
 
 // @note 用户列表
-router_user.get('/userTable', function (req, res) {
+router_user.get('/userTable', function(req, res) {
     let result = sqlMacros.sqlSelect('*', 'USER');
     var json = {
         code: 200,
@@ -73,7 +73,7 @@ router_user.get('/userTable', function (req, res) {
 });
 
 // @note 专家列表
-router_user.get('/expertTable', function (req, res) {
+router_user.get('/expertTable', function(req, res) {
     let result = sqlMacros.sqlSelect('*', 'USER', true, 'role', '专家端');
     var json = {
         code: 200,
@@ -88,7 +88,7 @@ router_user.get('/expertTable', function (req, res) {
 });
 
 // @note 查询管理员
-router_user.get('/adminTable', function (req, res) {
+router_user.get('/adminTable', function(req, res) {
     let result = sqlMacros.sqlSelect('*', 'USER');
     var json = {
         code: 200,
@@ -103,7 +103,7 @@ router_user.get('/adminTable', function (req, res) {
 });
 
 // @note 查询角色
-router_user.get('/roleTable', function (req, res) {
+router_user.get('/roleTable', function(req, res) {
     let result = sqlMacros.sqlSelect('*', 'ROLE');
     var json = {
         code: 200,
@@ -127,7 +127,7 @@ router_user.get('/roleTable', function (req, res) {
 });
 
 // @note 查询专家
-router_user.post('/queryExpert', function (req, res) {
+router_user.post('/queryExpert', function(req, res) {
     let data = req.body;
     var reqKeys = Object.keys(data).splice(2, Object.keys(data).length - 1);
     var reqValues = Object.values(data).splice(2, Object.values(data).length - 1);
@@ -145,7 +145,7 @@ router_user.post('/queryExpert', function (req, res) {
 });
 
 // @note 登录接口  
-router_user.get('/login', function (req, res) {
+router_user.get('/login', function(req, res) {
     let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', req.query.userName);
     let menu = config.readConfigFile('./webContent/json/menu.json');
     if (user.length === 0) {
@@ -195,7 +195,7 @@ router_user.get('/login', function (req, res) {
 });
 
 // session接口
-router_user.get('/getSessionData', function (req, res) {
+router_user.get('/getSessionData', function(req, res) {
     let userName = '';
     let flag = false;
     global.session.forEach(element => {
@@ -217,7 +217,7 @@ router_user.get('/getSessionData', function (req, res) {
 });
 
 // 登出接口
-router_user.get('/logout', function (req, res) {
+router_user.get('/logout', function(req, res) {
     sqlMacros.sqlMultiUpdate(['isLoggedIn'], ['false'], 'USER', 'name', '')
 });
 
@@ -231,7 +231,7 @@ router_user.get('/logout', function (req, res) {
  * 
  * @apiUse CommonResponse
  */
-router_user.post('/insert', function (req, res) {
+router_user.post('/insert', function(req, res) {
     let data = req.body.data;
     let role = sqlMacros.sqlSelect('*', 'ROLE', true, 'role', data.role);
     if (role.length === 0) {
@@ -258,7 +258,7 @@ router_user.post('/insert', function (req, res) {
  * 
  * @apiUse CommonResponse
  */
-router_user.post('/role/insert', function (req, res) {
+router_user.post('/role/insert', function(req, res) {
     let data = req.body.data;
 
     let authorization = {
@@ -306,7 +306,7 @@ router_user.post('/role/insert', function (req, res) {
  * 
  * @apiUse CommonResponse
  */
-router_user.post('/batchDel', function (req, res) {
+router_user.post('/batchDel', function(req, res) {
     let data = req.body.data;
     for (let i = 0; i < data.length; i++) {
         let result = sqlMacros.sqlDelete('id', data[i]['id'], 'USER');
@@ -326,7 +326,7 @@ router_user.post('/batchDel', function (req, res) {
  * @param {*} res
  * @return {*}
  */
-router_user.get('/delete', function (req, res) {
+router_user.get('/delete', function(req, res) {
     let data = req.query;
     let result = sqlMacros.sqlDelete('id', data.id, 'USER'); //删除所选数据
     var json = {
@@ -341,7 +341,7 @@ router_user.get('/delete', function (req, res) {
  * @apiName DeleteStep
  * @apiGroup 步骤管理
  */
-router_user.post('/role/batchDel', function (req, res) {
+router_user.post('/role/batchDel', function(req, res) {
     let data = req.body.data;
     for (let i = 0; i < data.length; i++) {
         let result = sqlMacros.sqlDelete('id', data[i]['id'], 'ROLE');
@@ -374,7 +374,7 @@ router_user.post('/role/batchDel', function (req, res) {
  * 
  * @apiUse CommonResponse
  */
-router_user.post('/update', function (req, res) {
+router_user.post('/update', function(req, res) {
     let data = req.body.data;
     let result = sqlMacros.sqlUpdate(data.field, data.value,
         'USER', 'id', data.id);
@@ -385,7 +385,44 @@ router_user.post('/update', function (req, res) {
     res.send(json);
 });
 
+var multiparty = require("multiparty")
+var fs = require('fs')
+var path = require('path')
 
+/*** @note 上传签名
+ * @api {post} /api/user/uploadSign 上传签名
+ * @apiName uploadSign
+ * @apiGroup 用户管理
+ * @apiParam {Object} data           数据对象
+ * @apiParam {String} data.id        唯一标识
+ * @apiParam {String} data.field     更新的键
+ * @apiParam {String} data.value     更新的键值
+ * @apiParamExample 
+ * 
+ * @apiUse CommonResponse
+ */
+router_user.post('/uploadSign', function(req, res) {
+    let userID = req.headers.userid;
+    let from_data = new multiparty.Form()
+    from_data.parse(req);
+    from_data.on("part", async part => {
+        if (part.filename) {
+            let uploadDir = 'upload/sign'; // 指定文件存储目录
+            let fileName = `${userID}_sign` + part.filename.slice(part.filename.lastIndexOf('.'));
+            sqlMacros.sqlMultiUpdate(['sign'], ['/sign/' + fileName], 'USER', 'id', userID); // * 存在数据库的路径,去掉upload,方便前端加载
+            const writeStream = fs.createWriteStream(path.join(uploadDir, fileName)) // 保存文件
+            part.pipe(writeStream);
+        }
+    })
+
+    // let result = sqlMacros.sqlUpdate(data.field, data.value,
+    //     'USER', 'id', data.id);
+    var json = {
+        code: 200,
+        msg: '成功'
+    };
+    res.send(json);
+});
 
 module.exports = {
     router_user

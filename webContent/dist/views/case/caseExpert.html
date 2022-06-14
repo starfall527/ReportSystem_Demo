@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-13 14:31:08
+ * @LastEditTime: 2022-06-14 11:26:10
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -111,9 +111,9 @@
             } else if (layEvent === 'diagnose') { //诊断
                 if (data.status === '诊断完成') {
                     // layer.msg('诊断已完成'); 
-                    location.href = `./#/case/caseReport/caseID=${data.id}`; // 是否需要限制重复诊断？
+                    location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${data.caseType}`; // 是否需要限制重复诊断？
                 } else {
-                    location.href = `./#/case/caseReport/caseID=${data.id}`;
+                    location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${data.caseType}`;
                 }
             } else if (layEvent === 'openReport') { // 查看报告
                 if (![null, '', undefined].includes(data.reportPath)) {

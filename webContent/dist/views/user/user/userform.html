@@ -2,16 +2,15 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-03-23 09:50:21
- * @LastEditTime: 2022-05-16 10:20:20
- * @FilePath: \ReportSystem_Demo\webContent\dist\views\user\user\userform.html
+ * @LastEditTime: 2022-06-14 16:04:54
+ * @FilePath: \ReportSystem_Demo\webContent\dist\views\user\user\userForm.html
 -->
 <div class="layui-form" lay-filter="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
     <div class="layui-form-item">
         <label class="layui-form-label">用户名</label>
         <div class="layui-input-inline">
             <script type="text/html" template>
-                <input type="text" name="userName" value="{{ d.params.userName || '' }}" lay-verify="required"
-                    placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                <input type="text" name="userName" value="{{ d.params.userName || '' }}" lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
             </script>
         </div>
     </div>
@@ -19,8 +18,7 @@
         <label class="layui-form-label">密码</label>
         <div class="layui-input-inline">
             <script type="text/html" template>
-                <input type="text" name="password" value="{{ d.params.password || '' }}" lay-verify="required"
-                    placeholder="请输入密码" autocomplete="off" class="layui-input">
+                <input type="text" name="password" value="{{ d.params.password || '' }}" lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
             </script>
         </div>
     </div>
@@ -29,8 +27,7 @@
         <label class="layui-form-label">手机号码</label>
         <div class="layui-input-inline">
             <script type="text/html" template>
-                <input type="text" name="phone" value="{{ d.params.phone || '' }}" lay-verify="phone"
-                    placeholder="请输入号码" autocomplete="off" class="layui-input">
+                <input type="text" name="phone" value="{{ d.params.phone || '' }}" lay-verify="phone" placeholder="请输入号码" autocomplete="off" class="layui-input">
             </script>
         </div>
     </div>
@@ -39,13 +36,21 @@
         <div class="layui-inline">
             <label class="layui-form-label">角色</label>
             <div class="layui-input-block">
-                <select lay-verify="required" name="role" id="role-select" lay-filter="role"
-                    value="{{ d.params.role || '' }}" style="max-height: 50px;">
+                <select lay-verify="required" name="role" id="role-select" lay-filter="role" value="{{ d.params.role || '' }}" style="max-height: 50px;">
 
                 </select>
             </div>
         </div>
     </div>
+    <!-- <div class="layui-form-item">
+        <label class="layui-form-label">签名</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="sign" value="{{ d.params.sign || '' }}" lay-verify="required" placeholder="请上传签名" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+        <button style="float: left;" type="button" class="layui-btn" id="layuiadmin-upload-useradmin">上传图片</button>
+    </div> -->
     <!-- <div class="layui-form-item">
         <label class="layui-form-label">邮箱</label>
         <div class="layui-input-inline">
@@ -83,7 +88,7 @@
 </div>
 
 <script>
-    layui.use(['admin', 'form', 'upload'], function () {
+    layui.use(['admin', 'form', 'upload'], function() {
         var $ = layui.$,
             form = layui.form,
             upload = layui.upload;
@@ -91,11 +96,11 @@
         //上传头像
         upload.render({
             elem: '#layuiadmin-upload-useradmin',
-            url: './json/upload/demo.js',
+            url: 'api/user/uploadSign',
             accept: 'images',
             method: 'get',
             acceptMime: 'image/*',
-            done: function (res) {
+            done: function(res) {
                 $(this.item).prev("div").children("input").val(res.data.src)
             }
         });
