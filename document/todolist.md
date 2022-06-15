@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-06-07 17:58:39
- * @LastEditTime: 2022-06-14 11:59:52
+ * @LastEditTime: 2022-06-15 15:49:06
  * @FilePath: \ReportSystem_Demo\document\todolist.md
 -->
 
@@ -26,3 +26,8 @@ pdf分文件夹(√)
 诊断中查看报告用图
 电子签名
 标签图 缩略图(√)
+
+6.15 更新进度
+区分tbs和常规病例(√)
+电子签名(√)
+诊断中查看报告用图(√)

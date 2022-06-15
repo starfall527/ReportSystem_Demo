@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-06-13 17:39:41
+ * @LastEditTime 2022-06-15 13:55:22
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 
@@ -56,7 +56,7 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function (exports) {
                     width: 150,
                     align: "center",
                     fixed: "right",
-                    toolbar: "#table-toolbar"
+                    toolbar: "#slide-table-toolbar"
                 }
             ]
         ],
@@ -76,8 +76,37 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function (exports) {
             // 解决checkBox和行高度不一致的问题
         }
     })
-    // table.on('tool(table-toolbar)')
+    //工具条事件
+    table.on('tool(slide-table-list)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        var data = obj.data; //获得当前行数据
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
+        if (layEvent === 'openSlide') { //查看选中切片
+            layer.confirm('将打开选中切片，确定？', {
+                btn: ['确定', '取消']
+            }, function (index) {
+                admin.req({
+                    url: 'api/slideCenter/openSlide',
+                    type: 'get',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: data,
+                    success: function (res) {
+                        layer.open({
+                            type: 2,
+                            title: res.fileName,
+                            shade: false,
+                            maxmin: true,
+                            area: ['90%', '90%'],
+                            content: res.data
+                        }); // iframe弹窗
+                    },
+                    done: function (res) {}
+                })
+                layer.close(index);
+            });
+        } 
+    });
 
     function getData() {
         var data = [];
@@ -132,7 +161,6 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function (exports) {
                         contentType: 'application/json;charset=UTF-8',
                         data: checkData,
                         success: function (res) {
-                            console.log(res)
                             layer.open({
                                 type: 2,
                                 title: res.fileName,

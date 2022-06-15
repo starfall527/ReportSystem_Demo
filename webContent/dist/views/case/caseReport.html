@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-14 14:50:58
+ * @LastEditTime: 2022-06-15 15:50:27
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -94,13 +94,13 @@
                         <div class="layui-col-md9">
                             <div class="layui-label">病例报告</div>
                         </div>
-                        <div class="layui-col-md3">
+                        <!-- <div class="layui-col-md3">
                             <div class="layui-btn-container report-support-btn" style="margin-top: 10px;">
                                 <button class="layui-btn layui-btn" lay-filter="chooseReportImg" lay-submit type="button">选择报告用图<span class="layui-badge layui-bg-gray">必</span></button>
-                                <!-- <button class="layui-btn layui-btn-normal layui-btn" lay-submit
-                                    type="button">报告常用语</button> -->
+                                <button class="layui-btn layui-btn-normal layui-btn" lay-submit
+                                    type="button">报告常用语</button>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="layui-card-body" style="margin-top: 10px;">
@@ -108,7 +108,7 @@
                     <form class="layui-form" lay-filter="form-report">
                         <!-- @note 折叠面板    -->
                         <div class="layui-collapse" lay-filter="component-panel" id="TBScollapse">
-                            <div class="layui-colla-item">
+                            <div class="layui-colla-item" id="colla-isSatisfied">
                                 <h2 class="layui-colla-title">标本素质/细胞成分</h2>
                                 <div class="layui-colla-content">
                                     <div class="layui-row" style="margin-top: 15px;">
@@ -132,7 +132,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="layui-colla-item">
+                            <div class="layui-colla-item" id="colla-inflammation">
                                 <h2 class="layui-colla-title">炎症/反应性改变/病原体</h2>
                                 <div class="layui-colla-content">
                                     <div class="layui-form-item" style="margin-top: 15px;">
@@ -161,7 +161,7 @@
 
                                 </div>
                             </div>
-                            <div class="layui-colla-item">
+                            <div class="layui-colla-item" id="colla-analysis">
                                 <h2 class="layui-colla-title">细胞分析</h2>
                                 <div class="layui-colla-content">
                                     <div class="layui-form-item" style="margin-top: 15px;">
@@ -205,6 +205,12 @@
                                 </div>
                             </div>
                             <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">选择报告用图</h2>
+                                <div class="layui-colla-content">
+                                    <table class="layui-show" id="annotation-table" lay-filter="annotation-table"></table>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
                                 <h2 class="layui-colla-title">诊断意见</h2>
                                 <div class="layui-colla-content">
                                     <div class="layui-form-item">
@@ -214,11 +220,10 @@
                             </div>
                         </div>
 
-                        <div class="layui-form-item" id="diagnosisDiv">
-                            <textarea name="diagnosis" placeholder="请输入诊断意见" class="layui-textarea" id="diagnosis"></textarea>
+                        <div class="layui-label" id="sign-label" style="margin-top:30px;margin-bottom:30px;margin-left:10px;float:left;">医生签名:</div>
+                        <div>
+                            <img src="" id="sign" style="height:60px;margin-top:10px;margin-bottom:10px;margin-left:10px;">
                         </div>
-
-                        <div class="layui-label" id="sign-label" style="margin-top:30px;margin-bottom:30px;">医生签名:</div>
                         <div class="layui-row layui-col-space15">
                             <div class="layui-panel" style=" background-color: #e2e0e0; 
                                 margin-top:10px;margin-bottom:20px">
@@ -274,7 +279,7 @@
 </div>
 
 <script>
-    layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect', 'cardTable'], function() {
+    layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect', 'cardTable', 'table'], function() {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
@@ -283,7 +288,8 @@
             view = layui.view,
             form = layui.form,
             xmSelect = layui.xmSelect,
-            cardTable = layui.cardTable;
+            cardTable = layui.cardTable,
+            table = layui.table;
         setter = layui.setter;
         form.on('radio(isSatisfied)', function(data) {
             if (data.value === '满意') {
@@ -302,51 +308,30 @@
         var reasonSelect = xmSelect.render({ // 细胞成分
             el: '#reason-select',
             disabled: true,
-            data: [{
-                name: '无宫颈成分',
-                value: '无宫颈成分'
-            }, {
-                name: '鳞状细胞过少',
-                value: '鳞状细胞过少'
-            }, {
-                name: '炎性渗出物',
-                value: '炎性渗出物'
-            }, {
-                name: '血液过多',
-                value: '血液过多'
-            }, {
-                name: '抹片过厚或人为渣子过多',
-                value: '抹片过厚或人为渣子过多'
-            }, ]
+            data: [
+                { name: '无宫颈成分', value: '无宫颈成分' },
+                { name: '鳞状细胞过少', value: '鳞状细胞过少' },
+                { name: '炎性渗出物', value: '炎性渗出物' },
+                { name: '血液过多', value: '血液过多' },
+                { name: '抹片过厚或人为渣子过多', value: '抹片过厚或人为渣子过多' },
+            ]
         });
         var componentSelect = xmSelect.render({ // 细胞成分
             el: '#component-select',
-            data: [{
-                name: '鳞状细胞',
-                value: '萎缩'
-            }, {
-                name: '颈管细胞',
-                value: '颈管细胞'
-            }, {
-                name: '化生细胞',
-                value: '化生细胞'
-            }, ]
+            data: [
+                { name: '鳞状细胞', value: '萎缩' },
+                { name: '颈管细胞', value: '颈管细胞' },
+                { name: '化生细胞', value: '化生细胞' },
+            ]
         });
         var reactChangeSelect = xmSelect.render({ // 反应性改变
             el: '#reactChange-select',
-            data: [{
-                name: '萎缩',
-                value: '萎缩'
-            }, {
-                name: '宫内节育器(IUD)',
-                value: '宫内节育器(IUD)'
-            }, {
-                name: '放疗',
-                value: '放疗'
-            }, {
-                name: '其它',
-                value: '其它'
-            }, ]
+            data: [
+                { name: '萎缩', value: '萎缩' },
+                { name: '宫内节育器(IUD)', value: '宫内节育器(IUD)' },
+                { name: '放疗', value: '放疗' },
+                { name: '其它', value: '其它' },
+            ]
         });
         var pathogenSelect = xmSelect.render({ // 病原体
             el: '#pathogen-select',
@@ -366,21 +351,18 @@
                 { name: '其它恶性肿瘤', value: '其它恶性肿瘤' }
             ]
         });
-        form.render('select');
-        form.render('radio');
 
         var router = layui.router();
         var slideUrl = '';
         var caseData = {};
         var caseStatus = "诊断完成";
         // @note 初始化报告
-        if (router.search.caseType == "normal") {
-            console.log("normal");
-            document.getElementById("TBScollapse").setAttribute("style", "display:none");
-        } else if (router.search.caseType == "TBS") {
-            element.render('collapse');
-            document.getElementById("diagnosisDiv").setAttribute("style", "display:none");
-        }
+        if (router.search.caseType == "Normal") {
+            document.getElementById("colla-isSatisfied").setAttribute("style", "display:none");
+            document.getElementById("colla-inflammation").setAttribute("style", "display:none");
+            document.getElementById("colla-analysis").setAttribute("style", "display:none");
+        } else if (router.search.caseType == "TBS") {}
+        element.render('collapse');
 
         admin.req({
             url: 'api/case/query',
@@ -409,20 +391,22 @@
                     document.getElementById("report-patName").innerHTML += caseData.patName;
                     document.getElementById("report-uploadDate").innerHTML += caseData.date;
                     document.getElementById("expert-label").innerHTML += layui.data('layuiAdmin').userName;
+                    document.getElementById("sign").setAttribute('src', caseData.signPath);
+
                     slideUrl = JSON.parse(caseData.slideUrl);
                     var cardTableData = [];
                     let cardID = 1;
                     slideUrl.forEach(element => {
                         cardTableData.push({
                             "id": cardID++,
-                            "image": element.thumbnailUrl,
+                            "image": element.thumbnail,
                             "title": "",
                             "remark": element.fileName,
                             "time": "",
                             data: element
                         }); // 获取切片数据
                     });
-                    // @note 下拉框渲染
+                    // @note CardTable渲染
                     var slideCardTable = cardTable.render({
                         elem: '#currentTableId',
                         linenum: 3,
@@ -457,6 +441,36 @@
                         return false;
                     });
 
+                    let annotationPath = [];
+                    slideUrl.forEach(element => {
+                        annotationPath.push(element.path);
+                    });
+                    table.render({
+                        elem: '#annotation-table',
+                        url: 'api/slideCenter/annotationTable', //使用后端数据
+                        response: { statusCode: 200 },
+                        where: { data: annotationPath },
+                        cols: [
+                            [
+                                { field: 'checkbox', type: 'checkbox', },
+                                {
+                                    field: 'annotation',
+                                    title: '标注图',
+                                    templet: function(d) {
+                                        return `<div><img src="${d.annotationUrl}"  height="80px"></div>`
+                                    },
+                                    minWidth: 120
+                                }, {
+                                    field: 'comments',
+                                    title: '描述',
+                                    minWidth: 100
+                                }
+                            ]
+                        ],
+                        page: false,
+                        limit: 10,
+                    });
+
                     // @note 查看切片
                     $('#openSlide').on('click', function() {
                         layer.open({
@@ -480,60 +494,53 @@
 
         // @note 表格提交
         form.on('submit(form-report)', function(data) {
-            let flag = true;
-            admin.req({
-                url: 'api/case/query',
-                type: 'POST',
-                contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify({
-                    data: { id: router.search.caseID }
-                }),
-                success: function(res) { // 查询到病例数据,设置各种监听,以及html文本
-                    if (res.count > 0) {
-                        caseData = res.data[0];
-                        if ([null, '', undefined].includes(caseData.annotation)) {
-                            flag = false;
-                        }
-                        if (flag) {
-                            data.field.status = caseStatus;
-                            delete data.field.select;
-                            data.field.unsatisfiedReason = reasonSelect.getValue('valueStr');
-                            data.field.component = componentSelect.getValue('valueStr');
-                            data.field.reactChange = reactChangeSelect.getValue('valueStr');
-                            data.field.pathogen = pathogenSelect.getValue('valueStr');
-                            data.field.otherAnalysis = otherSelect.getValue('valueStr');
+            var checkStatus = table.checkStatus('annotation-table'),
+                checkData = checkStatus.data;
+            if (checkData.length === 0) {
+                layer.msg("请选择标注图");
+                return false;
+            } else {
+                data.field.status = caseStatus;
+                delete data.field.select;
+                delete data.field.layTableCheckbox;
+                data.field.unsatisfiedReason = reasonSelect.getValue('valueStr');
+                data.field.component = componentSelect.getValue('valueStr');
+                data.field.reactChange = reactChangeSelect.getValue('valueStr');
+                data.field.pathogen = pathogenSelect.getValue('valueStr');
+                data.field.otherAnalysis = otherSelect.getValue('valueStr');
+                data.field.diagnoseDate = new Date().Format("yyyy-MM-dd hh:mm:ss");
+                let annotation = [];
+                checkData.forEach(element => {
+                    annotation.push(element);
+                });
+                data.field.annotation = JSON.stringify(annotation);
+
+                admin.req({
+                    url: 'api/case/update',
+                    type: 'POST',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({
+                        data: data.field,
+                        caseID: caseData.id
+                    }),
+                    success: function(res) {
+                        if (caseStatus === "专家退回") {
+                            layer.msg("退回成功,将返回列表");
+                        } else if (caseStatus === "诊断完成") {
                             admin.req({
-                                url: 'api/case/update',
-                                type: 'POST',
+                                url: 'api/case/openReport',
+                                type: 'get',
                                 contentType: 'application/json;charset=UTF-8',
-                                data: JSON.stringify({
-                                    data: data.field,
-                                    caseID: caseData.id
-                                }),
-                                success: function(res) {
-                                    if (caseStatus === "专家退回") {
-                                        layer.msg("退回成功,将返回列表");
-                                    } else if (caseStatus === "诊断完成") {
-                                        admin.req({
-                                            url: 'api/case/openReport',
-                                            type: 'get',
-                                            contentType: 'application/json;charset=UTF-8',
-                                            data: caseData,
-                                        });
-                                        layer.msg('提交成功,将返回病例列表');
-                                    }
-                                    setTimeout(() => {
-                                        window.location.href = `./#/case/caseExpert`;
-                                    }, 2000);
-                                },
-                            })
-                            return false;
-                        } else {
-                            layer.msg("请选择报告用图");
+                                data: caseData,
+                            });
+                            layer.msg('提交成功,将返回病例列表');
                         }
-                    }
-                }
-            });
+                        setTimeout(() => {
+                            window.location.href = `./#/case/caseExpert`;
+                        }, 3000);
+                    },
+                })
+            }
         });
 
         // @note 表格提交 选择报告用图
@@ -547,7 +554,7 @@
                     slideUrl.forEach(element => {
                         annotationPath.push(element.path);
                     });
-                    view(this.id).render(
+                    view(this.id).render( //todo 把选择报告用图 放到面板折叠试试
                         'case/annotationList', {
                             path: { path: annotationPath },
                             index: index,
@@ -556,10 +563,6 @@
                 }
             })
         });
-
-
-
-
 
         // @note 按钮监听
         $('.operation-btn .layui-btn').on('click', function() {
@@ -572,4 +575,40 @@
             }
         }
     });
+
+    // 获取格式化时间字符串
+    Date.prototype.Format = function(fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份 
+            "d+": this.getDate(), //日 
+            "h+": this.getHours(), //小时 
+            "m+": this.getMinutes(), //分 
+            "s+": this.getSeconds() //秒 
+        };
+        if (/(y+)/.test(fmt)) { //根据y的长度来截取年
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        }
+        return fmt;
+    }
 </script>
+
+
+
+<style type="text/css">
+    .laytable-cell-checkbox {
+        height: auto;
+    }
+
+    .layui-table-cell {
+        text-align: center;
+        height: auto;
+        white-space: normal;
+    }
+
+    .layui-table img {
+        max-width: 200px
+    }
+</style>

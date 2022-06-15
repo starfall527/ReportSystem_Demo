@@ -14,16 +14,11 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
         accept: 'images',
         method: 'post',
         acceptMime: 'image/*',
-        field: 'signImg',
-        done: function() {
-            setTimeout(() => { table.reload("LAY-user-manage"); }, 200);
-        }
+        done: function() { table.reload("LAY-user-manage"); } // 刷新表格签名图 需要后台返回的路径加上随机数
     });
-
 
     table.render({
         elem: "#LAY-user-manage",
-        // url: "./json/useradmin/webuser.json",
         url: "api/user/userTable",
         cols: [
             [{
@@ -113,8 +108,6 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
                 //向服务端发送删除指令
             });
         } else if ("uploadSign" === e.event) {
-            // document.getElementById('uploadSignBtn').setAttribute('value', data.id);
-            console.log(data.id);
             //上传头像
             uploadInst.reload({
                 headers: { userid: data.id }

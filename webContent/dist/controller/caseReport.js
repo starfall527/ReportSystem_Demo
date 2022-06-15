@@ -37,7 +37,7 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
         }),
         success: function (res) { // 查询到病例数据,设置各种监听,以及html文本
             if (res.count > 0) {
-                console.log(JSON.stringify(res.data[0]));
+                // console.log(JSON.stringify(res.data[0]));
                 caseData = res.data[0];
                 document.getElementById("name").innerHTML += caseData.patName;
                 document.getElementById("gender").innerHTML += caseData.gender;

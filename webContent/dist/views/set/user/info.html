@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 修改当前用户信息
  * @Date: 2022-03-23 09:50:21
- * @LastEditTime: 2022-05-24 11:41:09
+ * @LastEditTime: 2022-06-15 17:02:35
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\set\user\info.html
 -->
 
@@ -25,49 +25,24 @@
           
           <div class="layui-form" lay-filter="">
             <div class="layui-form-item">
-              <label class="layui-form-label">我的角色</label>
-              <div class="layui-input-inline">
-                <select name="role" lay-verify="">
-                  <option value="1" selected>超级管理员</option>
-                  <option value="2" disabled>普通管理员</option>
-                  <option value="3" disabled>审核员</option>
-                  <option value="4" disabled>编辑人员</option>
-                </select> 
-              </div>
-              <div class="layui-form-mid layui-word-aux">当前角色不可更改为其它角色</div>
-            </div>
-            <div class="layui-form-item">
               <label class="layui-form-label">用户名</label>
               <div class="layui-input-inline">
-                <input type="text" name="userName" value="xianxin" readonly class="layui-input">
+                <input type="text" name="userName" value="" readonly class="layui-input">
               </div>
               <div class="layui-form-mid layui-word-aux">不可修改。一般用于后台登入名</div>
             </div>
             <div class="layui-form-item">
-              <label class="layui-form-label">昵称</label>
+              <label class="layui-form-label">签名图</label>
               <div class="layui-input-inline">
-                <input type="text" name="nickname" value="贤心" lay-verify="nickname" autocomplete="off" placeholder="请输入昵称" class="layui-input">
-              </div>
-            </div>
-            <div class="layui-form-item">
-              <label class="layui-form-label">性别</label>
-              <div class="layui-input-block">
-                <input type="radio" name="sex" value="男" title="男">
-                <input type="radio" name="sex" value="女" title="女" checked>
-              </div>
-            </div>
-            <!-- <div class="layui-form-item">
-              <label class="layui-form-label">头像</label>
-              <div class="layui-input-inline">
-                <input name="avatar" lay-verify="required" id="LAY_avatarSrc" placeholder="图片地址" value="http://cdn.layui.com/avatar/168.jpg" class="layui-input">
+                <input name="sign" lay-verify="required" id="LAY_signSrc" placeholder="图片地址" value="" class="layui-input">
               </div>
               <div class="layui-input-inline layui-btn-container" style="width: auto;">
-                <button type="button" class="layui-btn layui-btn-primary" id="LAY_avatarUpload">
+                <button type="button" class="layui-btn layui-btn-primary" id="LAY_signUpload">
                   <i class="layui-icon">&#xe67c;</i>上传图片
                 </button>
-                <button class="layui-btn layui-btn-primary" layadmin-event="avartatPreview">查看图片</button >
+                <button class="layui-btn layui-btn-primary" layadmin-event="preview">查看图片</button >
               </div>
-           </div> -->
+           </div>
             <div class="layui-form-item">
               <label class="layui-form-label">手机</label>
               <div class="layui-input-inline">
@@ -88,7 +63,7 @@
             </div>
             <div class="layui-form-item">
               <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
+                <button class="layui-btn" lay-submit lay-filter="setInfo">确认修改</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
               </div>
             </div>

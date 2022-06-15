@@ -360,7 +360,6 @@ async function getFolders(path) {
     path = `Path=${encodeURI(path)}`
     options.path = `/api/app/odm-slide/folders?${path}IsRecursive=true`;
     let result = await sendRequest(options.path);
-    console.log(result);
     return result;
 }
 
@@ -469,16 +468,15 @@ router_slideCenter.get('/table', function (req, res) {
 router_slideCenter.get('/annotationTable', function (req, res) { // getAnnotationImgs annotationTable
     let data = req.query.data;
     let tableData = [];
-    let annotationImg = [];
     let checkFlag = false;
-    data.path.forEach(annotationPath => {
+    data.forEach(annotationPath => {
         getAnnotations(annotationPath, '').then(annoRes => {
             let annotations = JSON.parse(annoRes);
             annotations.forEach(element => {
                 element.annotationUrl = getAnnotationImage(annotationPath, '', element.id);
                 tableData.push(element);
                 if (element.id === annotations[annotations.length - 1].id) {
-                    if (annotationPath === data.path[data.path.length - 1]) {
+                    if (annotationPath === data[data.length - 1]) {
                         checkFlag = true;
                     }
                 };
@@ -514,9 +512,9 @@ router_slideCenter.get('/annotationTable', function (req, res) { // getAnnotatio
     }, 200);
 });
 
-
 const qrImage = require('qr-image');
 const path = require('path');
+// * 获取切片信息 关键接口
 router_slideCenter.get('/openSlide', function (req, res) {
     let data = req.query;
     getSlideUri(data.path, '', false).then(apiRes => {

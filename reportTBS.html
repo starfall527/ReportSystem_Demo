@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-05-30 14:30:59
- * @LastEditTime: 2022-06-14 13:55:00
+ * @LastEditTime: 2022-06-15 16:16:15
  * @FilePath: \ReportSystem_Demo\reportTBS.html
 -->
 <html>
@@ -107,6 +107,13 @@
             grid-template-rows: repeat(1, 1fr);
         }
 
+        #grid2Col {
+            display: grid;
+            height: auto;
+            grid-template-columns: 66% 34%;
+            grid-template-rows: repeat(1, 1fr);
+        }
+
         .grid-cell1 {
             grid-column: 1;
         }
@@ -186,7 +193,7 @@
             <div class="labelBreak"></div>
             <div id="grid">
                 <div class="label grid-cell1" id="pathologyNumLabel">病理号:</div>
-                <div class="label grid-cell3" id="consultationNumLabel">会诊号:</div>
+                <!-- <div class="label grid-cell3" id="consultationNumLabel">会诊号:</div> -->
             </div>
 
             <HR>
@@ -196,16 +203,16 @@
                 <div class="label grid-cell3" id="ageLabel">年龄:</div>
             </div>
             <div class="labelBreak"></div>
-
             <div id="grid">
-                <div class="label grid-cell1" id="unitLabel">送检单位:</div>
-                <div class="label grid-cell2" id="doctorLabel">医生:</div>
-                <div class="label grid-cell3" id="inspectionDateLabel">送检日期:</div>
+                <div class="label grid-cell1" id="doctorLabel">医生:</div>
+                <div class="label grid-cell2" id="samplePartLabel">取材部位:</div>
+                <div class="label grid-cell3" id="history">病史:</div>
             </div>
             <div class="labelBreak"></div>
-            <div id="grid">
-                <div class="label grid-cell1" id="samplePartLabel">取材部位:</div>
-                <div class="label grid-cell3" id="history">病史:</div>
+
+            <div id="grid2Col">
+                <div class="label grid-cell1" id="unitLabel">送检单位:</div>
+                <div class="label grid-cell2" id="inspectionDateLabel">送检日期:</div>
             </div>
             <HR>
 
@@ -222,8 +229,11 @@
             <HR>
             <div class="label-large" id="annotationLabel">病理图像:
                 <div class="labelBreak"></div>
-                <div id="annotationDiv"></div>
-                <img src="" id="annotation" width="100px" height="100px">
+                <div id="grid">
+                    <div class="label grid-cell1"><img src="" id="annotation0" height="100px"></div>
+                    <div class="label grid-cell2"><img src="" id="annotation1" height="100px"></div>
+                    <div class="label grid-cell3"><img src="" id="annotation2" height="100px"></div>
+                </div>
             </div>
 
             <HR>
@@ -243,10 +253,16 @@
             <div class="label" id="diagnosisLabel" style="float: left;">建议:</div>
             <div class="text" id="diagnosis" style="left: 5px;">无</div>
 
+            <div class="labelBreak"></div>
             <HR>
-            <div id="grid">
-                <div class="label grid-cell1" id="sign">医生签名:</div>
-                <div class="label grid-cell3" id="diagnoseDate">诊断时间:</div>
+
+            <div id="grid2Col">
+                <div class="label grid-cell1" id="sign">
+                    <div style="float: left;">医生签名:</div>
+                    <div><img src="" id="signImg" style="height:60px;margin-left: 10px;"></div>
+                </div>
+
+                <div class="label grid-cell2" id="diagnoseDate">诊断时间:</div>
             </div>
         </div>
     </div>

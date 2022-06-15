@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-14 15:39:59
+ * @LastEditTime 2022-06-15 15:39:43
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -98,12 +98,14 @@ const createCaseTable = sqlMacros.sqlExecute(
     "slideUrl TEXT," + // 切片url json数组
     "annotation TEXT," + // 报告用图
     "reportPath TEXT," + // 报告路径
+    "signPath TEXT," + // 签名图路径
 
     "uploadDate timestamp," + // 上传时间
     "diagnoseDate timestamp," + // 诊断时间
     "confirmDate timestamp," + // 确认诊断时间
     "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
 );
+// sqlMacros.sqlAlter('pathCase','signPath','TEXT',''); //新增字段
 
 /***
  * @description:@note 查询病例
@@ -244,6 +246,11 @@ router_case.post('/insert', function(req, res) {
     reqKeys.push('status');
     reqValues.push('未诊断');
 
+    let user = sqlMacros.sqlQuery('*', 'USER', ['userName'], [data.expert], 'AND');
+    if (user.length > 0) {
+        reqKeys.push('signPath');
+        reqValues.push(user[0].sign);
+    }
     let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
     let newCase = sqlMacros.sqlQuery('*', 'pathCase', reqKeys, reqValues, 'AND');
     var json = {
@@ -392,7 +399,7 @@ const puppeteer = require("puppeteer");
 router_case.get('/openReport', function(req, res) {
     var caseData = req.query;
     const option = process.argv;
-    var type = 'TBS';
+    var type = caseData.caseType;
     var address = path.join('file:///', __dirname, `../../report${type}.html`); //  等价于 'file:///E:/ReportSystem_Demo/reportTBS.html';
     var reportPath = '';
     (async () => {
@@ -405,25 +412,30 @@ router_case.get('/openReport', function(req, res) {
             width: 1920,
             height: 1080
         }); // 设置视窗
-        await page.goto(
-            address, {
-                waitUntil: "networkidle2"
-            }
-        );
+        await page.goto(address, { waitUntil: "networkidle2" });
         await page.evaluate((caseData) => {
             let annotationUrl = JSON.parse(caseData.annotation);
+            for (const key in caseData) {
+                if (Object.hasOwnProperty.call(caseData, key)) {
+                    const element = caseData[key];
+                    if ([null, ''].includes(element) && key !== "unsatisfiedReason") {
+                        caseData[key] = '无';
+                    }
+                }
+            }
             document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
 
             document.getElementById("patNameLabel").innerHTML += caseData.patName; // 修改html内容
             document.getElementById("genderLabel").innerHTML += caseData.gender;
             document.getElementById("ageLabel").innerHTML += caseData.age;
-            document.getElementById("unitLabel").innerHTML += caseData.unit;
-            document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate;
             document.getElementById("doctorLabel").innerHTML += caseData.doctor;
             document.getElementById("samplePartLabel").innerHTML += caseData.samplePart;
-            document.getElementById("diagnosis").innerHTML = caseData.diagnosis;
+            document.getElementById("history").innerHTML += caseData.history;
 
-            if (caseData.caseType === "normal") {
+            document.getElementById("unitLabel").innerHTML += caseData.unit;
+            document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate;
+
+            if (caseData.caseType === "Normal") {
                 document.getElementById("clinicalData").innerHTML = caseData.general;
                 document.getElementById("imgCheck").innerHTML = caseData.imgCheck;
                 document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis;
@@ -438,16 +450,19 @@ router_case.get('/openReport', function(req, res) {
                 document.getElementById("squamousCell").innerHTML = caseData.squamousCell;
                 document.getElementById("glandularCell").innerHTML = caseData.glandularCell;
                 document.getElementById("otherAnalysis").innerHTML = caseData.otherAnalysis;
-                document.getElementById("diagnosis").innerHTML = caseData.diagnosis;
             }
 
             if (annotationUrl.length > 0) {
-                document.getElementById("annotation").setAttribute('src', annotationUrl[0].annotationUrl); // 标注图  
-                // document.getElementById("annotation").setAttribute('title', annotationUrl[0].comments); // 标注图title    
-                return annotationUrl[0].annotationUrl;
+                for (let i = 0; i < 3; i++) {
+                    if (i < annotationUrl.length) { // 上限3个标注图
+                        document.getElementById(`annotation${i}`).setAttribute('src', annotationUrl[i].annotationUrl); // 标注图   
+                    } else { document.getElementById(`annotation${i}`).setAttribute('style', "display:none;"); } // 标注图 
+                }
             }
+            document.getElementById("diagnosis").innerHTML = caseData.diagnosis;
+            document.getElementById("signImg").setAttribute('src', 'upload/' + caseData.signPath); // 电子签名
+            document.getElementById("diagnoseDate").innerHTML += caseData.diagnoseDate; // 诊断日期
         }, caseData);
-        // await page.waitForSelector('#annotation'); // 等待图片加载完成 未生效
         await page.waitForTimeout(1000); // 等待图片加载完成
         // await page.screenshot({
         //     path: './' + caseData.pathologyNum + '.png'
