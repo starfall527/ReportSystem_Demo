@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-15 15:39:43
+ * @LastEditTime 2022-06-16 15:27:50
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -116,10 +116,15 @@ router_case.get('/table', function(req, res) {
     let userName = req.query.userName;
     let result = [];
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
+    let caseTypeDisplay = {
+        'Normal': '常规病例',
+        'TBS': 'TBS病例',
+    };
     cases.forEach(element => {
         if (element.doctor === userName) {
             result.push(element);
         }
+        element.caseType = caseTypeDisplay[element.caseType];
     });
     var json = {
         code: 200,
@@ -143,10 +148,13 @@ router_case.post('/table', function(req, res) {
     let userName = req.body.userName;
     let result = [];
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
+    let caseTypeDisplay = {
+        'Normal': '常规病例',
+        'TBS': 'TBS病例',
+    };
     cases.forEach(element => {
-        if (element.doctor === userName) {
-            result.push(element);
-        }
+        if (element.doctor === userName) { result.push(element); }
+        element.caseType = caseTypeDisplay[element.caseType];
     });
     var json = {
         code: 200,
@@ -154,9 +162,7 @@ router_case.post('/table', function(req, res) {
         data: sqlMacros.getPageData(result, req.query.page, req.query.limit),
         count: result.length
     };
-    if (result.length == 0) {
-        json.msg = '查询无数据';
-    }
+    if (result.length == 0) { json.msg = '查询无数据'; }
     res.send(json);
 });
 
@@ -170,15 +176,18 @@ router_case.get('/expertTable', function(req, res) {
     let userName = req.query.userName;
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
     let result = [];
+    let caseTypeDisplay = {
+        'Normal': '常规病例',
+        'TBS': 'TBS病例',
+    };
     cases.forEach(element => {
         if (element.expert !== null && ['等待诊断', '诊断完成'].includes(element.status)) {
             let experts = element.expert.split('/');
             experts.forEach(expertsElement => {
-                if (expertsElement === userName) {
-                    result.push(element);
-                }
+                if (expertsElement === userName) { result.push(element); }
             });
         }
+        element.caseType = caseTypeDisplay[element.caseType];
     }); // * 搜索指派给该专家的病例 未发起的病例不显示
 
     var json = {
@@ -187,9 +196,7 @@ router_case.get('/expertTable', function(req, res) {
         data: sqlMacros.getPageData(result, req.query.page, req.query.limit),
         count: result.length
     };
-    if (result.length == 0) {
-        json.msg = '查询无数据';
-    }
+    if (result.length == 0) { json.msg = '查询无数据'; }
     res.send(json);
 });
 
@@ -209,9 +216,7 @@ router_case.post('/query', function(req, res) {
         data: sqlMacros.getPageData(result, data.page, data.limit),
         count: result.length
     };
-    if (result.length == 0) {
-        json.msg = '查询无数据';
-    }
+    if (result.length == 0) { json.msg = '查询无数据'; }
     res.send(json);
 });
 
@@ -225,10 +230,7 @@ router_case.post('/query', function(req, res) {
 router_case.get('/delete', function(req, res) {
     let data = req.query;
     let result = sqlMacros.sqlDelete('id', data.id, 'pathCase'); //删除所选数据
-    var json = {
-        code: 200,
-        msg: '成功'
-    };
+    var json = { code: 200, msg: '成功' };
     res.send(json);
 });
 
@@ -253,18 +255,10 @@ router_case.post('/insert', function(req, res) {
     }
     let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
     let newCase = sqlMacros.sqlQuery('*', 'pathCase', reqKeys, reqValues, 'AND');
-    var json = {
-        code: 200,
-        msg: '成功'
-    };
+    var json = { code: 200, msg: '成功' };
     if (newCase.length > 0) {
         json.caseID = newCase[0].id;
-    } else {
-        json = {
-            code: 500,
-            msg: '新增病例失败'
-        };
-    }
+    } else { json = { code: 500, msg: '新增病例失败' }; }
     res.send(json);
 });
 
@@ -293,12 +287,7 @@ router_case.post('/startConsultation', function(req, res) {
             code: 200,
             msg: '成功'
         });
-    } else {
-        res.send({
-            code: 500,
-            msg: '病例信息未完善,请检查数据完整性'
-        });
-    }
+    } else { res.send({ code: 500, msg: '病例信息未完善,请检查数据完整性' }); }
 });
 
 /*** @note  选择专家
@@ -311,17 +300,12 @@ router_case.post('/chooseExpert', function(req, res) {
     let data = req.body.data;
     let caseID = req.body.caseID;
     let expertName = '';
-    data.forEach(element => {
-        expertName += element.name + '/';
-    });
+    data.forEach(element => { expertName += element.name + '/'; });
     if (expertName !== '') {
         expertName = expertName.slice(0, expertName.length - 1);
     }
     let result = sqlMacros.sqlMultiUpdate(['expert'], [expertName], 'pathCase', 'id', caseID);
-    res.send({
-        code: 200,
-        msg: '成功'
-    });
+    res.send({ code: 200, msg: '成功' });
 });
 
 
@@ -336,10 +320,7 @@ router_case.post('/chooseSlide', function(req, res) {
     let caseID = req.body.caseID;
     let slides = [];
     let result = sqlMacros.sqlMultiUpdate(['slideUrl'], [data.slideUrl], 'pathCase', 'id', caseID);
-    res.send({
-        code: 200,
-        msg: '成功'
-    });
+    res.send({ code: 200, msg: '成功' });
 });
 
 /*** @note  选择报告用图

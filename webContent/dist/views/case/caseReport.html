@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-15 15:50:27
+ * @LastEditTime: 2022-06-16 11:49:09
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -62,7 +62,7 @@
                         <legend>取材部位</legend>
                         <div class="layui-field-box" id="samplePart">无</div>
                     </fieldset>
-                    <fieldset class="layui-elem-field" style="margin-top:20px;">
+                    <fieldset class="layui-elem-field" style="margin-top:20px;" id="general-field">
                         <legend>大体所见</legend>
                         <div class="layui-field-box" id="general">无</div>
                     </fieldset>
@@ -351,6 +351,7 @@
                 { name: '其它恶性肿瘤', value: '其它恶性肿瘤' }
             ]
         });
+        form.render(); // 在xmSelect渲染后要重新渲染form,否则特殊情况界面会显示不了所有下拉框
 
         var router = layui.router();
         var slideUrl = '';
@@ -361,7 +362,11 @@
             document.getElementById("colla-isSatisfied").setAttribute("style", "display:none");
             document.getElementById("colla-inflammation").setAttribute("style", "display:none");
             document.getElementById("colla-analysis").setAttribute("style", "display:none");
-        } else if (router.search.caseType == "TBS") {}
+        } else if (router.search.caseType == "TBS") {
+
+            document.getElementById("general").setAttribute("style", "display:none");
+            document.getElementById("general-field").setAttribute("style", "display:none");
+        }
         element.render('collapse');
 
         admin.req({
@@ -374,7 +379,14 @@
             success: function(res) { // 查询到病例数据,设置各种监听,以及html文本
                 if (res.count > 0) {
                     caseData = res.data[0];
-
+                    for (const key in caseData) {
+                        if (Object.hasOwnProperty.call(caseData, key)) {
+                            const element = caseData[key];
+                            if ([null, undefined].includes(element)) {
+                                caseData[key] = '';
+                            }
+                        }
+                    }
                     document.getElementById("name").innerHTML += caseData.patName;
                     document.getElementById("gender").innerHTML += caseData.gender;
                     document.getElementById("age").innerHTML += caseData.age;
@@ -387,6 +399,7 @@
 
                     document.getElementById("report-unit").innerHTML += caseData.unit;
                     document.getElementById("report-doctor").innerHTML += caseData.doctor;
+                    document.getElementById("report-doctorTel").innerHTML += caseData.doctorTel;
                     document.getElementById("report-pathologyNum").innerHTML += caseData.pathologyNum;
                     document.getElementById("report-patName").innerHTML += caseData.patName;
                     document.getElementById("report-uploadDate").innerHTML += caseData.date;

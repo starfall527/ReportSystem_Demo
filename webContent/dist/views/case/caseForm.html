@@ -274,27 +274,27 @@
                 <form>
                     <div class="layui-fluid">
                         <div class="layui-row layui-col-space15">
-                            <div class="layui-col-md4">
+                            <!-- <div class="layui-col-md4">
                                 <div class="layui-card">
                                     <div class="layui-card-header">条件搜索</div>
                                     <div class="layui-card-body">
-                                        <form class="layui-form" lay-filter="queryExpert" id="queryExpert">
+                                        <form class="layui-form" lay-filter="queryExpert">
                                             <div class="layui-form-item" style="margin-top: 15px;">
                                                 <label class="layui-form-label layui-required">专家姓名</label>
                                                 <div class="layui-input-inline">
-                                                    <input type="text" name="userName" id="userName" lay-verify="text" placeholder="请输入" autocomplete="off" class="layui-input">
+                                                    <input type="text" name="expertName" id="expertName" placeholder="请输入" class="layui-input">
                                                 </div>
                                             </div>
                                             <div class="layui-form-item" style="margin-top: 15px;">
                                                 <label class="layui-form-label layui-required">擅长亚专科</label>
                                                 <div class="layui-input-inline">
-                                                    <input type="text" name="subspecialty" id="subspecialty" lay-verify="text" placeholder="请输入" autocomplete="off" class="layui-input">
+                                                    <input type="text" name="expertSubspecialty" id="expertSubspecialty" placeholder="请输入" class="layui-input">
                                                 </div>
                                             </div>
                                             <div class="layui-form-item">
                                                 <div class="layui-inline">
                                                     <div class="layui-btn-container form-control-btn" style="margin-left: 0px;">
-                                                        <button type="submit" class="layui-btn" lay-filter="query" lay-submit data-type="query">查询</button>
+                                                        <button type="button" class="layui-btn" lay-submit lay-filter="queryExpert" id="query">查询</button>
                                                         <button type="reset" class="layui-btn layui-btn-primary" data-type="reset">重置</button>
                                                     </div>
                                                 </div>
@@ -302,8 +302,8 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="layui-col-md8">
+                            </div> -->
+                            <div class="layui-col-md12">
                                 <div class="layui-card">
                                     <div class="layui-card-header">专家列表</div>
                                     <div class="layui-card-body">
@@ -403,12 +403,10 @@
                         field: 'userName',
                         title: '专家名',
                         minWidth: 120,
-                        width: 240
                     }, {
                         field: 'subspecialty',
                         title: '擅长亚专科',
                         minWidth: 120,
-                        width: 780
                     },
                 ]
             ],
@@ -450,6 +448,36 @@
                 });
             }
         })
+
+        /* 监听表单提交 */
+        form.on('submit(queryExpert)', function(data) {
+            let queryData={
+                expertName: $('#expertName').val(),
+                subspecialty: $('#expertSubspecialty').val(),
+            };
+
+            table.reload('expert-table', {
+                where: queryData,
+                page: { curr: 1 }
+            });
+
+            // admin.req({
+            //     url: 'api/case/insert',
+            //     type: 'POST',
+            //     contentType: 'application/json;charset=UTF-8',
+            //     data: JSON.stringify({
+            //         data: data.field,
+            //     }),
+            //     success: function(res) {
+            //         layer.msg('添加成功,即将跳转回列表');
+            //         setTimeout(() => {
+            //             location.href = './#/case/caseUpload'; // 跳转回列表
+            //         }, 1500);
+            //     },
+            //     done: function(res) {}
+            // })
+            return false;
+        });
 
         /* 监听表单提交 */
         form.on('submit(case-form-submit)', function(data) {
@@ -573,6 +601,7 @@
                     })
                 });
                 step.next('#stepForm');
+                form.render();
             }
             return false;
         });

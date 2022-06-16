@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-23 09:50:20
- * @LastEditTime 2022-06-15 18:07:49
+ * @LastEditTime 2022-06-16 15:28:16
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\set.js
  */
 /** layuiAdmin.pro-v1.4.0 LPPL License By https://www.layui.com/admin/ */
@@ -28,9 +28,10 @@ layui.define(["form", "upload", 'admin'], function(t) {
     }), a.on("submit(set_system_email)", function(t) {
         return e.msg(JSON.stringify(t.field)), !1
     }), a.on("submit(setInfo)", function(t) { // 设置资料
-        return e.msg(JSON.stringify(t.field)), !1
+        // return e.msg(JSON.stringify(t.field)), !1        
     });
     var r = i("#LAY_signSrc");
+
 
     var uploadInst = s.render({
         elem: "#LAY_signUpload",
@@ -42,13 +43,16 @@ layui.define(["form", "upload", 'admin'], function(t) {
         before: function() {
             this.headers.userid = layui.data('layuiAdmin').userID;
         },
-        done: function(t) {
-            200 == t.code ? r.val(t.url) : e.msg(t.msg)
+        done: function(res) {
+            if (200 == res.code) { e.msg('上传签名成功') } else { e.msg('上传签名失败') }
+            let randomUrl = res.url += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+            document.getElementById("preview").setAttribute('value', randomUrl);
+
         },
         error: function(err) { console.log(err); }
     });
     n.events.preview = function(t) {
-        var i = r.val();
+        var i = document.getElementById("preview").getAttribute('value');
         e.photos({
             photos: {
                 title: "查看图像",
@@ -61,7 +65,20 @@ layui.define(["form", "upload", 'admin'], function(t) {
             anim: 5
         })
     };
-    a.on("submit(setPassword)", function(t) { // 设置密码
-        return e.msg(JSON.stringify(t.field)), !1
+    a.on("submit(setPassword)", function(data) { // 设置密码
+        data.field.userID = layui.data('layuiAdmin').userID;
+        admin.req({
+            url: 'api/user/setPassword',
+            type: 'POST',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                data: data.field
+            }),
+            success: function(res) {
+                if (res.code == 200) {
+                    layer.msg('修改成功')
+                }
+            },
+        });
     }), t("set", {});
 });

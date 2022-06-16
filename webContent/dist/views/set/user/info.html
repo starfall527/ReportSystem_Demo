@@ -2,79 +2,179 @@
  * @Author: cwx
  * @Description: 修改当前用户信息
  * @Date: 2022-03-23 09:50:21
- * @LastEditTime: 2022-06-15 17:02:35
+ * @LastEditTime: 2022-06-16 11:14:14
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\set\user\info.html
 -->
 
 <title>设置我的资料</title>
 
 <div class="layui-card layadmin-header">
-  <div class="layui-breadcrumb" lay-filter="breadcrumb">
-    <a lay-href="">主页</a>
-    <a><cite>设置</cite></a>
-    <a><cite>我的资料</cite></a>
-  </div>
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>设置</cite></a>
+        <a><cite>我的资料</cite></a>
+    </div>
 </div>
-  
+
 <div class="layui-fluid">
-  <div class="layui-row layui-col-space15">
-    <div class="layui-col-md12">
-      <div class="layui-card">
-        <div class="layui-card-header">设置我的资料</div>
-        <div class="layui-card-body" pad15>
-          
-          <div class="layui-form" lay-filter="">
-            <div class="layui-form-item">
-              <label class="layui-form-label">用户名</label>
-              <div class="layui-input-inline">
-                <input type="text" name="userName" value="" readonly class="layui-input">
-              </div>
-              <div class="layui-form-mid layui-word-aux">不可修改。一般用于后台登入名</div>
-            </div>
-            <div class="layui-form-item">
-              <label class="layui-form-label">签名图</label>
-              <div class="layui-input-inline">
-                <input name="sign" lay-verify="required" id="LAY_signSrc" placeholder="图片地址" value="" class="layui-input">
-              </div>
-              <div class="layui-input-inline layui-btn-container" style="width: auto;">
-                <button type="button" class="layui-btn layui-btn-primary" id="LAY_signUpload">
-                  <i class="layui-icon">&#xe67c;</i>上传图片
-                </button>
-                <button class="layui-btn layui-btn-primary" layadmin-event="preview">查看图片</button >
-              </div>
-           </div>
-            <div class="layui-form-item">
-              <label class="layui-form-label">手机</label>
-              <div class="layui-input-inline">
-                <input type="text" name="cellphone" value="" lay-verify="phone" autocomplete="off" class="layui-input">
-              </div>
-            </div>
-            <div class="layui-form-item">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">设置我的资料</div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form" lay-filter="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="userName" id="userName" value="" class="layui-input">
+                            </div>
+                            <!-- <div class="layui-form-mid layui-word-aux">不可修改。一般用于后台登入名</div> -->
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">签名图</label>
+                            <div class="layui-input-inline">
+                                <input name="sign" lay-verify="" id="LAY_signSrc" placeholder="图片地址" value="" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline layui-btn-container" style="width: auto;">
+                                <button type="button" class="layui-btn layui-btn-primary" id="LAY_signUpload">
+                                    <i class="layui-icon">&#xe67c;</i>上传图片
+                                </button>
+                                <button class="layui-btn layui-btn-primary" layadmin-event="preview" id="preview">查看图片</button>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="phone" id="phone" value="" lay-verify="phone" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">擅长亚专科</label>
+                            <div class="layui-input-inline">
+                                <div id="subspecialty-select" name="subspecialty" class="xm-select-demo" style="width: 350px;"></div>
+                            </div>
+                        </div>
+                        <!-- <div class="layui-form-item">
               <label class="layui-form-label">邮箱</label>
               <div class="layui-input-inline">
                 <input type="text" name="email" value="" lay-verify="email" autocomplete="off" class="layui-input">
               </div>
-            </div>
-            <div class="layui-form-item layui-form-text">
+            </div> -->
+                        <!-- <div class="layui-form-item layui-form-text">
               <label class="layui-form-label">备注</label>
               <div class="layui-input-block">
                 <textarea name="remarks" placeholder="请输入内容" class="layui-textarea"></textarea>
               </div>
+            </div> -->
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="setInfo">确认修改</button>
+                                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重新填写</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="layui-form-item">
-              <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="setInfo">确认修改</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
-              </div>
-            </div>
-          </div>
-          
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <script>
-layui.use('set', layui.factory('set'));
+    layui.use('set', layui.factory('set'));
+    layui.define(['admin', 'form', 'laydate', 'table', 'laytpl', 'xmSelect'], function() {
+        var $ = layui.$,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer,
+            table = layui.table,
+            form = layui.form,
+            setter = layui.setter,
+            xmSelect = layui.xmSelect;
+
+        document.getElementById("LAY_signSrc").setAttribute('style', "display: none");
+        document.getElementById("userName").setAttribute('value', layui.data('layuiAdmin').userName);
+
+        admin.req({
+            url: 'api/user/query',
+            type: 'POST',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                page: 1,
+                limit: 1,
+                id: layui.data('layuiAdmin').userID
+            }),
+            success: function(res) {
+                if (res.data.length > 0) {
+                    let user = res.data[0];
+                    let randomUrl = user.sign += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                    document.getElementById("preview").setAttribute('value', randomUrl);
+                    $('#phone').val(user.phone);
+                    let xmSelectData = [];
+                    user.subspecialty.split(',').forEach(element => {
+                        xmSelectData.push({
+                            name: element,
+                            value: element
+                        });
+                    });
+                    subspecialtySelect.setValue(xmSelectData);
+                } else {
+                    layer.alert('查询不到用户数据!', {
+                        icon: 5,
+                        title: '警告'
+                    });
+                }
+            },
+        })
+
+        var subspecialtySelect = xmSelect.render({ // 细胞成分
+            el: '#subspecialty-select',
+            data: [
+                { name: '神经病理', value: '神经病理' },
+                { name: '淋巴病理', value: '淋巴病理' },
+                { name: '妇科病理', value: '妇科病理' },
+                { name: '消化病理', value: '消化病理' },
+                { name: '软组织病理', value: '软组织病理' },
+                { name: '分子病理', value: '分子病理' },
+                { name: '乳腺病理', value: '乳腺病理' },
+                { name: '内分泌病理', value: '内分泌病理' },
+                { name: '皮肤病理', value: '皮肤病理' },
+                { name: '细胞病理', value: '细胞病理' },
+                { name: '泌尿生殖病理', value: '泌尿生殖病理' },
+                { name: '头颈部病理', value: '头颈部病理' },
+                { name: '肺与纵隔病理', value: '肺与纵隔病理' },
+                { name: '骨与关节病理', value: '骨与关节病理' },
+                { name: '肾病病理', value: '肾病病理' },
+                { name: '骨髓病理', value: '骨髓病理' },
+                { name: '其它', value: '其它' },
+            ]
+        });
+
+        // @note 表格提交
+        form.on('submit(setInfo)', function(data) {
+            delete data.field.select;
+            delete data.field.sign;
+            delete data.field.file;
+            delete data.field.select;
+            data.field.id = layui.data('layuiAdmin').userID;
+            data.field.subspecialty = subspecialtySelect.getValue('valueStr');
+            // data.field.diagnoseDate = new Date().Format("yyyy-MM-dd hh:mm:ss"); // 编辑时间
+            admin.req({
+                url: 'api/user/update',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
+                    data: data.field
+                }),
+                success: function(res) {
+                    layer.msg('修改成功')
+                },
+            })
+        });
+
+        $('#reset').click(function() { // 重新填写
+            subspecialtySelect.setValue([]);
+            $('#phone').val('');
+            form.render();
+        })
+    });
 </script>

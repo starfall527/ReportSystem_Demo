@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-13 14:25:23
+ * @LastEditTime: 2022-06-16 15:23:51
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -38,7 +38,7 @@
 
 <link rel="stylesheet" type="text/css" href="../../../dist/lib/extend/soulTable/soulTable.css" media="all">
 <script>
-    layui.use(['admin', 'form', 'laydate', 'table', 'soulTable'], function () {
+    layui.use(['admin', 'form', 'laydate', 'table', 'soulTable'], function() {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
@@ -76,6 +76,12 @@
                         minWidth: 120,
                         filter: true
                     }, {
+                        field: 'caseType',
+                        title: '病例类型',
+                        minWidth: 120,
+                        // width: 150, // 优先从这列压缩宽度
+                        filter: true
+                    }, {
                         field: 'status',
                         title: '状态',
                         minWidth: 120,
@@ -101,7 +107,7 @@
                         field: 'date',
                         title: '上传时间',
                         minWidth: 120,
-                        width: 210
+                        width: 240
                     }, {
                         title: "操作",
                         width: 210,
@@ -113,31 +119,31 @@
             ],
             page: true,
             limit: 20,
-            done: function (res) {
+            done: function(res) {
                 soulTable.render(this);
             }
         });
 
 
         //工具条事件
-        table.on('tool(case-table)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        table.on('tool(case-table)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
             if (layEvent === '') { //查看
             } else if (layEvent === 'del') { //删除
-                layer.confirm('将删除数据,确定？', function (index) {
+                layer.confirm('将删除数据,确定？', function(index) {
                     obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
                     admin.req({
                         url: 'api/case/delete',
                         type: 'get',
                         contentType: 'application/json;charset=UTF-8',
                         data: data,
-                        success: function (res) {
+                        success: function(res) {
                             layer.msg('删除成功')
                         },
-                        done: function (res) {}
+                        done: function(res) {}
                     });
                     layer.close(index);
                     //向服务端发送删除指令
@@ -152,29 +158,29 @@
                         title: '查看报告',
                         area: ['100%', '100%'], // 为防止窗口变形,设置弹窗宽度至少为400px
                         id: 'popup',
-                        success: function (layero, index) {
+                        success: function(layero, index) {
                             view(this.id).render(
                                 'case/report', {
                                     reportPath: data.reportPath
-                                }).done(function () {})
+                                }).done(function() {})
                         }
                     })
-                }else{
+                } else {
                     layer.msg('暂无报告')
                 }
             }
         });
 
         // 按钮监听
-        $('.case-table-btn .layui-btn').on('click', function () {
+        $('.case-table-btn .layui-btn').on('click', function() {
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
         var active = {
-            newCase: function () {
+            newCase: function() {
                 location.href = `./#/case/caseForm`;
             },
-            startConsultation: function () {
+            startConsultation: function() {
                 var checkStatus = table.checkStatus('case-table'),
                     checkData = checkStatus.data[0];
                 if (checkData === undefined) {
@@ -187,10 +193,10 @@
                         data: JSON.stringify({
                             data: checkData
                         }),
-                        success: function (res) {
+                        success: function(res) {
                             layui.table.reload('case-table');
                         },
-                        done: function (res) {}
+                        done: function(res) {}
                     })
                 }
             },

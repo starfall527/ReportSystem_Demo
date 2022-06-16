@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-15 18:06:13
+ * @LastEditTime 2022-06-16 15:06:13
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -35,10 +35,13 @@ const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
      password VARCHAR(255) ,
      sign VARCHAR(255) ,
      info VARCHAR(255) ,
+     subspecialty VARCHAR(255) , 
      authorization VARCHAR(255) NOT NULL ,
      isExamined INTEGER ,
      date timestamp NOT NULL default (datetime('now','localtime'))
      )`);
+
+// sqlMacros.sqlAlter('USER','subspecialty','VARCHAR(255)',''); //新增字段
 
 /***
  * @description: ROLE表定义
@@ -80,7 +83,15 @@ router_user.get('/userTable', function(req, res) {
 
 // @note 专家列表
 router_user.get('/expertTable', function(req, res) {
-    let result = sqlMacros.sqlSelect('*', 'USER', true, 'role', '专家端');
+    let result;
+    // if ([null, undefined].includes(req.query.queryData)) {
+    //     let data = req.query.queryData;
+    //     var reqKeys = Object.keys(data);
+    //     var reqValues = Object.values(data);
+    //     result = sqlMacros.sqlQuery('*', 'USER', reqKeys, reqValues, 'AND');
+    // } 条件搜索暂时不用做 优先级低
+    result = sqlMacros.sqlSelect('*', 'USER', true, 'role', '专家端');
+
     var json = {
         code: 200,
         msg: '成功',
@@ -146,6 +157,24 @@ router_user.post('/queryExpert', function(req, res) {
     };
     if (result.length == 0) {
         json.msg = '未选中实验或查询无数据';
+    }
+    res.send(json);
+});
+
+// @note 条件查询用户
+router_user.post('/query', function(req, res) {
+    let data = req.body;
+    var reqKeys = Object.keys(data).splice(2, Object.keys(data).length - 1);
+    var reqValues = Object.values(data).splice(2, Object.values(data).length - 1);
+    let result = sqlMacros.sqlQuery('*', 'USER', reqKeys, reqValues, 'AND'); // 默认是AND查询,看界面要不要配置OR方式
+    var json = {
+        code: 200,
+        msg: '成功',
+        data: sqlMacros.getPageData(result, req.query.page, req.query.limit),
+        count: result.length
+    };
+    if (result.length == 0) {
+        json.msg = '查询无数据';
     }
     res.send(json);
 });
@@ -359,19 +388,13 @@ router_user.post('/role/batchDel', function(req, res) {
  * @apiParam {String} data.field     更新的键
  * @apiParam {String} data.value     更新的键值
  * @apiParamExample 
-    {
-        "data": {
-            "id": 8,
-            "field": "userName",
-            "value": "张三"
-        }
-    }
- * 
  * @apiUse CommonResponse
  */
 router_user.post('/update', function(req, res) {
     let data = req.body.data;
-    let result = sqlMacros.sqlUpdate(data.field, data.value,
+    var reqKeys = Object.keys(data);
+    var reqValues = Object.values(data);
+    let result = sqlMacros.sqlMultiUpdate(reqKeys, reqValues,
         'USER', 'id', data.id);
     var json = {
         code: 200,
@@ -417,6 +440,38 @@ router_user.post('/uploadSign', function(req, res) {
         };
         res.send(json);
     })
+});
+
+
+/*** @note 更改密码
+ * @api {post} /api/user/setPassword 更改密码
+ * @apiName UpdateStep
+ * @apiGroup 用户管理 
+ * @apiParam {Object} data           数据对象
+ * @apiParam {String} data.id        唯一标识
+ * @apiParam {String} data.field     更新的键
+ * @apiParam {String} data.value     更新的键值
+ * @apiParamExample 
+ * @apiUse CommonResponse
+ */
+router_user.post('/setPassword', function(req, res) {
+    let data = req.body.data;
+    let user = sqlMacros.sqlQuery('*', 'USER', ['id'], [data.userID], 'AND');
+    if (user[0].password !== data.oldPassword) {
+        res.send({
+            code: 500,
+            msg: '密码错误!'
+        });
+        return;
+    } else {
+        let result = sqlMacros.sqlMultiUpdate(['password'], [data.password],
+            'USER', 'id', data.userID);
+        var json = {
+            code: 200,
+            msg: '成功'
+        };
+        res.send(json);
+    }
 });
 
 module.exports = {
