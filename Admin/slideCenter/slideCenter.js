@@ -32,13 +32,13 @@ async function sendRequest(path) {
         }
     }
     return new Promise((resolve, reject) => {
-        var req = http.request(options, function (res) {
+        var req = http.request(options, function(res) {
             res.setEncoding("utf-8");
-            res.on("data", function (chunk) {
+            res.on("data", function(chunk) {
                 resolve(chunk.toString());
             });
         });
-        req.on("error", function (err) {
+        req.on("error", function(err) {
             console.log(err.message);
             reject(err.message);
         });
@@ -387,7 +387,7 @@ async function getSlides(path) {
     return result;
 }
 
-router_slideCenter.get('/getFolders', function (req, res) {
+router_slideCenter.get('/getFolders', function(req, res) {
     getFolder('./').then(apiRes => {
         let folderList = [];
         if (apiRes !== undefined) {
@@ -412,7 +412,7 @@ router_slideCenter.get('/getFolders', function (req, res) {
 
 
 // 点击左侧文件夹列表,右侧显示文件夹下切片(table就行,搭配工具栏生成二维码)
-router_slideCenter.get('/getSlides', function (req, res) {
+router_slideCenter.get('/getSlides', function(req, res) {
     getSlides(``, '', false).then(apiRes => {
         var json = {
             code: 200,
@@ -427,7 +427,7 @@ router_slideCenter.get('/getSlides', function (req, res) {
 });
 
 // 获取切片url
-router_slideCenter.post('/getSlideUrl', function (req, res) {
+router_slideCenter.post('/getSlideUrl', function(req, res) {
     let data = req.body.data;
     let filePath = data.filePath;
 
@@ -445,7 +445,7 @@ router_slideCenter.post('/getSlideUrl', function (req, res) {
     })
 });
 
-router_slideCenter.get('/table', function (req, res) {
+router_slideCenter.get('/table', function(req, res) {
     let data = req.query;
     let tableData = [];
     if (data.path !== '') {
@@ -465,7 +465,7 @@ router_slideCenter.get('/table', function (req, res) {
 });
 
 // 获取切片的标注数据图
-router_slideCenter.get('/annotationTable', function (req, res) { // getAnnotationImgs annotationTable
+router_slideCenter.get('/annotationTable', function(req, res) {
     let data = req.query.data;
     let tableData = [];
     let checkFlag = false;
@@ -475,17 +475,23 @@ router_slideCenter.get('/annotationTable', function (req, res) { // getAnnotatio
             annotations.forEach(element => {
                 element.annotationUrl = getAnnotationImage(annotationPath, '', element.id);
                 tableData.push(element);
+                console.log(element);
                 if (element.id === annotations[annotations.length - 1].id) {
+                    console.log(annotationPath)
+                    console.log(data[data.length - 1])
                     if (annotationPath === data[data.length - 1]) {
                         checkFlag = true;
                     }
                 };
             });
+            if (annotations.length === 0 && annotationPath === data[data.length - 1]) {
+                checkFlag = true;
+            }
         });
     });
 
+    let timeout = 0;
     let check = setInterval(() => {
-        let timeout = 0;
         if (checkFlag) {
             let pageData = getPageData(tableData, req.query.page, req.query.limit);
             var json = {
@@ -501,13 +507,13 @@ router_slideCenter.get('/annotationTable', function (req, res) { // getAnnotatio
             res.send(json);
         } else {
             timeout += 200;
-        }
-        if (timeout > 2000) {
-            clearInterval(check);
-            res.send({
-                code: 500,
-                msg: '无切片标注数据/slideCenter未连接'
-            });
+            if (timeout >= 5000) {
+                clearInterval(check);
+                res.send({
+                    code: 500,
+                    msg: '无切片标注数据/slideCenter未连接'
+                });
+            }
         }
     }, 200);
 });
@@ -515,7 +521,7 @@ router_slideCenter.get('/annotationTable', function (req, res) { // getAnnotatio
 const qrImage = require('qr-image');
 const path = require('path');
 // * 获取切片信息 关键接口
-router_slideCenter.get('/openSlide', function (req, res) {
+router_slideCenter.get('/openSlide', function(req, res) {
     let data = req.query;
     getSlideUri(data.path, '', false).then(apiRes => {
         let qrcodeName = ' slideQrcode.png'
@@ -528,7 +534,7 @@ router_slideCenter.get('/openSlide', function (req, res) {
         // 创建可以写入流，当有pipe它的时候就会生成一个userStr.png的文件
         var img = fs.createWriteStream(qrImgPath);
         // 将生成的二维码流pipe进入刚刚创建的可写入流，并生成文件
-        qrcodeImg.pipe(img).on('finish', function () {
+        qrcodeImg.pipe(img).on('finish', function() {
             var json = {
                 code: 200,
                 msg: '成功',

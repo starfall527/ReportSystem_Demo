@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-16 15:25:05
+ * @LastEditTime: 2022-06-17 17:52:16
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -65,7 +65,7 @@
                         title: '病理号',
                         minWidth: 120
                     },{
-                        field: 'caseType',
+                        field: 'caseTypeDisplay',
                         title: '病例类型',
                         minWidth: 120,
                         // width: 150, // 优先从这列压缩宽度
@@ -115,6 +115,7 @@
 
             if (layEvent === '') { //查看
             } else if (layEvent === 'diagnose') { //诊断
+                // 需要先检查专家有无上传签名
                 if (data.status === '诊断完成') {
                     // layer.msg('诊断已完成'); 
                     location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${data.caseType}`; // 是否需要限制重复诊断？
@@ -122,7 +123,8 @@
                     location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${data.caseType}`;
                 }
             } else if (layEvent === 'openReport') { // 查看报告
-                if (![null, '', undefined].includes(data.reportPath)) {
+                if (![null, '', undefined].includes(data.reportPath)) {                    
+                    let reportPath = data.reportPath+= '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
                     admin.popup({
                         title: '查看报告',
                         area: ['100%', '100%'],
@@ -130,7 +132,7 @@
                         success: function (layero, index) {
                             view(this.id).render(
                                 'case/report', {
-                                    reportPath: data.reportPath
+                                    reportPath: reportPath
                                 }).done(function () {})
                         }
                     })

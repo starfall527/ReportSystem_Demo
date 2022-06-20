@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-16 15:27:50
+ * @LastEditTime 2022-06-20 10:41:27
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -58,6 +58,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "status VARCHAR(255) NOT NULL ," + // 病例状态
     "caseType VARCHAR(255) ," + // 病例类型
     "pathologyNum VARCHAR(255) NOT NULL ," + // 病理号
+    "consultationNum VARCHAR(255) NOT NULL ," + // 会诊号
     "patName VARCHAR(255) NOT NULL ," + // 病人姓名
     "patientInfo VARCHAR(255) ," + // 病人信息
     "gender VARCHAR(255) ," + // 性别
@@ -122,9 +123,9 @@ router_case.get('/table', function(req, res) {
     };
     cases.forEach(element => {
         if (element.doctor === userName) {
+            element.caseTypeDisplay = caseTypeDisplay[element.caseType];
             result.push(element);
         }
-        element.caseType = caseTypeDisplay[element.caseType];
     });
     var json = {
         code: 200,
@@ -153,8 +154,10 @@ router_case.post('/table', function(req, res) {
         'TBS': 'TBS病例',
     };
     cases.forEach(element => {
-        if (element.doctor === userName) { result.push(element); }
-        element.caseType = caseTypeDisplay[element.caseType];
+        if (element.doctor === userName) {
+            element.caseTypeDisplay = caseTypeDisplay[element.caseType];
+            result.push(element);
+        }
     });
     var json = {
         code: 200,
@@ -184,10 +187,12 @@ router_case.get('/expertTable', function(req, res) {
         if (element.expert !== null && ['等待诊断', '诊断完成'].includes(element.status)) {
             let experts = element.expert.split('/');
             experts.forEach(expertsElement => {
-                if (expertsElement === userName) { result.push(element); }
+                if (expertsElement === userName) {
+                    element.caseTypeDisplay = caseTypeDisplay[element.caseType];
+                    result.push(element);
+                }
             });
         }
-        element.caseType = caseTypeDisplay[element.caseType];
     }); // * 搜索指派给该专家的病例 未发起的病例不显示
 
     var json = {
@@ -404,45 +409,95 @@ router_case.get('/openReport', function(req, res) {
                     }
                 }
             }
-            document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
 
-            document.getElementById("patNameLabel").innerHTML += caseData.patName; // 修改html内容
-            document.getElementById("genderLabel").innerHTML += caseData.gender;
-            document.getElementById("ageLabel").innerHTML += caseData.age;
-            document.getElementById("doctorLabel").innerHTML += caseData.doctor;
-            document.getElementById("samplePartLabel").innerHTML += caseData.samplePart;
-            document.getElementById("history").innerHTML += caseData.history;
-
-            document.getElementById("unitLabel").innerHTML += caseData.unit;
-            document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate;
+            if (![null, undefined].includes(document.getElementById("pathologyNumLabel"))) {
+                document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
+            }
+            if (![null, undefined].includes(document.getElementById("patNameLabel"))) {
+                document.getElementById("patNameLabel").innerHTML += caseData.patName; // 病人姓名
+            }
+            if (![null, undefined].includes(document.getElementById("genderLabel"))) {
+                document.getElementById("genderLabel").innerHTML += caseData.gender; // 性别
+            }
+            if (![null, undefined].includes(document.getElementById("ageLabel"))) {
+                document.getElementById("ageLabel").innerHTML += caseData.age; // 年龄
+            }
+            if (![null, undefined].includes(document.getElementById("doctorLabel"))) {
+                document.getElementById("doctorLabel").innerHTML += caseData.doctor; // 医生
+            }
+            if (![null, undefined].includes(document.getElementById("samplePartLabel"))) {
+                document.getElementById("samplePartLabel").innerHTML += caseData.samplePart; // 取样位置
+            }
+            if (![null, undefined].includes(document.getElementById("historyLabel"))) {
+                document.getElementById("history").innerHTML += caseData.history; // 病史
+            }
+            if (![null, undefined].includes(document.getElementById("unitLabel"))) {
+                document.getElementById("unitLabel").innerHTML += caseData.unit; // 送检单位
+            }
+            if (![null, undefined].includes(document.getElementById("inspectionDateLabel"))) {
+                document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate; // 送检日期
+            }
 
             if (caseData.caseType === "Normal") {
-                document.getElementById("clinicalData").innerHTML = caseData.general;
-                document.getElementById("imgCheck").innerHTML = caseData.imgCheck;
-                document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis;
-                document.getElementById("general").innerHTML = caseData.general;
+                if (![null, undefined].includes(document.getElementById("clinicalData"))) {
+                    document.getElementById("clinicalData").innerHTML = caseData.clinicalData; // 送检日期
+                }
+                if (![null, undefined].includes(document.getElementById("imgCheck"))) {
+                    document.getElementById("imgCheck").innerHTML = caseData.imgCheck; // 影像学检查
+                }
+                if (![null, undefined].includes(document.getElementById("originDiagnosis"))) {
+                    document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis; // 原诊断意见
+                }
+                if (![null, undefined].includes(document.getElementById("general"))) {
+                    document.getElementById("general").innerHTML = caseData.general; // 大体所见
+                }
             } else if (caseData.caseType === "TBS") {
-                document.getElementById("sampleQuality").innerHTML = `${caseData.isSatisfied};${caseData.unsatisfiedReason}`;
-                document.getElementById("component").innerHTML = caseData.component;
-                document.getElementById("inflammation").innerHTML = caseData.inflammation;
-                document.getElementById("reactChange").innerHTML = caseData.reactChange;
-                document.getElementById("pathogen").innerHTML = caseData.pathogen;
-
-                document.getElementById("squamousCell").innerHTML = caseData.squamousCell;
-                document.getElementById("glandularCell").innerHTML = caseData.glandularCell;
-                document.getElementById("otherAnalysis").innerHTML = caseData.otherAnalysis;
+                if (![null, undefined].includes(document.getElementById("sampleQuality"))) {
+                    document.getElementById("sampleQuality").innerHTML =
+                        `${caseData.isSatisfied};${caseData.unsatisfiedReason}`; // 标本质量
+                }
+                if (![null, undefined].includes(document.getElementById("component"))) {
+                    document.getElementById("component").innerHTML = caseData.component; // 细胞成分
+                }
+                if (![null, undefined].includes(document.getElementById("inflammation"))) {
+                    document.getElementById("inflammation").innerHTML = caseData.inflammation; // 炎症
+                }
+                if (![null, undefined].includes(document.getElementById("reactChange"))) {
+                    document.getElementById("reactChange").innerHTML = caseData.reactChange; // 反应性改变
+                }
+                if (![null, undefined].includes(document.getElementById("pathogen"))) {
+                    document.getElementById("pathogen").innerHTML = caseData.pathogen; // 病原体
+                }
+                if (![null, undefined].includes(document.getElementById("squamousCell"))) {
+                    document.getElementById("squamousCell").innerHTML = caseData.squamousCell; // 鳞状上皮细胞分析
+                }
+                if (![null, undefined].includes(document.getElementById("glandularCell"))) {
+                    document.getElementById("glandularCell").innerHTML = caseData.glandularCell; // 腺上皮细胞分析
+                }
+                if (![null, undefined].includes(document.getElementById("otherAnalysis"))) {
+                    document.getElementById("otherAnalysis").innerHTML = caseData.otherAnalysis; // 其它分析
+                }
             }
 
             if (annotationUrl.length > 0) {
                 for (let i = 0; i < 3; i++) {
-                    if (i < annotationUrl.length) { // 上限3个标注图
-                        document.getElementById(`annotation${i}`).setAttribute('src', annotationUrl[i].annotationUrl); // 标注图   
-                    } else { document.getElementById(`annotation${i}`).setAttribute('style', "display:none;"); } // 标注图 
+                    if (![null, undefined].includes(document.getElementById(`annotation${i}`))) {
+                        if (i < annotationUrl.length) { // 上限3个标注图
+                            document.getElementById(`annotation${i}`).setAttribute('src', annotationUrl[i].annotationUrl); // 标注图   
+                        } else { document.getElementById(`annotation${i}`).setAttribute('style', "display:none;"); } // 标注图 
+                    }
                 }
+
             }
-            document.getElementById("diagnosis").innerHTML = caseData.diagnosis;
-            document.getElementById("signImg").setAttribute('src', 'upload/' + caseData.signPath); // 电子签名
-            document.getElementById("diagnoseDate").innerHTML += caseData.diagnoseDate; // 诊断日期
+            if (![null, undefined].includes(document.getElementById("diagnosis"))) {
+                document.getElementById("diagnosis").innerHTML = caseData.diagnosis; // 其它分析
+            }
+            if (![null, undefined].includes(document.getElementById("signImg"))) {
+                document.getElementById("otherAnalysis").setAttribute('src', 'upload/' + caseData.signPath); // 电子签名
+            }
+            if (![null, undefined].includes(document.getElementById("diagnoseDate"))) {
+                document.getElementById("diagnoseDate").innerHTML = caseData.diagnoseDate; // 诊断日期
+            }
         }, caseData);
         await page.waitForTimeout(1000); // 等待图片加载完成
         // await page.screenshot({

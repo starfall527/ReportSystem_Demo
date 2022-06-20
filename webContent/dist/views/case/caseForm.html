@@ -397,15 +397,18 @@
                 [{
                         field: 'radio',
                         type: 'radio',
-                        fixed: 'left'
+                        fixed: 'left',
+                        minWidth: 120,
                     },
                     {
                         field: 'userName',
                         title: '专家名',
+                        width: 360,
                         minWidth: 120,
                     }, {
                         field: 'subspecialty',
                         title: '擅长亚专科',
+                        width: 1280,
                         minWidth: 120,
                     },
                 ]
@@ -560,6 +563,8 @@
                 caseData[element] = data.field[element]; //逐个赋值
             });
             step.next('#stepForm');
+            form.render('table');
+            table.render();
             return false;
         });
 
