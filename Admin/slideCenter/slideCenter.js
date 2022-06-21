@@ -475,17 +475,14 @@ router_slideCenter.get('/annotationTable', function(req, res) {
             annotations.forEach(element => {
                 element.annotationUrl = getAnnotationImage(annotationPath, '', element.id);
                 tableData.push(element);
-                console.log(element);
                 if (element.id === annotations[annotations.length - 1].id) {
-                    console.log(annotationPath)
-                    console.log(data[data.length - 1])
-                    if (annotationPath === data[data.length - 1]) {
+                    if (annotationPath === data[data.length - 1]) { // 最后一个切片最后一个标注数据,直接返回
                         checkFlag = true;
                     }
                 };
             });
             if (annotations.length === 0 && annotationPath === data[data.length - 1]) {
-                checkFlag = true;
+                checkFlag = true; // 如果最后一个切片没有标注数据,则直接返回
             }
         });
     });
@@ -507,7 +504,7 @@ router_slideCenter.get('/annotationTable', function(req, res) {
             res.send(json);
         } else {
             timeout += 200;
-            if (timeout >= 5000) {
+            if (timeout >= 5000) { // 设置超时5秒
                 clearInterval(check);
                 res.send({
                     code: 500,

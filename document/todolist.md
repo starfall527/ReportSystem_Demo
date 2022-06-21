@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-06-07 17:58:39
- * @LastEditTime: 2022-06-20 09:57:54
+ * @LastEditTime: 2022-06-21 14:49:50
  * @FilePath: \ReportSystem_Demo\document\todolist.md
 -->
 
@@ -35,5 +35,5 @@ pdf分文件夹(√)
 6.17 更新需求
 电子签名二值化去掉背景(背景白)
 修各种bug
-pdf生成的时候做保护 检查各项属性
+pdf生成的时候做保护 检查各项属性(√)
 没有标注的切片 不能在新建病例时被选中

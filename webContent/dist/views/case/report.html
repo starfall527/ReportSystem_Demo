@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-06-13 12:02:09
- * @LastEditTime: 2022-06-14 15:38:50
+ * @LastEditTime: 2022-06-21 15:38:47
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\report.html
 -->
 <style>
@@ -38,7 +38,7 @@
             let path = '../../../../../../' + params.reportPath;
             $(document).ready(function () {
                 var viewer = 'dist/lib/extend/PDFjs/web/viewer.html';
-                $("#viewInfo").attr('src', `${viewer}?file=${path}`); //文件流预览
+                $("#viewInfo").attr('src', `${viewer}?file=${path}?${Math.floor(Math.random() * 100 + 1)}`); //文件流预览
             });
         })
     };

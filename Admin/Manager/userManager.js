@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-16 15:06:13
+ * @LastEditTime 2022-06-21 15:07:11
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -12,6 +12,7 @@ const router_user = express.Router();
 const logger = require('log4js').getLogger('user');
 const config = require('../config.js');
 const md5 = require('md5');
+const cv = require('opencv4nodejs');
 
 /***
  * @description: USER表定义
@@ -428,9 +429,15 @@ router_user.post('/uploadSign', function(req, res) {
         if (part.filename) {
             let uploadDir = 'upload/sign'; // 指定文件存储目录
             fileName = `${userID}_sign` + part.filename.slice(part.filename.lastIndexOf('.'));
+            let fullPath = path.join(process.cwd(), uploadDir, fileName);
             sqlMacros.sqlMultiUpdate(['sign'], ['/sign/' + fileName], 'USER', 'id', userID); // * 存在数据库的路径,去掉upload,方便前端加载
-            const writeStream = fs.createWriteStream(path.join(uploadDir, fileName)) // 保存文件
+            const writeStream = fs.createWriteStream(fullPath); // 保存文件
             part.pipe(writeStream);
+            setTimeout(() => {
+                let mat = cv.imread(fullPath);
+                let result = Otsu(mat, fullPath);
+                cv.imwrite(fullPath, result);
+            }, 300);
         }
 
         var json = {
@@ -473,6 +480,13 @@ router_user.post('/setPassword', function(req, res) {
         res.send(json);
     }
 });
+
+function Otsu(img) {
+    let gray = img.cvtColor(cv.COLOR_BGR2GRAY);
+    let thresh_output = gray.threshold(cv.THRESH_OTSU - 30, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
+    // cv.imshow('thresh_output', thresh_output);
+    return thresh_output;
+}
 
 module.exports = {
     router_user

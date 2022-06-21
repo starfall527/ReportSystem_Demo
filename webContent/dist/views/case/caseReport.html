@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-16 11:49:09
+ * @LastEditTime: 2022-06-21 15:58:32
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -526,6 +526,9 @@
                     annotation.push(element);
                 });
                 data.field.annotation = JSON.stringify(annotation);
+                ['unsatisfiedReason', 'component', 'reactChange', 'pathogen', 'otherAnalysis', 'annotation'].forEach(element => {
+                    caseData[element] = data.field[element]; // 更新页面数据到caseData中
+                });
 
                 admin.req({
                     url: 'api/case/update',
@@ -549,6 +552,7 @@
                         }
                         setTimeout(() => {
                             window.location.href = `./#/case/caseExpert`;
+                            table.reload('case-table');
                         }, 3000);
                     },
                 })

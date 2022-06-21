@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-20 10:41:27
+ * @LastEditTime 2022-06-21 15:33:54
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -235,6 +235,10 @@ router_case.post('/query', function(req, res) {
 router_case.get('/delete', function(req, res) {
     let data = req.query;
     let result = sqlMacros.sqlDelete('id', data.id, 'pathCase'); //删除所选数据
+    let reportPath = path.join(process.cwd(), '/upload/', data.reportPath);
+    if (fs.existsSync(reportPath) && ![null, '', undefined].includes(data.reportPath)) {
+        fs.unlinkSync(reportPath); // * 删除相关pdf文件
+    }
     var json = { code: 200, msg: '成功' };
     res.send(json);
 });
@@ -266,7 +270,6 @@ router_case.post('/insert', function(req, res) {
     } else { json = { code: 500, msg: '新增病例失败' }; }
     res.send(json);
 });
-
 
 /*** @note  发起会诊
  * @api {post} /api/case/startConsultation 新增玻片数据
@@ -376,6 +379,7 @@ router_case.post('/edit', function(req, res) {
 });
 
 const puppeteer = require("puppeteer");
+const { resolve } = require("path");
 /*** @note  生成报告
  * @description: 生成报告
  * @param {*} openReport
@@ -410,32 +414,42 @@ router_case.get('/openReport', function(req, res) {
                 }
             }
 
+            let error = [];
             if (![null, undefined].includes(document.getElementById("pathologyNumLabel"))) {
                 document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
+                error.push(1);
             }
             if (![null, undefined].includes(document.getElementById("patNameLabel"))) {
                 document.getElementById("patNameLabel").innerHTML += caseData.patName; // 病人姓名
+                error.push(2);
             }
             if (![null, undefined].includes(document.getElementById("genderLabel"))) {
                 document.getElementById("genderLabel").innerHTML += caseData.gender; // 性别
+                error.push(3);
             }
             if (![null, undefined].includes(document.getElementById("ageLabel"))) {
                 document.getElementById("ageLabel").innerHTML += caseData.age; // 年龄
+                error.push(4);
             }
             if (![null, undefined].includes(document.getElementById("doctorLabel"))) {
                 document.getElementById("doctorLabel").innerHTML += caseData.doctor; // 医生
+                error.push(5);
             }
             if (![null, undefined].includes(document.getElementById("samplePartLabel"))) {
                 document.getElementById("samplePartLabel").innerHTML += caseData.samplePart; // 取样位置
+                error.push(6);
             }
             if (![null, undefined].includes(document.getElementById("historyLabel"))) {
-                document.getElementById("history").innerHTML += caseData.history; // 病史
+                document.getElementById("historyLabel").innerHTML += caseData.history; // 病史
+                error.push(7);
             }
             if (![null, undefined].includes(document.getElementById("unitLabel"))) {
                 document.getElementById("unitLabel").innerHTML += caseData.unit; // 送检单位
+                error.push(8);
             }
             if (![null, undefined].includes(document.getElementById("inspectionDateLabel"))) {
                 document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate; // 送检日期
+                error.push(9);
             }
 
             if (caseData.caseType === "Normal") {
@@ -493,12 +507,16 @@ router_case.get('/openReport', function(req, res) {
                 document.getElementById("diagnosis").innerHTML = caseData.diagnosis; // 其它分析
             }
             if (![null, undefined].includes(document.getElementById("signImg"))) {
-                document.getElementById("otherAnalysis").setAttribute('src', 'upload/' + caseData.signPath); // 电子签名
+                document.getElementById("signImg").setAttribute('src',
+                    'upload/' + caseData.signPath + '?' + Math.floor(Math.random() * 100 + 1)); // 电子签名
             }
             if (![null, undefined].includes(document.getElementById("diagnoseDate"))) {
                 document.getElementById("diagnoseDate").innerHTML = caseData.diagnoseDate; // 诊断日期
             }
-        }, caseData);
+            return error;
+        }, caseData).then(error => {
+            // console.log(error);
+        });
         await page.waitForTimeout(1000); // 等待图片加载完成
         // await page.screenshot({
         //     path: './' + caseData.pathologyNum + '.png'

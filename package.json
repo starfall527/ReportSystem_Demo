@@ -33,6 +33,7 @@
         "lz-string": "^1.4.4",
         "md5": "^2.3.0",
         "multiparty": "^4.2.3",
+        "opencv4nodejs": "^5.6.0",
         "phantomjs-prebuilt": "^2.1.16",
         "puppeteer": "^14.2.0",
         "qr-image": "^3.2.0",
