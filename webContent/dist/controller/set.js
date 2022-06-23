@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-23 09:50:20
- * @LastEditTime 2022-06-16 15:28:16
+ * @LastEditTime 2022-06-23 13:53:53
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\set.js
  */
 /** layuiAdmin.pro-v1.4.0 LPPL License By https://www.layui.com/admin/ */
@@ -47,7 +47,6 @@ layui.define(["form", "upload", 'admin'], function(t) {
             if (200 == res.code) { e.msg('上传签名成功') } else { e.msg('上传签名失败') }
             let randomUrl = res.url += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
             document.getElementById("preview").setAttribute('value', randomUrl);
-
         },
         error: function(err) { console.log(err); }
     });

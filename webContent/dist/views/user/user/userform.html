@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-03-23 09:50:21
- * @LastEditTime: 2022-06-14 16:04:54
+ * @LastEditTime: 2022-06-23 10:16:26
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\user\user\userForm.html
 -->
 <div class="layui-form" lay-filter="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
@@ -36,10 +36,16 @@
         <div class="layui-inline">
             <label class="layui-form-label">角色</label>
             <div class="layui-input-block">
-                <select lay-verify="required" name="role" id="role-select" lay-filter="role" value="{{ d.params.role || '' }}" style="max-height: 50px;">
-
-                </select>
+                <select lay-verify="required" name="role" id="role-select" lay-filter="role" value="{{ d.params.role || '' }}" style="max-height: 50px;"> </select>
             </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">组织名</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="organization" value="{{ d.params.organization || '' }}" lay-verify="required" placeholder="请输入组织名" autocomplete="off" class="layui-input">
+            </script>
         </div>
     </div>
     <!-- <div class="layui-form-item">

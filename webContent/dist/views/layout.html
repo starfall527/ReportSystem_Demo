@@ -61,6 +61,10 @@
                     <a href="javascript:;">
                         <cite>{{ d.data.userName }}</cite>
                     </a>
+                    {{# if (d.msg == "登录已过期") {
+                        layer.msg('登录已过期,请重新登陆');
+                        top.location.href = '#/user/login';
+                    }}}
                     <dl class="layui-nav-child">
                         <dd><a lay-href="set/user/info">基本资料</a></dd>
                         <dd><a lay-href="set/user/password">修改密码</a></dd>

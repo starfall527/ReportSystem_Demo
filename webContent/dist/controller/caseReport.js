@@ -1,4 +1,4 @@
-layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
+layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function() {
     var $ = layui.$,
         admin = layui.admin,
         element = layui.element,
@@ -14,7 +14,7 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
         data: [{
             name: '张三',
             value: 1
-        },{
+        }, {
             name: '张三',
             value: 1
         }]
@@ -35,7 +35,7 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
                 id: router.search.caseID
             }
         }),
-        success: function (res) { // 查询到病例数据,设置各种监听,以及html文本
+        success: function(res) { // 查询到病例数据,设置各种监听,以及html文本
             if (res.count > 0) {
                 // console.log(JSON.stringify(res.data[0]));
                 caseData = res.data[0];
@@ -59,17 +59,8 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
                     .userName;
 
                 slideUrl = JSON.parse(caseData.slideUrl);
-
-                // document.getElementById("appendix").innerHTML = `<div class=\"layui-col-md2 layui-col-sm4\">
-                //     <div class=\"slide-container\">
-                //         <a href=\"javascript:;\">
-                //             <script type=\"text\/html\" template><img src=\"{{ layui.setter.base }}style\/res\/template\/portrait.png\"><\/script>
-                //         <\/a>
-                //     <\/div>
-                // <\/div>`
-
                 // @note 查看切片
-                $('#openSlide').on('click', function () {
+                $('#openSlide').on('click', function() {
                     layer.open({
                         type: 2,
                         title: '切片',
@@ -81,7 +72,7 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
                 });
 
                 // @note 表格提交
-                form.on('submit(form-report)', function (data) {
+                form.on('submit(form-report)', function(data) {
                     data.field.status = caseStatus;
                     admin.req({
                         url: 'api/case/update',
@@ -91,7 +82,7 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
                             data: data.field,
                             caseID: caseData.id
                         }),
-                        success: function (res) {
+                        success: function(res) {
                             if (caseStatus === "专家退回") {
                                 layer.msg("退回成功,将返回列表");
                             } else if (caseStatus === "诊断完成") {
@@ -102,24 +93,24 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
                                     `./#/case/caseExpert`;
                             }, 2000);
                         },
-                        done: function (res) {}
+                        done: function(res) {}
                     })
                     return false;
                 });
 
                 // @note 表格提交
-                form.on('submit(chooseReportImg)', function (data) {
+                form.on('submit(chooseReportImg)', function(data) {
                     admin.popup({
                         title: '选择报告用图',
                         area: ['800px', '600px'], // 为防止窗口变形,设置弹窗宽度至少为400px
                         id: 'popup-chooseReportImg',
-                        success: function (layero, index) {
+                        success: function(layero, index) {
                             view(this.id).render(
                                 'case/annotationList', {
                                     path: {
                                         path: slideUrl[0].path
                                     }
-                                }).done(function () {})
+                                }).done(function() {})
                         }
                     })
                 });
@@ -128,19 +119,19 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
                 window.location.href = `./#/case/caseExpert`;
             }
         },
-        done: function (res) {}
+        done: function(res) {}
     })
 
     // @note 按钮监听
-    $('.operation-btn .layui-btn').on('click', function () {
+    $('.operation-btn .layui-btn').on('click', function() {
         var type = $(this).data('type');
         active[type] ? active[type].call(this) : '';
     });
     var active = {
-        returnReport: function () {
+        returnReport: function() {
             caseStatus = '专家退回';
         },
-        chooseReportImg: function () { // * 复制url
+        chooseReportImg: function() { // * 复制url
             var checkStatus = table.checkStatus('slide-table-list'),
                 checkData = checkStatus.data[0];
             if (checkData === undefined) {
@@ -150,11 +141,11 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function () {
                     title: '选择报告用图',
                     area: ['800px', '600px'], // 为防止窗口变形,设置弹窗宽度至少为400px
                     id: 'popup-chooseReportImg',
-                    success: function (layero, index) {
+                    success: function(layero, index) {
                         view(this.id).render(
                             'case/annotationList', {
                                 path: checkData
-                            }).done(function () {})
+                            }).done(function() {})
                     }
                 })
             }

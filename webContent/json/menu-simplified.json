@@ -1,32 +1,35 @@
 {
-    "code": 200,
-    "msg": "",
-    "data": [{
-        "name": "slideCenter",
-        "title": "切片管理",
-        "icon": "layui-icon-auz",
-        "jump": "slideCenter/slideCenter"
-    }, {
-        "name": "caseManage",
-        "title": "病例管理",
-        "icon": "layui-icon-auz",
-        "jump": "case/caseUpload"
-    }, {
-        "name": "user",
-        "title": "用户",
-        "icon": "layui-icon-user",
-        "list": [{
-            "name": "user",
-            "title": "网站用户",
-            "jump": "user/user/list"
-        }, {
-            "name": "administrators-list",
-            "title": "后台管理员",
-            "jump": "user/administrators/list"
-        }, {
-            "name": "administrators-rule",
-            "title": "角色管理",
-            "jump": "user/administrators/role"
-        }]
-    }]
+	"code": 200,
+	"msg": "",
+	"data": [
+		{
+			"name": "slideCenter",
+			"title": "切片管理",
+			"icon": "layui-icon-auz",
+			"jump": "slideCenter/slideCenter"
+		},
+		{
+			"name": "caseManage",
+			"title": "病例管理",
+			"icon": "layui-icon-auz",
+			"jump": "case/caseUpload"
+		},
+		{
+			"name": "user",
+			"title": "用户",
+			"icon": "layui-icon-user",
+			"list": [
+				{
+					"name": "user",
+					"title": "用户管理",
+					"jump": "user/user/list"
+				},
+				{
+					"name": "administrators-rule",
+					"title": "角色管理",
+					"jump": "user/administrators/role"
+				}
+			]
+		}
+	]
 }

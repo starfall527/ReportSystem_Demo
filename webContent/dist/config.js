@@ -13,7 +13,6 @@ layui.define(['laytpl', 'layer', 'element', 'util'], function(exports){
     ,base: layui.cache.base //记录layuiAdmin文件夹所在路径
     ,views: layui.cache.base + 'views/' //视图所在目录
     ,entry: 'slideCenter/slideCenter' //默认视图文件名
-    // ,entry: 'user/login' //默认视图文件名 可改成登录界面
     ,engine: '.html' //视图文件后缀名
     ,pageTabs: false //是否开启页面选项卡功能。单页版不推荐开启
 

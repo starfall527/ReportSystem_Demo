@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-21 15:07:11
+ * @LastEditTime 2022-06-23 15:15:47
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -31,6 +31,7 @@ const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
      id INTEGER not null PRIMARY KEY AUTOINCREMENT ,
      role VARCHAR(255) NOT NULL ,
      userName VARCHAR(255) NOT NULL unique ,
+     organization VARCHAR(255) ,
      name VARCHAR(255) ,
      phone VARCHAR(255) ,
      password VARCHAR(255) ,
@@ -42,7 +43,7 @@ const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
      date timestamp NOT NULL default (datetime('now','localtime'))
      )`);
 
-// sqlMacros.sqlAlter('USER','subspecialty','VARCHAR(255)',''); //新增字段
+sqlMacros.sqlAlter('USER', 'organization', 'VARCHAR(255)', ''); //新增字段
 
 /***
  * @description: ROLE表定义
@@ -189,17 +190,21 @@ router_user.get('/login', function(req, res) {
     } else {
         let role = sqlMacros.sqlSelect('*', 'ROLE', true, 'role', user[0].role);
         if (user[0].role === "专家端") {
-            menu.data.forEach(element => {
-                if (element.title === "病例管理") {
-                    element.jump = "case/caseExpert";
-                }
-            });
+            menu = config.readConfigFile('./webContent/json/menu-expert.json');
+            // menu.data.forEach(element => {
+            //     if (element.title === "病例管理") {
+            //         element.jump = "case/caseExpert";
+            //     }
+            // });
         } else if (user[0].role === "上传端") {
-            menu.data.forEach(element => {
-                if (element.title === "病例管理") {
-                    element.jump = "case/caseUpload";
-                }
-            });
+            menu = config.readConfigFile('./webContent/json/menu-upload.json');
+            // menu.data.forEach(element => {
+            //     if (element.title === "病例管理") {
+            //         element.jump = "case/caseUpload";
+            //     }
+            // });
+        } else if (user[0].role === "管理员") {
+            menu = config.readConfigFile('./webContent/json/menu-admin.json');
         }
     }
     config.writeConfigFile('data', menu.data, './webContent/json/menu.json');
@@ -248,7 +253,7 @@ router_user.get('/getSessionData', function(req, res) {
             "userName": userName
         }
     }
-    json.code = flag ? 200 : 500;
+    json.code = flag ? 200 : 200; // * 目前根据msg进行判断,平滑切换到login.html 避免Alert弹窗给用户不好的体验
     json.msg = flag ? '' : '登录已过期';
     res.send(json);
 });
@@ -274,8 +279,8 @@ router_user.post('/insert', function(req, res) {
     if (role.length === 0) {
         logger.error('role not exist');
     } else {
-        var reqValues = [data.userName, data.userName, data.password, data.phone, data.role, role[0].authorization];
-        var reqKeys = ['userName', 'name', 'password', 'phone', 'role', 'authorization'];
+        var reqValues = [data.userName, data.userName, data.password, data.phone, data.organization, data.role, role[0].authorization];
+        var reqKeys = ['userName', 'name', 'password', 'phone', 'organization', 'role', 'authorization'];
         let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'USER');
     }
     var json = {
@@ -437,13 +442,13 @@ router_user.post('/uploadSign', function(req, res) {
                 let mat = cv.imread(fullPath);
                 let result = Otsu(mat, fullPath);
                 cv.imwrite(fullPath, result);
-            }, 300);
+            }, 100);
         }
 
         var json = {
             code: 200,
             msg: '成功',
-            url: '/sign/' + fileName
+            url: '/sign/' + fileName // * 前端的路径从upload开始算
         };
         res.send(json);
     })
@@ -483,7 +488,7 @@ router_user.post('/setPassword', function(req, res) {
 
 function Otsu(img) {
     let gray = img.cvtColor(cv.COLOR_BGR2GRAY);
-    let thresh_output = gray.threshold(cv.THRESH_OTSU - 30, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
+    let thresh_output = gray.threshold(cv.THRESH_OTSU, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
     // cv.imshow('thresh_output', thresh_output);
     return thresh_output;
 }

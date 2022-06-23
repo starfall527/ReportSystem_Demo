@@ -1,3 +1,10 @@
+<!--
+ * @Author: cwx
+ * @Description: 角色管理
+ * @Date: 2022-03-23 09:50:21
+ * @LastEditTime: 2022-06-22 14:58:35
+ * @FilePath: \ReportSystem_Demo\webContent\dist\views\user\administrators\roleForm.html
+-->
 <div class="layui-form" lay-filter="layuiadmin-form-role" style="padding: 20px 30px 0 0;">
     <div class="layui-form-item">
         <label class="layui-form-label">角色</label>
@@ -26,8 +33,7 @@
         <label class="layui-form-label">具体描述</label>
         <div class="layui-input-block">
             <script type="text/html" template>
-                <textarea type="text" name="description" id="description" lay-verify="" autocomplete="off"
-                    class="layui-textarea">{{ d.params.description || '' }}</textarea>
+                <textarea type="text" name="description" id="description" lay-verify="" autocomplete="off" class="layui-textarea">{{ d.params.description || '' }}</textarea>
             </script>
         </div>
     </div>
@@ -40,11 +46,8 @@
 </div>
 
 <script>
-    layui.use(['admin', 'form'], function () {
+    layui.use(['admin', 'form'], function() {
         var $ = layui.$,
             form = layui.form;
-
-
-
     });
 </script>

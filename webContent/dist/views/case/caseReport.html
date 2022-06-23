@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-21 15:58:32
+ * @LastEditTime: 2022-06-23 16:21:51
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -372,9 +372,7 @@
             url: 'api/case/query',
             type: 'POST',
             contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify({
-                data: { id: router.search.caseID }
-            }),
+            data: JSON.stringify({ data: { id: router.search.caseID } }),
             success: function(res) { // 查询到病例数据,设置各种监听,以及html文本
                 if (res.count > 0) {
                     caseData = res.data[0];

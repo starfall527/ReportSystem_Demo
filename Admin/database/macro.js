@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-13 11:13:30
+ * @LastEditTime 2022-06-21 17:09:11
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -128,10 +128,11 @@ function sqlQuery(key1, tableName, keys2, keys2value, type) {
         }
         sqlString += queryArrayString;
     }
-    logger.info(sqlString);
-    // todo 这里做个保护,如果查不到,则返回空数组(或者是[{}]),不要返回undefined
-    // todo 这样的话 之前用length的判断都作废了
-    return db.prepare(sqlString).all();
+    let data = db.prepare(sqlString).all();
+    if (data === undefined) {
+        return []; // 保护,至少返回一个空数组,后续判断使用data.length判别
+    }
+    return data;
 }
 
 
@@ -168,7 +169,7 @@ function sqlMultiUpdate(keys1, keys1value, tableName, keys2, keys2value, type) {
     let checkArray = [keys1, keys1value];
     if (['AND', 'OR'].includes(type)) {
         checkArray.push(keys2, keys2value);
-        checkArray.forEach(function (element) {
+        checkArray.forEach(function(element) {
             if (typeof element !== 'object') {
                 logger.error(`input params type incorrect, ${element} is not an array`); // 提醒参数类型错误
             }
@@ -204,7 +205,7 @@ function sqlMultiUpdate(keys1, keys1value, tableName, keys2, keys2value, type) {
         sqlString += `${keys2} = '${keys2value}' `;
     }
 
-    logger.warn(sqlString);
+    // logger.warn(sqlString);
     return db.prepare(sqlString).run();
 }
 
@@ -327,7 +328,7 @@ function getPageData(sqlData, page, limit) {
  * @return {*}
  */
 function sqlTransaction(sqlStringArray) {
-    const transaction = db.transaction(function (array) {
+    const transaction = db.transaction(function(array) {
         for (let i = 0; i < array.length; i++) {
             db.prepare(array[i]).run();
         }
@@ -353,6 +354,7 @@ function sqlExecute(sqlString) {
  * @return {*}
  */
 function sqlAlter(table, property, type, additions) {
+    additions = additions === undefined ? '' : additions;
     let tableInfo = db.prepare(`SELECT * FROM sqlite_master`).all();
     tableInfo.forEach(element => {
         if (element.name == table) {

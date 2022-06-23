@@ -22,7 +22,7 @@
                                     <div class="layui-inline">
                                         <label class="layui-form-label">病例类型</label>
                                         <div class="layui-input-block">
-                                            <select name="caseType" lay-filter="caseType" lay-verify="required">
+                                            <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
                                                 <option value="Normal">常规病例</option>
                                                 <option value="TBS">TBS病例</option>
                                             </select>
@@ -34,21 +34,21 @@
                                     <div class="layui-inline">
                                         <label class="layui-form-label">病理号</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="pathologyNum" lay-verify="required" class="layui-input">
+                                            <input type="text" name="pathologyNum" id="pathologyNum" lay-verify="required" class="layui-input">
                                         </div>
                                     </div>
 
                                     <div class="layui-inline">
                                         <label class="layui-form-label">患者姓名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="patName" lay-verify="required" class="layui-input">
+                                            <input type="text" name="patName" id="patName" lay-verify="required" class="layui-input">
                                         </div>
                                     </div>
 
                                     <div class="layui-inline">
                                         <label class="layui-form-label">性别</label>
                                         <div class="layui-input-block">
-                                            <select name="gender" lay-filter="gender">
+                                            <select name="gender" id="gender" lay-filter="gender">
                                                 <option value="未知"></option>
                                                 <option value="男">男</option>
                                                 <option value="女">女</option>
@@ -59,7 +59,7 @@
                                     <div class="layui-inline">
                                         <label class="layui-form-label">年龄</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="age" lay-verify="" class="layui-input">
+                                            <input type="text" name="age" id="age" lay-verify="" class="layui-input">
                                         </div>
                                     </div>
                                 </div>
@@ -68,14 +68,25 @@
                                     <div class="layui-inline">
                                         <label class="layui-form-label">民族</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="nation" lay-verify="" class="layui-input">
+                                            <input type="text" name="nation" id="nation" lay-verify="" class="layui-input">
                                         </div>
                                     </div>
-
                                     <div class="layui-inline">
                                         <label class="layui-form-label">出生日期</label>
                                         <div class="layui-input-inline">
-                                            <input type="text" name="birthDate" id="LAY-component-form-group-date" lay-verify="" placeholder="" class="layui-input">
+                                            <input type="text" name="birthDate" id="birthDate" lay-verify="" placeholder="" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">医生名</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="doctor" id="doctor" lay-verify="" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">医院名</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="hosName" id="hosName" lay-verify="" class="layui-input">
                                         </div>
                                     </div>
                                 </div>
@@ -84,13 +95,13 @@
                                     <div class="layui-inline">
                                         <label class="layui-form-label">取材部位</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="samplePart" lay-verify="required" class="layui-input">
+                                            <input type="text" name="samplePart" id="samplePart" lay-verify="required" class="layui-input">
                                         </div>
                                     </div>
                                     <div class="layui-inline">
                                         <label class="layui-form-label">亚专科</label>
                                         <div class="layui-input-inline">
-                                            <select name="subspecialty" lay-verify="required">
+                                            <select name="subspecialty" id="subspecialty" lay-verify="required">
                                                 <option value="未知">请选择</option>
                                                 <option value="神经病理">神经病理</option>
                                                 <option value="淋巴病理">淋巴病理</option>
@@ -120,15 +131,8 @@
                                     </div>
                                     <div class="layui-inline">
                                         <label class="layui-form-label">送检单位</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="unit" lay-verify="" class="layui-input">
-                                        </div>
-                                    </div>
-
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">医院名</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="hosName" lay-verify="" class="layui-input">
+                                        <div class="layui-input-block" style="width: 320px;">
+                                            <input type="text" name="unit" id="unit" lay-verify="" class="layui-input">
                                         </div>
                                     </div>
                                 </div>
@@ -159,7 +163,7 @@
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">临床资料</label>
                                             <div class="layui-input-block">
-                                                <textarea name="clinicalData" class="layui-textarea" placeholder="必选项,请填写" id="clinicalData"></textarea>
+                                                <textarea name="clinicalData" id="clinicalData" class="layui-textarea" placeholder="必选项,请填写"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -167,7 +171,7 @@
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">病史</label>
                                             <div class="layui-input-block">
-                                                <textarea name="history" class="layui-textarea" id="history"></textarea>
+                                                <textarea name="history" id="history" class="layui-textarea"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -177,7 +181,7 @@
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">影像学检查</label>
                                             <div class="layui-input-block">
-                                                <textarea name="imgCheck" class="layui-textarea" id="imgCheck"></textarea>
+                                                <textarea name="imgCheck" id="imgCheck" class="layui-textarea"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -185,7 +189,7 @@
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">备注</label>
                                             <div class="layui-input-block">
-                                                <textarea name="note" class="layui-textarea" id="note"></textarea>
+                                                <textarea name="note" id="note" class="layui-textarea"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -195,7 +199,7 @@
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">原诊断意见</label>
                                             <div class="layui-input-block">
-                                                <textarea name="originDiagnosis" class="layui-textarea" placeholder="必选项,请填写" id="originDiagnosis"></textarea>
+                                                <textarea name="originDiagnosis" id="originDiagnosis" class="layui-textarea" placeholder="必选项,请填写"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -204,7 +208,7 @@
                                             <!-- 大体所见 TBS系统中没有这个 需要设置隐藏 -->
                                             <label class="layui-form-label" id="generalLabel">大体所见</label>
                                             <div class="layui-input-block">
-                                                <textarea name="general" class="layui-textarea" placeholder="必选项,请填写" id="general"></textarea>
+                                                <textarea name="general" id="general" class="layui-textarea" placeholder="必选项,请填写"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -357,8 +361,44 @@
             step = layui.stepLay,
             table = layui.table,
             form = layui.form;
+        router = layui.router();
 
         var caseData = {};
+        if (![null, undefined, ''].includes(router.search.caseID)) {
+            admin.req({
+                url: '/api/case/query',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({ data: { id: router.search.caseID } }),
+                success: function(res) {
+                    if (res.data.length > 0) {
+                        caseData = res.data[0];
+                        console.log(caseData);
+                        $('#caseType').val(caseData.caseType);
+                        $('#pathologyNum').val(caseData.pathologyNum);
+                        $('#patName').val(caseData.patName);
+                        $('#gender').val(caseData.gender);
+                        $('#age').val(caseData.age);
+                        $('#nation').val(caseData.nation);
+                        $('#birthDate').val(caseData.birthDate);
+                        $('#samplePart').val(caseData.samplePart);
+                        $('#subspecialty').val(caseData.subspecialty);
+                        $('#inspectionDate').val(caseData.inspectionDate);
+                        $('#unit').val(caseData.unit);
+                        $('#doctor').val(caseData.doctor);
+                        $('#hosName').val(caseData.hosName);
+                        $('#clinicalData').val(caseData.clinicalData);
+                        $('#history').val(caseData.history);
+                        $('#imgCheck').val(caseData.imgCheck);
+                        $('#note').val(caseData.note);
+                        $('#originDiagnosis').val(caseData.originDiagnosis);
+                        $('#general').val(caseData.general);
+                        layui.form.render("select"); //layUI设置
+                    }
+                }
+            });
+        }
+
         form.render('select');
         // select同步筛选条件
         form.on('select(caseType)', function(data) {
@@ -418,7 +458,7 @@
         });
 
         laydate.render({
-            elem: '#LAY-component-form-group-date'
+            elem: '#birthDate'
         });
         laydate.render({
             elem: '#inspectionDate',
@@ -454,7 +494,7 @@
 
         /* 监听表单提交 */
         form.on('submit(queryExpert)', function(data) {
-            let queryData={
+            let queryData = {
                 expertName: $('#expertName').val(),
                 subspecialty: $('#expertSubspecialty').val(),
             };
@@ -495,26 +535,21 @@
                 Object.keys(data.field).forEach(element => {
                     caseData[element] = data.field[element]; //逐个赋值
                 });
-                console.log(caseData);
-                if (caseData.id === undefined) { // 用这个区分是否为新建数据
-                    admin.req({
-                        url: 'api/case/insert',
-                        type: 'POST',
-                        contentType: 'application/json;charset=UTF-8',
-                        data: JSON.stringify({
-                            data: caseData
-                        }),
-                        success: function(res) {
-                            layer.msg('添加成功,即将跳转回列表');
-                            setTimeout(() => {
-                                location.href = './#/case/caseUpload'; // 跳转回列表
-                            }, 1500);
-                        },
-                        done: function(res) {}
-                    })
-                } else {
-                    // todo update数据
-                }
+                admin.req({
+                    url: 'api/case/insert',
+                    type: 'POST',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({
+                        data: caseData
+                    }),
+                    success: function(res) {
+                        layer.msg('操作成功,即将跳转回列表');
+                        setTimeout(() => {
+                            location.href = './#/case/caseUpload'; // 跳转回列表
+                        }, 1500);
+                    },
+                    done: function(res) {}
+                })
             }
             return false;
         });

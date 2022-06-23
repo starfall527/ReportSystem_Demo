@@ -14,7 +14,9 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
         accept: 'images',
         method: 'post',
         acceptMime: 'image/*',
-        done: function() { table.reload("LAY-user-manage"); } // 刷新表格签名图 需要后台返回的路径加上随机数
+        done: function() { setTimeout(() => {
+            table.reload("LAY-user-manage");
+        }, 300); } // 刷新表格签名图 需要后台返回的路径加上随机数
     });
 
     table.render({

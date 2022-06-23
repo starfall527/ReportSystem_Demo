@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 玻片管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-21 15:33:54
+ * @LastEditTime 2022-06-23 17:25:24
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -121,12 +121,26 @@ router_case.get('/table', function(req, res) {
         'Normal': '常规病例',
         'TBS': 'TBS病例',
     };
-    cases.forEach(element => {
-        if (element.doctor === userName) {
-            element.caseTypeDisplay = caseTypeDisplay[element.caseType];
-            result.push(element);
+    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', userName);
+    let mode = 'organization'; // 是否仅看自己的病例
+    if (mode === 'organization') { // 看同组织的病例
+        if (user.length > 0) {
+            cases.forEach(element => {
+                if (element.hosName === user[0].organization) { // 只能看自己建立的病例
+                    element.caseTypeDisplay = caseTypeDisplay[element.caseType];
+                    result.push(element);
+                }
+            });
         }
-    });
+    } else if (mode === 'self') {
+        cases.forEach(element => {
+            if (element.doctor === userName) { // 只看自己建立的病例
+                element.caseTypeDisplay = caseTypeDisplay[element.caseType];
+                result.push(element);
+            }
+        });
+    }
+
     var json = {
         code: 200,
         msg: '成功',
@@ -257,17 +271,21 @@ router_case.post('/insert', function(req, res) {
     reqKeys.push('status');
     reqValues.push('未诊断');
 
-    let user = sqlMacros.sqlQuery('*', 'USER', ['userName'], [data.expert], 'AND');
-    if (user.length > 0) {
-        reqKeys.push('signPath');
-        reqValues.push(user[0].sign);
+    if (reqKeys.includes('id')) { // 编辑病例
+        sqlMacros.sqlMultiUpdate(reqKeys, reqValues, 'pathCase', ['id'], [data.id]);
+    } else { // 新增病例
+        let user = sqlMacros.sqlQuery('*', 'USER', ['userName'], [data.expert], 'AND');
+        if (user.length > 0) {
+            reqKeys.push('signPath');
+            reqValues.push(user[0].sign);
+        }
+        let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
     }
-    let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
     let newCase = sqlMacros.sqlQuery('*', 'pathCase', reqKeys, reqValues, 'AND');
     var json = { code: 200, msg: '成功' };
     if (newCase.length > 0) {
         json.caseID = newCase[0].id;
-    } else { json = { code: 500, msg: '新增病例失败' }; }
+    } else { json = { code: 500, msg: '新增/编辑病例失败' }; }
     res.send(json);
 });
 
@@ -390,7 +408,7 @@ router_case.get('/openReport', function(req, res) {
     var caseData = req.query;
     const option = process.argv;
     var type = caseData.caseType;
-    var address = path.join('file:///', __dirname, `../../report${type}.html`); //  等价于 'file:///E:/ReportSystem_Demo/reportTBS.html';
+    var address = path.join('file:///', __dirname, `../../templet/report${type}.html`); //  路径和caseType相关
     var reportPath = '';
     (async () => {
         if (option.length >= 3) {
@@ -413,43 +431,43 @@ router_case.get('/openReport', function(req, res) {
                     }
                 }
             }
-
             let error = [];
             if (![null, undefined].includes(document.getElementById("pathologyNumLabel"))) {
                 document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
-                error.push(1);
+                error.push("pathologyNumLabel");
             }
             if (![null, undefined].includes(document.getElementById("patNameLabel"))) {
                 document.getElementById("patNameLabel").innerHTML += caseData.patName; // 病人姓名
-                error.push(2);
+                error.push("patNameLabel");
             }
+            // $('#patNameLabel').val($('#patNameLabel').val() + caseData.patName); // 还没验证 可以简化代码
             if (![null, undefined].includes(document.getElementById("genderLabel"))) {
                 document.getElementById("genderLabel").innerHTML += caseData.gender; // 性别
-                error.push(3);
+                error.push("genderLabel");
             }
             if (![null, undefined].includes(document.getElementById("ageLabel"))) {
                 document.getElementById("ageLabel").innerHTML += caseData.age; // 年龄
-                error.push(4);
+                error.push("ageLabel");
             }
             if (![null, undefined].includes(document.getElementById("doctorLabel"))) {
                 document.getElementById("doctorLabel").innerHTML += caseData.doctor; // 医生
-                error.push(5);
+                error.push("doctorLabel");
             }
             if (![null, undefined].includes(document.getElementById("samplePartLabel"))) {
                 document.getElementById("samplePartLabel").innerHTML += caseData.samplePart; // 取样位置
-                error.push(6);
+                error.push("samplePartLabel");
             }
             if (![null, undefined].includes(document.getElementById("historyLabel"))) {
                 document.getElementById("historyLabel").innerHTML += caseData.history; // 病史
-                error.push(7);
+                error.push("historyLabel");
             }
             if (![null, undefined].includes(document.getElementById("unitLabel"))) {
                 document.getElementById("unitLabel").innerHTML += caseData.unit; // 送检单位
-                error.push(8);
+                error.push("unitLabel");
             }
             if (![null, undefined].includes(document.getElementById("inspectionDateLabel"))) {
                 document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate; // 送检日期
-                error.push(9);
+                error.push("inspectionDateLabel");
             }
 
             if (caseData.caseType === "Normal") {

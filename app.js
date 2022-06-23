@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2021-10-21 17:26:04
- * @LastEditTime 2022-06-15 11:32:06
+ * @LastEditTime 2022-06-22 15:35:21
  * @FilePath \ReportSystem_Demo\app.js
  */
 const express = require("express");
@@ -46,7 +46,6 @@ log4js.configure({
     },
     categories: loggerParams
 });
-
 
 global.session = [];
 
