@@ -1,22 +1,10 @@
 /***
  * @Author cwx
- * @Description 玻片管理后端
+ * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-23 17:25:24
+ * @LastEditTime 2022-06-24 10:46:29
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
-
-// * 玻片管理的本质就是打印标签,记录该玻片的病人信息与实验信息 数据格式要能被后续的步骤解析
-// * 与标签打印机的二次开发需求未确定,暂缓
-// * 可能会有与LIS系统通信的需求
-// * pathCase表添加字段, 可从该字段中读取实验信息
-// * 集成标签打印,并能够把实验信息写入二维码中
-// * 二维码承载内容:实验ID,玻片ID
-// let o={
-//      experimentID: "",
-//      caseID: "",
-// }
-
 
 const express = require("express");
 const sqlMacros = require("../database/macro.js");
@@ -58,7 +46,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "status VARCHAR(255) NOT NULL ," + // 病例状态
     "caseType VARCHAR(255) ," + // 病例类型
     "pathologyNum VARCHAR(255) NOT NULL ," + // 病理号
-    "consultationNum VARCHAR(255) NOT NULL ," + // 会诊号
+    "consultationNum VARCHAR(255) ," + // 会诊号
     "patName VARCHAR(255) NOT NULL ," + // 病人姓名
     "patientInfo VARCHAR(255) ," + // 病人信息
     "gender VARCHAR(255) ," + // 性别
@@ -106,7 +94,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "confirmDate timestamp," + // 确认诊断时间
     "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
 );
-// sqlMacros.sqlAlter('pathCase','signPath','TEXT',''); //新增字段
+// sqlMacros.sqlAlter('pathCase','consultationNum','VARCHAR(255)',''); //新增字段
 
 /***
  * @description:@note 查询病例

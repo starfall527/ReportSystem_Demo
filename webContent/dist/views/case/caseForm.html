@@ -373,7 +373,7 @@
                 success: function(res) {
                     if (res.data.length > 0) {
                         caseData = res.data[0];
-                        console.log(caseData);
+                        // console.log(caseData);
                         $('#caseType').val(caseData.caseType);
                         $('#pathologyNum').val(caseData.pathologyNum);
                         $('#patName').val(caseData.patName);
@@ -402,7 +402,7 @@
         form.render('select');
         // select同步筛选条件
         form.on('select(caseType)', function(data) {
-            if (data.value === 'normal') {
+            if (data.value === 'Normal') {
                 $('#general').attr('style', 'display:block');
                 $('#generalLabel').attr('style', 'display:block');
             } else if (data.value === 'TBS') {
@@ -416,20 +416,17 @@
             filter: 'stepForm',
             width: '100%', //设置容器宽度
             stepWidth: '950px',
-            height: '750px',
-            stepItems: [{
-                title: '填写病例信息'
-            }, {
-                title: '选择病例切片'
-            }, {
-                title: '选择会诊专家'
-            }]
+            height: $(document).height() - $('#stepForm').offset().top - 60,
+            stepItems: [{ title: '填写病例信息' },
+                { title: '选择病例切片' },
+                { title: '选择会诊专家' }
+            ]
         });
 
         table.render({
             elem: '#expert-table',
             url: 'api/user/expertTable', //使用后端数据
-            height: 'full-400',
+            height: $(document).height() - $('#expert-table').offset().top - 60,
             response: {
                 statusCode: 200
             },
@@ -514,7 +511,7 @@
             //     success: function(res) {
             //         layer.msg('添加成功,即将跳转回列表');
             //         setTimeout(() => {
-            //             location.href = './#/case/caseUpload'; // 跳转回列表
+            //             top.location.href = './#/case/caseUpload'; // 跳转回列表
             //         }, 1500);
             //     },
             //     done: function(res) {}
@@ -545,7 +542,7 @@
                     success: function(res) {
                         layer.msg('操作成功,即将跳转回列表');
                         setTimeout(() => {
-                            location.href = './#/case/caseUpload'; // 跳转回列表
+                            top.location.href = './#/case/caseUpload'; // 跳转回列表
                         }, 1500);
                     },
                     done: function(res) {}

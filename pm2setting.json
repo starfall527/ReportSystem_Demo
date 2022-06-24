@@ -1,0 +1,13 @@
+{
+    "apps": [{
+        "name": "node",  
+        "script": "app.js", 
+        "cwd": "./",     
+        "exec_mode": "cluster", 
+        "watch": true,
+        "instances": 1,
+        "error_file":"./Logs/pm2error.log",
+        "out_file":"./Logs/pm2out.log",  
+        "log_date_format":"YYYY-MM-DD HH:mm Z" 
+     }]
+ }

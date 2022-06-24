@@ -133,7 +133,7 @@
                                 caseID: params.caseData.id
                             }),
                             success: function (res) {
-                                location.href = './#/case/caseUpload'; // 跳转回列表
+                                top.location.href = './#/case/caseUpload'; // 跳转回列表
                             },
                             done: function (res) {
                                 layui.table.reload('case-table');

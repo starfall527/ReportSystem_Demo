@@ -1,0 +1,21 @@
+<script>
+    layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function() {
+        var $ = layui.$,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            view = layui.view,
+            form = layui.form,
+            table = layui.table;
+
+        let role = layui.data('layuiAdmin').role;
+        if (role == '上传端') {
+            top.location.href = `./#/case/caseUpload`;
+        } else if (role == '专家端') {
+            top.location.href = `./#/case/caseExpert`;
+        } else if (role == '管理员') {
+            top.location.href = `./#/user/user/list`;
+        }
+    });
+</script>

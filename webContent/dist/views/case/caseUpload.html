@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-23 16:47:41
+ * @LastEditTime: 2022-06-24 11:38:21
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -14,7 +14,6 @@
 
 <div class="layui-fluid">
     <div class="layui-row layui-col-space10">
-
         <div class="layui-card">
             <div class="layui-card-header">病例列表（上传端）</div>
             <div class="layui-card-body">
@@ -53,28 +52,25 @@
         table.render({
             elem: '#case-table',
             url: 'api/case/table', //使用后端数据
-            height: 'full-320',
-            response: {
-                statusCode: 200
-            },
-            where: {
-                userName: layui.data('layuiAdmin').userName,
-            },
+            height: $(document).height() - $('#case-table').offset().top - 30, // 'full-240',
+            response: { statusCode: 200 },
+            where: { userName: layui.data('layuiAdmin').userName, },
             filter: {
                 items: ['column', 'data'],
                 bottom: false
             },
             cols: [
-                [{
-                        field: 'radio',
-                        type: 'radio',
-                        fixed: 'left'
-                    },
+                [
+                    // {
+                    //     field: 'radio',
+                    //     type: 'radio',
+                    //     fixed: 'left',
+                    // },
                     {
                         field: 'pathologyNum',
                         title: '病理号',
                         minWidth: 120,
-                        filter: true
+                        // filter: true
                     }, {
                         field: 'caseTypeDisplay',
                         title: '病例类型',
@@ -119,9 +115,7 @@
             ],
             page: true,
             limit: 20,
-            done: function(res) {
-                soulTable.render(this);
-            }
+            done: function(res) { soulTable.render(this); }
         });
 
 
@@ -150,7 +144,7 @@
                 });
             } else if (layEvent === 'edit') { //编辑
                 if (['等待诊断', '未诊断'].includes(data.status)) {
-                    location.href = `./#/case/caseForm/caseID=${data.id}`;
+                    top.location.href = `./#/case/caseForm/caseID=${data.id}`;
                 } else {
                     layer.msg('该病例已诊断，不可编辑')
                 }
@@ -169,9 +163,7 @@
                                 }).done(function() {})
                         }
                     })
-                } else {
-                    layer.msg('暂无报告')
-                }
+                } else { layer.msg('暂无报告') }
             }
         });
 
@@ -181,9 +173,7 @@
             active[type] ? active[type].call(this) : '';
         });
         var active = {
-            newCase: function() {
-                location.href = `./#/case/caseForm`;
-            },
+            newCase: function() { top.location.href = `./#/case/caseForm`; },
             startConsultation: function() {
                 var checkStatus = table.checkStatus('case-table'),
                     checkData = checkStatus.data[0];

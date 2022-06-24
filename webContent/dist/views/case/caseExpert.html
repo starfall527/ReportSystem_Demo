@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-23 15:45:17
+ * @LastEditTime: 2022-06-24 11:36:41
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -33,7 +33,7 @@
 </div>
 
 <script>
-    layui.use(['admin', 'form', 'laydate', 'table', 'view'], function () {
+    layui.use(['admin', 'form', 'laydate', 'table', 'view'], function() {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
@@ -46,13 +46,9 @@
         table.render({
             elem: '#case-table',
             url: 'api/case/expertTable', //使用后端数据
-            height: 'full-320',
-            response: {
-                statusCode: 200
-            },
-            where: {
-                userName: layui.data('layuiAdmin').userName,
-            },
+            height: $(document).height() - $('#case-table').offset().top - 30,
+            response: { statusCode: 200 },
+            where: { userName: layui.data('layuiAdmin').userName, },
             cols: [
                 [{
                         field: 'radio',
@@ -63,7 +59,7 @@
                         field: 'pathologyNum',
                         title: '病理号',
                         minWidth: 120
-                    },{
+                    }, {
                         field: 'caseTypeDisplay',
                         title: '病例类型',
                         minWidth: 120,
@@ -107,7 +103,7 @@
         });
 
         //工具条事件
-        table.on('tool(case-table)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        table.on('tool(case-table)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
@@ -117,27 +113,25 @@
                 // 需要先检查专家有无上传签名
                 if (data.status === '诊断完成') {
                     // layer.msg('诊断已完成'); 
-                    location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${data.caseType}`; // 是否需要限制重复诊断？
+                    top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${data.caseType}`; // 是否需要限制重复诊断？
                 } else {
-                    location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${data.caseType}`;
+                    top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${data.caseType}`;
                 }
             } else if (layEvent === 'openReport') { // 查看报告
-                if (![null, '', undefined].includes(data.reportPath)) {                    
-                    let reportPath = data.reportPath+= '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                if (![null, '', undefined].includes(data.reportPath)) {
+                    let reportPath = data.reportPath += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
                     admin.popup({
                         title: '查看报告',
                         area: ['100%', '100%'],
                         id: 'popup',
-                        success: function (layero, index) {
+                        success: function(layero, index) {
                             view(this.id).render(
                                 'case/report', {
                                     reportPath: reportPath
-                                }).done(function () {})
+                                }).done(function() {})
                         }
                     })
-                } else {
-                    layer.msg('暂无报告')
-                }
+                } else { layer.msg('暂无报告') }
             }
         });
 

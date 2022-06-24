@@ -31,9 +31,7 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function() {
         type: 'POST',
         contentType: 'application/json;charset=UTF-8',
         data: JSON.stringify({
-            data: {
-                id: router.search.caseID
-            }
+            data: { id: router.search.caseID }
         }),
         success: function(res) { // 查询到病例数据,设置各种监听,以及html文本
             if (res.count > 0) {
@@ -89,8 +87,7 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function() {
                                 layer.msg('提交成功,将返回病例列表');
                             }
                             setTimeout(() => {
-                                window.location.href =
-                                    `./#/case/caseExpert`;
+                                window.location.href = `./#/case/caseExpert`;
                             }, 2000);
                         },
                         done: function(res) {}
@@ -107,9 +104,7 @@ layui.use(['admin', 'form', 'laydate', 'view', 'xmSelect'], function() {
                         success: function(layero, index) {
                             view(this.id).render(
                                 'case/annotationList', {
-                                    path: {
-                                        path: slideUrl[0].path
-                                    }
+                                    path: { path: slideUrl[0].path }
                                 }).done(function() {})
                         }
                     })

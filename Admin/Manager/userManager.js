@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-23 15:15:47
+ * @LastEditTime 2022-06-24 11:27:42
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -43,7 +43,7 @@ const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
      date timestamp NOT NULL default (datetime('now','localtime'))
      )`);
 
-sqlMacros.sqlAlter('USER', 'organization', 'VARCHAR(255)', ''); //新增字段
+// sqlMacros.sqlAlter('USER', 'organization', 'VARCHAR(255)', ''); //新增字段
 
 /***
  * @description: ROLE表定义
@@ -225,7 +225,8 @@ router_user.get('/login', function(req, res) {
                 data: {
                     userID: user[0].id,
                     userName: user[0].userName,
-                    access_token: md5(`${user[0].id}${user[0].userName}${Date.now()}`)
+                    access_token: md5(`${user[0].id}${user[0].userName}${Date.now()}`),
+                    role: user[0].role,
                 }
             };
             global.session.push(json.data); // * 暂存在全局变量 待优化

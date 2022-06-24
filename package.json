@@ -17,7 +17,11 @@
         "packageWin": "electron-packager ./ electron --win --arch=x64 --icon=electron.ico --out=./dist --asar --app-version=1.0.0 --electron-version=16.0.5",
         "pkgWin": "pkg -t win app.js",
         "pkg": "pkg package.json -d",
-        "apidoc": "apidoc -i ./Admin/ -o ./document/"
+        "apidoc": "apidoc -i ./Admin/ -o ./document/",
+        "pm2start": "pm2 start pm2setting.json",
+        "pm2stop": "pm2 stop app.js",
+        "pm2list": "pm2 list",
+        "pm2monit": "pm2 monit"
     },
     "author": "cwx",
     "license": "null",
@@ -35,6 +39,7 @@
         "multiparty": "^4.2.3",
         "opencv4nodejs": "^5.6.0",
         "phantomjs-prebuilt": "^2.1.16",
+        "pm2": "^5.2.0",
         "puppeteer": "^14.2.0",
         "qr-image": "^3.2.0",
         "qrcode-reader": "^1.0.4",

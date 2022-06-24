@@ -76,7 +76,7 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
         },
         page: true,
         limit: 30,
-        height: "full-320",
+        height: $(document).height() - $('#LAY-user-manage').offset().top - 30,
         text: "对不起，加载出现异常！",
         done: function() {
             $(".layui-table-main tr").each(function(index, val) {
