@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-24 10:46:29
+ * @LastEditTime 2022-06-24 17:37:55
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -104,18 +104,24 @@ const createCaseTable = sqlMacros.sqlExecute(
 router_case.get('/table', function(req, res) {
     let userName = req.query.userName;
     let result = [];
-    let cases = sqlMacros.sqlSelect('*', 'pathCase');
-    let caseTypeDisplay = {
-        'Normal': '常规病例',
-        'TBS': 'TBS病例',
-    };
+    let cases;
+    if (![undefined].includes(req.query.filterSos)) { // 处理soul-table数据 返回各个字段所有可能出现的值
+        let filterKeys = [];
+        let filterValues = [];
+        let filter = JSON.parse(req.query.filterSos);
+        filter.forEach(element => {
+            filterKeys.push(element.field);
+            filterValues.push(element.values);
+        });
+        cases = sqlMacros.sqlQuery('*', 'pathCase', filterKeys, filterValues, 'AND');
+    } else { cases = sqlMacros.sqlSelect('*', 'pathCase') }
+
     let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', userName);
     let mode = 'organization'; // 是否仅看自己的病例
     if (mode === 'organization') { // 看同组织的病例
         if (user.length > 0) {
             cases.forEach(element => {
                 if (element.hosName === user[0].organization) { // 只能看自己建立的病例
-                    element.caseTypeDisplay = caseTypeDisplay[element.caseType];
                     result.push(element);
                 }
             });
@@ -123,12 +129,10 @@ router_case.get('/table', function(req, res) {
     } else if (mode === 'self') {
         cases.forEach(element => {
             if (element.doctor === userName) { // 只看自己建立的病例
-                element.caseTypeDisplay = caseTypeDisplay[element.caseType];
                 result.push(element);
             }
         });
     }
-
     var json = {
         code: 200,
         msg: '成功',
@@ -141,36 +145,19 @@ router_case.get('/table', function(req, res) {
     res.send(json);
 });
 
-
 /***
  * @description:@note 查询病例
  * @param {*} res
  * @return {*}
  */
 router_case.post('/table', function(req, res) {
-    let userName = req.body.userName;
-    let result = [];
-    let cases = sqlMacros.sqlSelect('*', 'pathCase');
-    let caseTypeDisplay = {
-        'Normal': '常规病例',
-        'TBS': 'TBS病例',
-    };
-    cases.forEach(element => {
-        if (element.doctor === userName) {
-            element.caseTypeDisplay = caseTypeDisplay[element.caseType];
-            result.push(element);
-        }
-    });
-    var json = {
-        code: 200,
-        msg: '成功',
-        data: sqlMacros.getPageData(result, req.query.page, req.query.limit),
-        count: result.length
-    };
-    if (result.length == 0) { json.msg = '查询无数据'; }
-    res.send(json);
+    // 处理soul-table数据 返回各个字段所有可能出现的值
+    let data = {
+        code: 200,};
+    data.status = ["未诊断", "等待诊断", "诊断完成"];
+    data.caseType = ["常规病例", "TBS病例"];
+    res.send(data);
 });
-
 
 /***
  * @description:@note 专家端查询病例
@@ -181,16 +168,11 @@ router_case.get('/expertTable', function(req, res) {
     let userName = req.query.userName;
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
     let result = [];
-    let caseTypeDisplay = {
-        'Normal': '常规病例',
-        'TBS': 'TBS病例',
-    };
     cases.forEach(element => {
         if (element.expert !== null && ['等待诊断', '诊断完成'].includes(element.status)) {
             let experts = element.expert.split('/');
             experts.forEach(expertsElement => {
                 if (expertsElement === userName) {
-                    element.caseTypeDisplay = caseTypeDisplay[element.caseType];
                     result.push(element);
                 }
             });
@@ -205,6 +187,20 @@ router_case.get('/expertTable', function(req, res) {
     };
     if (result.length == 0) { json.msg = '查询无数据'; }
     res.send(json);
+});
+
+/***
+ * @description:@note 查询病例
+ * @param {*} res
+ * @return {*}
+ */
+router_case.post('/expertTable', function(req, res) {
+    // 处理soul-table数据 返回各个字段所有可能出现的值
+    let data = {
+        code: 200,};
+    data.status = ["等待诊断", "诊断完成"];
+    data.caseType = ["常规病例", "TBS病例"];
+    res.send(data);
 });
 
 /*** @note  条件查询

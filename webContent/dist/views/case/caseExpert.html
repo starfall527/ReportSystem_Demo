@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-24 11:36:41
+ * @LastEditTime: 2022-06-24 16:36:23
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -60,7 +60,7 @@
                         title: '病理号',
                         minWidth: 120
                     }, {
-                        field: 'caseTypeDisplay',
+                        field: 'caseType',
                         title: '病例类型',
                         minWidth: 120,
                         // width: 150, // 优先从这列压缩宽度
@@ -111,11 +111,15 @@
             if (layEvent === '') { //查看
             } else if (layEvent === 'diagnose') { //诊断
                 // 需要先检查专家有无上传签名
+                let caseTypeDisplay = {
+                    '常规病例': 'Normal',
+                    'TBS病例': 'TBS',
+                };
                 if (data.status === '诊断完成') {
-                    // layer.msg('诊断已完成'); 
-                    top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${data.caseType}`; // 是否需要限制重复诊断？
+                    // layer.msg('诊断已完成');                     // 是否需要限制重复诊断？
+                    top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${caseTypeDisplay[data.caseType]}`;
                 } else {
-                    top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${data.caseType}`;
+                    top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${caseTypeDisplay[data.caseType]}`;
                 }
             } else if (layEvent === 'openReport') { // 查看报告
                 if (![null, '', undefined].includes(data.reportPath)) {

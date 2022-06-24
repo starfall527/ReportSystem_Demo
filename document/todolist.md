@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-06-07 17:58:39
- * @LastEditTime: 2022-06-23 17:29:13
+ * @LastEditTime: 2022-06-24 14:39:32
  * @FilePath: \ReportSystem_Demo\document\todolist.md
 -->
 
@@ -42,3 +42,9 @@ pdf生成的时候做保护 检查各项属性(√)
 根据角色加载menu.json(√)
 根据医院生成报告html模板(优先级低)
 病例筛选
+
+6.24 更新需求
+增加组织管理界面(CRUD)
+1.新建用户时只能选取现有的组织
+2.不同组织有不同的报告标题
+3.用户可自定义报告标题 (自定义标题优先级比组织标题高)

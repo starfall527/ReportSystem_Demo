@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-21 17:09:11
+ * @LastEditTime 2022-06-24 17:35:01
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -40,7 +40,6 @@ function getTableCount(tableName, where, key1, key1value) {
  * @param {*} key2      条件查询键
  * @param {*} key2value 条件查询键值
  * @return {json}  查询结果
- * todo 这里没加保护,不好用.优化方案:对查不到的情况添加保护
  */
 function sqlSelect(key1, tableName, where, key2, key2value) {
     let sqlString;
@@ -70,8 +69,8 @@ function sqlSelect(key1, tableName, where, key2, key2value) {
 function sqlQuery(key1, tableName, keys2, keys2value, type) {
     let sqlString = `SELECT ${key1} FROM ${tableName} `,
         timeRange = null,
-        queryArrayString = "";
-
+        queryArrayString = "",
+        queryArray = [];
     for (let i = keys2value.length - 1; i >= 0; i--) {
         if (keys2value[i] == '' || keys2value[i] == undefined) {
             keys2value.splice(i, 1);
@@ -98,24 +97,27 @@ function sqlQuery(key1, tableName, keys2, keys2value, type) {
                     queryArrayString += `${keys2[i]} = '${keys2value[i][j]}'`;
                 }
             }
+            queryArrayString = `(${queryArrayString}) `;
+            queryArray.push(queryArrayString);
+            queryArrayString="";
             keys2value.splice(i, 1);
             keys2.splice(i, 1); //弹出当前key2和key2value,在队尾添加拆分后的key2/key2value(无需检查)   
         } // 检查key2value是否包含数组 PS:判断条件是object,Array属于Object,或许可能需要精准识别Array
     }
 
-    if (keys2.length > 0 || timeRange != null || queryArrayString != "") {
+    if (keys2.length > 0 || timeRange != null || queryArray.length > 0) {
         sqlString += ' WHERE ';
         // 若检查后的条件不为空,则加上WHERE,否则返回全部数据
         if (type == 'AND') {
+            if (timeRange != null) {
+                sqlString += `${timeRange.key} >= '${timeRange.startTime}' AND ${timeRange.key} <= '${timeRange.endTime}'`;
+            }
             for (let i = 0; i < keys2.length; i++) {
                 if (i < keys2.length - 1) {
                     sqlString += `${keys2[i]} = '${keys2value[i]}' AND `;
                 } else {
                     sqlString += `${keys2[i]} = '${keys2value[i]}'`;
                 }
-            }
-            if (timeRange != null) {
-                sqlString += `${timeRange.key} >= '${timeRange.startTime}' AND ${timeRange.key} <= '${timeRange.endTime}'`;
             }
         } else if (type == 'OR') {
             for (let i = 0; i < keys2.length; i++) {
@@ -126,7 +128,13 @@ function sqlQuery(key1, tableName, keys2, keys2value, type) {
                 }
             }
         }
-        sqlString += queryArrayString;
+        for (let i = 0; i < queryArray.length; i++) {
+            if (i < queryArray.length - 1) {
+                sqlString += `${queryArray[i]}  AND `;
+            } else {
+                sqlString += `${queryArray[i]}`;
+            }
+        }
     }
     let data = db.prepare(sqlString).all();
     if (data === undefined) {
