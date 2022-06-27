@@ -14,9 +14,11 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
         accept: 'images',
         method: 'post',
         acceptMime: 'image/*',
-        done: function() { setTimeout(() => {
-            table.reload("LAY-user-manage");
-        }, 300); } // 刷新表格签名图 需要后台返回的路径加上随机数
+        done: function() {
+            setTimeout(() => {
+                table.reload("LAY-user-manage");
+            }, 300);
+        } // 刷新表格签名图 需要后台返回的路径加上随机数
     });
 
     table.render({
@@ -76,7 +78,7 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
         },
         page: true,
         limit: 30,
-        height: $(document).height() - $('#LAY-user-manage').offset().top - 30,
+        height: 'full-280',
         text: "对不起，加载出现异常！",
         done: function() {
             $(".layui-table-main tr").each(function(index, val) {
@@ -91,7 +93,8 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
             });
             // 解决checkBox和行高度不一致的问题
         }
-    }), table.on("tool(LAY-user-manage)", function(e) {
+    });
+    table.on("tool(LAY-user-manage)", function(e) {
         var data = e.data;
         if ("del" === e.event) {
             layer.confirm('将删除用户,确定？', function(index) {
@@ -137,7 +140,8 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
         //         })
         //     }
         // })
-    }), table.render({
+    });
+    table.render({
         elem: "#LAY-user-back-manage",
         // url: "./json/useradmin/mangadmin.json",
         url: "api/user/adminTable",
@@ -186,7 +190,8 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
             statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
         },
         text: "对不起，加载出现异常！"
-    }), table.on("tool(LAY-user-back-manage)", function(e) {
+    });
+    table.on("tool(LAY-user-back-manage)", function(e) {
         var data = e.data;
         "del" === e.event ? layer.prompt({
             formType: 1,
@@ -208,10 +213,12 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
                 })
             }
         })
-    }), table.render({
+    });
+    table.render({
         elem: "#LAY-user-back-role",
         // url: "./json/useradmin/role.json",
         url: "api/user/roleTable",
+        height: 'full-280',
         cols: [
             [{
                 type: "checkbox",
@@ -242,7 +249,8 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
             statusCode: 200 //重新规定成功的状态码为 200，table 组件默认为 0
         },
         text: "对不起，加载出现异常！"
-    }), table.on("tool(LAY-user-back-role)", function(e) {
+    });
+    table.on("tool(LAY-user-back-role)", function(e) {
         var data = e.data;
         "del" === e.event ? layer.confirm("确定删除此角色？", function(i) {
             e.del(), layer.close(i)

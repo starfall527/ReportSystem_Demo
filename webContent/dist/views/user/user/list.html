@@ -10,7 +10,7 @@
 
 <div class="layui-fluid">
     <div class="layui-card">
-        <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="layadmin-userfront-formlist">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
             <div class="layui-form-item">
                 <div class="layui-inline">
                     <label class="layui-form-label">ID</label>
@@ -96,8 +96,6 @@
             form = layui.form,
             upload = layui.upload;
 
-        form.render(null, 'layadmin-userfront-formlist');
-
         //监听搜索
         form.on('submit(LAY-user-front-search)', function(data) {
             var field = data.field;
@@ -113,33 +111,9 @@
             batchdel: function() {
                 var checkStatus = table.checkStatus('LAY-user-manage'),
                     checkData = checkStatus.data; //得到选中的数据
-
                 if (checkData.length === 0) {
                     return layer.msg('请选择数据');
                 }
-
-                // layer.prompt({
-                //     formType: 1,
-                //     title: '敏感操作，请验证口令'
-                // }, function (value, index) {
-                //     layer.close(index);
-                //     layer.confirm('确定删除吗？', function (index) {
-                //         admin.req({ // 批量删除用户
-                //             url: 'api/user/batchDel',
-                //             type: 'POST',
-                //             contentType: 'application/json;charset=UTF-8',
-                //             data: JSON.stringify({
-                //                 data: checkData
-                //             }),
-                //             success: function (res) {
-                //                 form.render();
-                //                 table.reload('LAY-user-manage');
-                //                 layer.msg('已删除');
-                //             }
-                //         })
-                //     });
-                // });
-
                 layer.confirm('确定删除吗？', function(index) {
                     admin.req({ // 批量删除用户
                         url: 'api/user/batchDel',
@@ -175,7 +149,19 @@
                                     })
                                     form.render();
                                 }
-                            })
+                            });
+                            admin.req({ // 查询角色下拉框
+                                url: 'api/organization/table',
+                                type: 'GET',
+                                contentType: 'application/json;charset=UTF-8',
+                                success: function(res) {
+                                    var organization = res.data;
+                                    organization.forEach(element => {
+                                        $('#organization-select').append(new Option(element.name, element.name));
+                                    })
+                                    form.render();
+                                }
+                            });
 
                             //监听提交
                             form.on('submit(LAY-user-front-submit)', function(

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-24 16:36:23
+ * @LastEditTime: 2022-06-24 18:22:10
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -32,8 +32,9 @@
     </div>
 </div>
 
+<link rel="stylesheet" type="text/css" href="../../../dist/lib/extend/soulTable/soulTable.css" media="all">
 <script>
-    layui.use(['admin', 'form', 'laydate', 'table', 'view'], function() {
+    layui.use(['admin', 'form', 'laydate', 'table', 'view', 'soulTable'], function() {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
@@ -41,7 +42,8 @@
             laydate = layui.laydate,
             table = layui.table,
             view = layui.view,
-            form = layui.form;
+            form = layui.form,
+            soulTable = layui.soulTable;
 
         table.render({
             elem: '#case-table',
@@ -49,57 +51,57 @@
             height: $(document).height() - $('#case-table').offset().top - 30,
             response: { statusCode: 200 },
             where: { userName: layui.data('layuiAdmin').userName, },
+            filter: {
+                items: ['data'],
+                bottom: false
+            },
             cols: [
                 [{
-                        field: 'radio',
-                        type: 'radio',
-                        fixed: 'left'
-                    },
-                    {
-                        field: 'pathologyNum',
-                        title: '病理号',
-                        minWidth: 120
-                    }, {
-                        field: 'caseType',
-                        title: '病例类型',
-                        minWidth: 120,
-                        // width: 150, // 优先从这列压缩宽度
-                        filter: true
-                    }, {
-                        field: 'status',
-                        title: '状态',
-                        minWidth: 120
-                    }, {
-                        field: 'patName',
-                        title: '病人信息',
-                        minWidth: 120
-                    }, {
-                        field: 'hosName',
-                        title: '医院名',
-                        minWidth: 120
-                    }, {
-                        field: 'doctor',
-                        title: '医生名',
-                        minWidth: 120
-                    }, {
-                        field: 'subspecialty',
-                        title: '亚专科',
-                        minWidth: 120
-                    }, {
-                        field: 'date',
-                        title: '上传时间',
-                        minWidth: 120
-                    }, {
-                        title: "操作",
-                        width: 180,
-                        align: "center",
-                        fixed: "right",
-                        toolbar: "#table-toolbar"
-                    }
-                ]
+                    field: 'pathologyNum',
+                    title: '病理号',
+                    minWidth: 120
+                }, {
+                    field: 'caseType',
+                    title: '病例类型',
+                    minWidth: 120,
+                    // width: 150, // 优先从这列压缩宽度
+                    filter: true
+                }, {
+                    field: 'status',
+                    title: '状态',
+                    minWidth: 120,
+                    filter: true
+                }, {
+                    field: 'patName',
+                    title: '病人信息',
+                    minWidth: 120
+                }, {
+                    field: 'hosName',
+                    title: '医院名',
+                    minWidth: 120
+                }, {
+                    field: 'doctor',
+                    title: '医生名',
+                    minWidth: 120
+                }, {
+                    field: 'subspecialty',
+                    title: '亚专科',
+                    minWidth: 120
+                }, {
+                    field: 'date',
+                    title: '上传时间',
+                    minWidth: 120
+                }, {
+                    title: "操作",
+                    width: 180,
+                    align: "center",
+                    fixed: "right",
+                    toolbar: "#table-toolbar"
+                }]
             ],
             page: true,
             limit: 20,
+            done: function(res) { soulTable.render(this); }
         });
 
         //工具条事件

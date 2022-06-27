@@ -50,6 +50,11 @@
 					"name": "administrators-rule",
 					"title": "角色管理",
 					"jump": "user/administrators/role"
+				},
+				{
+					"name": "organization",
+					"title": "组织管理",
+					"jump": "user/organization/organization"
 				}
 			]
 		},

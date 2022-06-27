@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-03-23 09:50:21
- * @LastEditTime: 2022-06-23 10:16:26
+ * @LastEditTime: 2022-06-27 14:53:18
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\user\user\userForm.html
 -->
 <div class="layui-form" lay-filter="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
@@ -44,7 +44,7 @@
         <label class="layui-form-label">组织名</label>
         <div class="layui-input-inline">
             <script type="text/html" template>
-                <input type="text" name="organization" value="{{ d.params.organization || '' }}" lay-verify="required" placeholder="请输入组织名" autocomplete="off" class="layui-input">
+                <select lay-verify="required" name="organization" id="organization-select" lay-filter="organization" value="{{ d.params.organization || '' }}" style="max-height: 50px;"> </select>
             </script>
         </div>
     </div>

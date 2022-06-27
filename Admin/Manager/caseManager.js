@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-24 17:37:55
+ * @LastEditTime 2022-06-27 15:10:04
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -166,8 +166,19 @@ router_case.post('/table', function(req, res) {
  */
 router_case.get('/expertTable', function(req, res) {
     let userName = req.query.userName;
-    let cases = sqlMacros.sqlSelect('*', 'pathCase');
+    let cases;
     let result = [];
+    if (![undefined].includes(req.query.filterSos)) { // 处理soul-table数据 返回各个字段所有可能出现的值
+        let filterKeys = [];
+        let filterValues = [];
+        let filter = JSON.parse(req.query.filterSos);
+        filter.forEach(element => {
+            filterKeys.push(element.field);
+            filterValues.push(element.values);
+        });
+        cases = sqlMacros.sqlQuery('*', 'pathCase', filterKeys, filterValues, 'AND');
+    } else { cases = sqlMacros.sqlSelect('*', 'pathCase') }
+
     cases.forEach(element => {
         if (element.expert !== null && ['等待诊断', '诊断完成'].includes(element.status)) {
             let experts = element.expert.split('/');
