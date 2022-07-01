@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 组织管理
  * @Date 2022-06-24 18:30:19
- * @LastEditTime 2022-06-27 14:38:17
+ * @LastEditTime 2022-06-28 17:24:57
  * @FilePath \ReportSystem_Demo\Admin\Manager\organization.js
  */
 const express = require("express");
@@ -27,8 +27,7 @@ const createOrganizationTable = sqlMacros.sqlExecute(
     "note VARCHAR(255)," + // 备注
     "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
 );
-sqlMacros.sqlAlter('ORGANIZATION', 'name', 'VARCHAR(255)', ''); //新增字段
-
+// sqlMacros.sqlAlter('ORGANIZATION', 'name', 'VARCHAR(255)', ''); //新增字段
 
 /***
  * @description:@note 查询病例
@@ -61,15 +60,22 @@ router_organization.post('/insert', function(req, res) {
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
 
+    var json = { code: 200, msg: '成功' };
     if (reqKeys.includes('id')) { // 编辑组织
         sqlMacros.sqlMultiUpdate(reqKeys, reqValues, 'ORGANIZATION', ['id'], [data.id]);
     } else { // 新增组织
         reqKeys.push('status');
         reqValues.push('启用');
-        let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'ORGANIZATION');
+        let newCase = sqlMacros.sqlQuery('*', 'ORGANIZATION', reqKeys, reqValues, 'AND');
+        if (newCase.length === 0) {
+            let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'ORGANIZATION');
+        } else {
+            json = { code: 500, msg: '新增组织失败：组织已存在' };
+            res.send(json);
+            return;
+        }
     }
     let newCase = sqlMacros.sqlQuery('*', 'ORGANIZATION', reqKeys, reqValues, 'AND');
-    var json = { code: 200, msg: '成功' };
     if (newCase.length > 0) {
         json.caseID = newCase[0].id;
     } else { json = { code: 500, msg: '新增/编辑组织失败' }; }

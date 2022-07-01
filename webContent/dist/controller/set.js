@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-23 09:50:20
- * @LastEditTime 2022-06-23 13:53:53
+ * @LastEditTime 2022-07-01 10:00:48
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\set.js
  */
 /** layuiAdmin.pro-v1.4.0 LPPL License By https://www.layui.com/admin/ */
@@ -22,6 +22,10 @@ layui.define(["form", "upload", 'admin'], function(t) {
         pass: [/^[\S]{6,12}$/, "密码必须6到12位，且不能出现空格"],
         repass: function(t) {
             if (t !== i("#LAY_password").val()) return "两次密码输入不一致"
+        },
+        ip: function(ip) {
+            var reg = /^(d{1,2}|1dd|2[0-4]d|25[0-5]).(d{1,2}|1dd|2[0-4]d|25[0-5]).(d{1,2}|1dd|2[0-4]d|25[0-5]).(d{1,2}|1dd|2[0-4]d|25[0-5])$/
+            if(!reg.test(ip)){return "请输入有效的ip地址"}
         }
     }), a.on("submit(set_website)", function(t) {
         return e.msg(JSON.stringify(t.field)), !1

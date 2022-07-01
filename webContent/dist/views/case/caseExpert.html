@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-24 18:22:10
+ * @LastEditTime: 2022-07-01 10:51:26
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -124,7 +124,7 @@
                     top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${caseTypeDisplay[data.caseType]}`;
                 }
             } else if (layEvent === 'openReport') { // 查看报告
-                if (![null, '', undefined].includes(data.reportPath)) {
+                if (![null, '', undefined, 'null'].includes(data.reportPath)) {
                     let reportPath = data.reportPath += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
                     admin.popup({
                         title: '查看报告',

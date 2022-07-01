@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-24 18:29:46
+ * @LastEditTime 2022-07-01 17:20:16
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -13,6 +13,8 @@ const logger = require('log4js').getLogger('user');
 const config = require('../config.js');
 const md5 = require('md5');
 const cv = require('opencv4nodejs');
+
+// todo 每个用户都能设置自己的slideCenter对应ip地址,因为sc和程序不一定运行在同一台机上
 
 /***
  * @description: USER表定义
@@ -39,11 +41,12 @@ const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
      info VARCHAR(255) ,
      subspecialty VARCHAR(255) , 
      authorization VARCHAR(255) NOT NULL ,
+     slideCenterIP VARCHAR(255) ,
      isExamined INTEGER ,
      date timestamp NOT NULL default (datetime('now','localtime'))
      )`);
 
-// sqlMacros.sqlAlter('USER', 'organization', 'VARCHAR(255)', ''); //新增字段
+// sqlMacros.sqlAlter('USER', 'slideCenterIP', 'VARCHAR(255)', ''); //新增字段
 
 /***
  * @description: ROLE表定义
@@ -227,6 +230,7 @@ router_user.get('/login', function(req, res) {
                     userName: user[0].userName,
                     access_token: md5(`${user[0].id}${user[0].userName}${Date.now()}`),
                     role: user[0].role,
+                    organization: user[0].organization
                 }
             };
             global.session.push(json.data); // * 暂存在全局变量 待优化

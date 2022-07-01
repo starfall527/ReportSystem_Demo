@@ -23,8 +23,8 @@
                                         <label class="layui-form-label">病例类型</label>
                                         <div class="layui-input-block">
                                             <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
-                                                <option value="Normal">常规病例</option>
-                                                <option value="TBS">TBS病例</option>
+                                                <option value="常规病例">常规病例</option>
+                                                <option value="TBS病例">TBS病例</option>
                                             </select>
                                         </div>
                                     </div>
@@ -397,7 +397,11 @@
                     }
                 }
             });
+        } else {
+            $('#doctor').val(layui.data('layuiAdmin').userName);
+            $('#hosName').val(layui.data('layuiAdmin').organization);
         }
+        console.log(layui.data('layuiAdmin').organization)
 
         form.render('select');
         // select同步筛选条件
@@ -426,7 +430,7 @@
         table.render({
             elem: '#expert-table',
             url: 'api/user/expertTable', //使用后端数据
-            height: $(document).height() - $('#expert-table').offset().top - 60,
+            height: 'full-330',
             response: {
                 statusCode: 200
             },

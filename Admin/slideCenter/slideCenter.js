@@ -12,25 +12,25 @@ const fs = require('fs');
 var http = require("http");
 const logger = require('log4js').getLogger();
 const base64 = require('js-base64');
+const config = require('../config');
 
 var options = {
-    hostname: 'localhost',
+    hostname: '127.0.0.1',
     port: 9804,
+    socket: `127.0.0.1:9804`,
+    NATtraverse: "",
     path: `/api/app/odm-slide/slide-uri`,
-    headers: {
-        'Content-Type': 'text/json'
+    headers: { 'Content-Type': 'text/json' }
+};
+
+if (config.checkConfigProperty(config.readConfigFile().network, 'NATtraverse')) {
+    if (![null, undefined, ''].includes(config.readConfigFile().network.NATtraverse)) {
+        options.socket = config.readConfigFile().network.NATtraverse;
+        options.NATtraverse = config.readConfigFile().network.NATtraverse;
     }
 }
 
 async function sendRequest(path) {
-    var options = {
-        hostname: 'localhost',
-        port: 9804,
-        path: path,
-        headers: {
-            'Content-Type': 'text/json'
-        }
-    }
     return new Promise((resolve, reject) => {
         var req = http.request(options, function(res) {
             res.setEncoding("utf-8");
@@ -318,10 +318,9 @@ async function getAnnotations(path, tenantName) {
 function getAnnotationImage(path, tenantName, AnnotationId) {
     options.path = `/api/app/odm-slide/annotation-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&AnnotationId=${encodeURI(AnnotationId)}`;
     // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
-    let uri = `http://127.0.0.1:${options.port}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
+    let uri = `http://${options.socket}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
     return uri;
 }
-
 /***
  * @description: 获取切片缩略图
  * @param {*} path
@@ -332,7 +331,7 @@ function getThumbnailUrl(path, tenantName, imageName) {
     imageName = 'thumbnail';
     options.path = `/api/app/odm-slide/named-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&ImageName=${encodeURI(imageName)}`;
     // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
-    let uri = `http://127.0.0.1:${options.port}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
+    let uri = `http://${options.socket}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
     return uri;
 }
 
@@ -346,7 +345,7 @@ function getLabelUrl(path, tenantName, imageName) {
     imageName = 'label';
     options.path = `/api/app/odm-slide/named-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&ImageName=${encodeURI(imageName)}`;
     // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
-    let uri = `http://127.0.0.1:${options.port}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
+    let uri = `http://${options.socket}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
     return uri;
 }
 
@@ -358,7 +357,7 @@ function getLabelUrl(path, tenantName, imageName) {
  */
 async function getFolders(path) {
     path = `Path=${encodeURI(path)}`
-    options.path = `/api/app/odm-slide/folders?${path}IsRecursive=true`;
+    options.path = `/api/app/odm-slide/folders?${path}&IsRecursive=true`;
     let result = await sendRequest(options.path);
     return result;
 }
@@ -520,6 +519,8 @@ const path = require('path');
 // * 获取切片信息 关键接口
 router_slideCenter.get('/openSlide', function(req, res) {
     let data = req.query;
+    var thumbnail = '';
+    var label = '';
     getSlideUri(data.path, '', false).then(apiRes => {
         let qrcodeName = ' slideQrcode.png'
         let qrImgPath = path.join(process.cwd(), `/upload/slideQrcode.png`);
@@ -531,14 +532,26 @@ router_slideCenter.get('/openSlide', function(req, res) {
         // 创建可以写入流，当有pipe它的时候就会生成一个userStr.png的文件
         var img = fs.createWriteStream(qrImgPath);
         // 将生成的二维码流pipe进入刚刚创建的可写入流，并生成文件
+        if (!['', null, undefined, 'null'].includes(options.NATtraverse)) {
+            let a = `${options.hostname}:${options.port}`;
+            apiRes = apiRes.replace(a, options.NATtraverse);
+            thumbnail = getThumbnailUrl(data.path);
+            label = getLabelUrl(data.path);
+            console.log(thumbnail)
+            console.log(label)
+            // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
+        } else {
+            thumbnail = getThumbnailUrl(data.path);
+            label = getLabelUrl(data.path);
+        }
         qrcodeImg.pipe(img).on('finish', function() {
             var json = {
                 code: 200,
                 msg: '成功',
                 data: apiRes,
                 path: data.path,
-                thumbnail: getThumbnailUrl(data.path),
-                label: getLabelUrl(data.path),
+                thumbnail: thumbnail,
+                label: label,
                 fileName: data.fileName,
                 qrcodeName: qrcodeName
             };

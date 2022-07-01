@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-24 16:30:51
+ * @LastEditTime: 2022-07-01 16:11:04
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -540,13 +540,17 @@
                         if (caseStatus === "专家退回") {
                             layer.msg("退回成功,将返回列表");
                         } else if (caseStatus === "诊断完成") {
-                            admin.req({
-                                url: 'api/case/openReport',
-                                type: 'get',
-                                contentType: 'application/json;charset=UTF-8',
-                                data: caseData,
-                            });
-                            layer.msg('提交成功,将返回病例列表');
+                            if (![null, undefined].includes(res.data)) {
+                                console.log(caseData)
+                                console.log(res.data)
+                                admin.req({
+                                    url: 'api/case/openReport',
+                                    type: 'get',
+                                    contentType: 'application/json;charset=UTF-8',
+                                    data: res.data,
+                                });
+                                layer.msg('提交成功,将返回病例列表');
+                            } else { layer.alert('提交失败'); }
                         }
                         setTimeout(() => {
                             window.location.href = `./#/case/caseExpert`;

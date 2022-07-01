@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-24 17:35:01
+ * @LastEditTime 2022-06-27 16:40:57
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -173,7 +173,7 @@ function sqlUpdate(key1, key1value, tableName, key2, key2value) {
  * @return {*}  更新结果
  */
 function sqlMultiUpdate(keys1, keys1value, tableName, keys2, keys2value, type) {
-
+    // todo 入参改成object拆分成key1/key1value,key2/key2value
     let checkArray = [keys1, keys1value];
     if (['AND', 'OR'].includes(type)) {
         checkArray.push(keys2, keys2value);

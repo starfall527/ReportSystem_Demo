@@ -17,6 +17,8 @@
             "appenders": ["consoleOut"],
             "level": "debug"
         }
+    },    
+    "network": {
+        "NATtraverse":"pmulqf2d.shenzhuo.vip:44901"
     }
-
 }

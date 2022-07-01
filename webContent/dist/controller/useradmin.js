@@ -50,6 +50,9 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
                 templet: "#signTpl",
                 hide: false
             }, {
+                field: "organization",
+                title: "组织"
+            }, {
                 field: "phone",
                 title: "手机"
             }, {

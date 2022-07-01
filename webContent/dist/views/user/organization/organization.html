@@ -109,28 +109,22 @@
                 success: function(layero, index) {
                     view(this.id).render('user/organization/organizationForm').done(function() {
                         //监听提交
-                        form.on('submit(LAY-organization-front-submit)', function(
-                            data) {
+                        form.on('submit(LAY-organization-front-submit)', function(data) {
                             var field = data.field; //获取提交的字段
                             admin.req({
                                 url: 'api/organization/insert',
                                 type: 'POST',
                                 contentType: 'application/json;charset=UTF-8',
-                                data: JSON.stringify({
-                                    data: field
-                                }),
+                                data: JSON.stringify({ data: field }),
                                 success: function(res) {
-                                    layer.msg('新增成功');
+                                    if (res.code === 200) { layer.msg('新增成功'); }
                                 },
                                 done: function(res) {
-                                    layui.table.reload(
-                                        'organization-table'
-                                    ); //重载表格
+                                    layui.table.reload('organization-table'); //重载表格
                                     layer.close(index);
                                 }
                             })
-                            layui.table.reload(
-                                'organization-table'); //重载表格
+                            layui.table.reload('organization-table'); //重载表格
                             layer.close(index); //执行关闭 
                         });
                     });

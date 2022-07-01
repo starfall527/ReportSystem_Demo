@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-06-27 15:10:04
+ * @LastEditTime 2022-07-01 17:11:03
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -153,7 +153,8 @@ router_case.get('/table', function(req, res) {
 router_case.post('/table', function(req, res) {
     // 处理soul-table数据 返回各个字段所有可能出现的值
     let data = {
-        code: 200,};
+        code: 200,
+    };
     data.status = ["未诊断", "等待诊断", "诊断完成"];
     data.caseType = ["常规病例", "TBS病例"];
     res.send(data);
@@ -208,7 +209,8 @@ router_case.get('/expertTable', function(req, res) {
 router_case.post('/expertTable', function(req, res) {
     // 处理soul-table数据 返回各个字段所有可能出现的值
     let data = {
-        code: 200,};
+        code: 200,
+    };
     data.status = ["等待诊断", "诊断完成"];
     data.caseType = ["常规病例", "TBS病例"];
     res.send(data);
@@ -370,10 +372,14 @@ router_case.post('/update', function(req, res) {
     var reqValues = Object.values(data);
     let result = sqlMacros.sqlMultiUpdate(reqKeys, reqValues,
         'pathCase', 'id', req.body.caseID);
+    let newData = sqlMacros.sqlSelect('*', 'pathCase', true, 'id', req.body.caseID);
     var json = {
         code: 200,
         msg: '成功'
     };
+    if (newData.length > 0) {
+        json.data = newData[0];
+    }
     res.send(json);
 });
 
@@ -403,6 +409,11 @@ router_case.get('/openReport', function(req, res) {
     var caseData = req.query;
     const option = process.argv;
     var type = caseData.caseType;
+    let caseTypeDisplay = {
+        '常规病例': 'Normal',
+        'TBS病例': 'TBS',
+    };
+    type = caseTypeDisplay[type];
     var address = path.join('file:///', __dirname, `../../templet/report${type}.html`); //  路径和caseType相关
     var reportPath = '';
     (async () => {
@@ -514,14 +525,13 @@ router_case.get('/openReport', function(req, res) {
                         } else { document.getElementById(`annotation${i}`).setAttribute('style', "display:none;"); } // 标注图 
                     }
                 }
-
             }
             if (![null, undefined].includes(document.getElementById("diagnosis"))) {
                 document.getElementById("diagnosis").innerHTML = caseData.diagnosis; // 其它分析
             }
             if (![null, undefined].includes(document.getElementById("signImg"))) {
                 document.getElementById("signImg").setAttribute('src',
-                    'upload/' + caseData.signPath + '?' + Math.floor(Math.random() * 100 + 1)); // 电子签名
+                    '../upload' + caseData.signPath + '?' + Math.floor(Math.random() * 100 + 1)); // 电子签名 这里路径是图片相对于模板的路径
             }
             if (![null, undefined].includes(document.getElementById("diagnoseDate"))) {
                 document.getElementById("diagnoseDate").innerHTML = caseData.diagnoseDate; // 诊断日期

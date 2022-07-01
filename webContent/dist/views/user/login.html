@@ -85,15 +85,17 @@
                         key: "userName",
                         value: res.data.userName
                     });
-                    //请求成功后，写入 userName
                     layui.data(setter.tableName, {
                         key: "userID",
                         value: res.data.userID
                     });                    
-                    //请求成功后，写入 userName
                     layui.data(setter.tableName, {
                         key: "role",
                         value: res.data.role
+                    });
+                    layui.data(setter.tableName, {
+                        key: "organization",
+                        value: res.data.organization
                     });
 
                     //登入成功的提示与跳转
