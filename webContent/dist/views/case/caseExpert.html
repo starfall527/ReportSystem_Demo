@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-07-01 10:51:26
+ * @LastEditTime: 2022-07-07 13:33:56
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -101,7 +101,22 @@
             ],
             page: true,
             limit: 20,
-            done: function(res) { soulTable.render(this); }
+            done: function(res) {
+                soulTable.render(this);
+                var that = this.elem.next();
+                res.data.forEach(function(item, index) {
+                    var tr = that.find('[data-index="' + index + '"]').children();
+                    tr.each(function() {
+                        var b = $(this).text();
+                        if (b === 'Normal') {
+                            $(this).text() = '常规病例'
+                        }
+                        if (b === 'TBS') {
+                            $(this).text() = 'TBS病例'
+                        }
+                    })
+                });
+            }
         });
 
         //工具条事件
@@ -124,6 +139,7 @@
                     top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${caseTypeDisplay[data.caseType]}`;
                 }
             } else if (layEvent === 'openReport') { // 查看报告
+                console.log(data)
                 if (![null, '', undefined, 'null'].includes(data.reportPath)) {
                     let reportPath = data.reportPath += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
                     admin.popup({

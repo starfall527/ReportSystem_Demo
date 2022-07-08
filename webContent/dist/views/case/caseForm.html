@@ -37,14 +37,12 @@
                                             <input type="text" name="pathologyNum" id="pathologyNum" lay-verify="required" class="layui-input">
                                         </div>
                                     </div>
-
                                     <div class="layui-inline">
                                         <label class="layui-form-label">患者姓名</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="patName" id="patName" lay-verify="required" class="layui-input">
                                         </div>
                                     </div>
-
                                     <div class="layui-inline">
                                         <label class="layui-form-label">性别</label>
                                         <div class="layui-input-block">
@@ -55,7 +53,6 @@
                                             </select>
                                         </div>
                                     </div>
-
                                     <div class="layui-inline">
                                         <label class="layui-form-label">年龄</label>
                                         <div class="layui-input-block">
@@ -63,7 +60,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="layui-form-item">
                                     <div class="layui-inline">
                                         <label class="layui-form-label">民族</label>
@@ -136,21 +132,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- <div class="layui-form-item">
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">医院名</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="hosName" lay-verify="" class="layui-input">
-                                        </div>
-                                    </div>
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">医生名</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="doctor" lay-verify="" class="layui-input">
-                                        </div>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -230,7 +211,7 @@
                     <div class="layui-fluid">
                         <div class="layui-row layui-col-space10">
                             <div class="layui-col-md4">
-                                <div class="layui-card" style="margin-bottom: 50px;height:710px">
+                                <div class="layui-card" style="margin-bottom: 50px;height:710px" id="directory-card">
                                     <div class="layui-card-header">存储目录</div>
                                     <div class="layui-card-body">
                                         <div id="tree"></div>
@@ -260,7 +241,7 @@
                                             <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openSlide">查看选中切片</a>
                                         </script>
                                         <div class="layui-btn-container form-step-btn" style="margin-top: 10px;">
-                                            <button class="layui-btn pre" lay-submit lay-filter="formStep2-pre">上一步</button>
+                                            <button class="layui-btn pre" lay-submit lay-filter="formStep2-pre" id="step-btn">上一步</button>
                                             <button class="layui-btn next" lay-submit lay-filter="formStep2-next">下一步</button>
                                         </div>
                                     </div>
@@ -308,7 +289,7 @@
                                 </div>
                             </div> -->
                             <div class="layui-col-md12">
-                                <div class="layui-card">
+                                <div class="layui-card" id="expert-card">
                                     <div class="layui-card-header">专家列表</div>
                                     <div class="layui-card-body">
                                         <table class="layui-show" id="expert-table" lay-filter="expert-table"></table>
@@ -401,8 +382,6 @@
             $('#doctor').val(layui.data('layuiAdmin').userName);
             $('#hosName').val(layui.data('layuiAdmin').organization);
         }
-        console.log(layui.data('layuiAdmin').organization)
-
         form.render('select');
         // select同步筛选条件
         form.on('select(caseType)', function(data) {
@@ -420,42 +399,11 @@
             filter: 'stepForm',
             width: '100%', //设置容器宽度
             stepWidth: '950px',
-            height: $(document).height() - $('#stepForm').offset().top - 60,
+            height: Math.max($(document).height() - $('#stepForm').offset().top - 55, 760),
             stepItems: [{ title: '填写病例信息' },
                 { title: '选择病例切片' },
                 { title: '选择会诊专家' }
             ]
-        });
-
-        table.render({
-            elem: '#expert-table',
-            url: 'api/user/expertTable', //使用后端数据
-            height: 'full-330',
-            response: {
-                statusCode: 200
-            },
-            cols: [
-                [{
-                        field: 'radio',
-                        type: 'radio',
-                        fixed: 'left',
-                        minWidth: 120,
-                    },
-                    {
-                        field: 'userName',
-                        title: '专家名',
-                        width: 360,
-                        minWidth: 120,
-                    }, {
-                        field: 'subspecialty',
-                        title: '擅长亚专科',
-                        width: 1280,
-                        minWidth: 120,
-                    },
-                ]
-            ],
-            page: true,
-            limit: 20,
         });
 
         laydate.render({
@@ -479,6 +427,7 @@
                         type: 'get',
                         contentType: 'application/json;charset=UTF-8',
                         data: element,
+                        userName: layui.data('layuiAdmin').userName,
                         success: function(res) {
                             caseData.slideUrl.push({
                                 path: res.path,
@@ -572,13 +521,12 @@
                         contentType: 'application/json;charset=UTF-8',
                         data: checkData,
                         success: function(res) {
-                            console.log(res)
                             layer.open({
                                 type: 2,
                                 title: res.fileName,
                                 shade: false,
                                 maxmin: true,
-                                area: ['90%', '90%'],
+                                area: ['100%', '100%'],
                                 content: res.data
                             }); // iframe弹窗
                         },
@@ -600,7 +548,12 @@
             });
             step.next('#stepForm');
             form.render('table');
-            table.render();
+
+            let tableHeight = $(document).height() - $('#slide-table-list').offset().top - $('#step-btn').height() - 20;
+            let offset = $('#slide-table-list').offset().top - $('#directory-card').offset().top + $('#step-btn').height() + 10;
+            document.getElementById('directory-card').setAttribute('style', `height: ${tableHeight + offset}px`);
+            table.render({ height: tableHeight });
+            form.render();
             return false;
         });
 
@@ -643,7 +596,58 @@
                 });
                 step.next('#stepForm');
                 form.render();
+
+
+                let tableHeight = $(document).height() - $('#expert-table').offset().top - $('#step-btn').height() - 60;
+                // document.getElementById('expert-card').setAttribute('style', `height: ${tableHeight + offset}px`);
+                table.render({
+                    elem: '#expert-table',
+                    url: 'api/user/expertTable', //使用后端数据
+                    height: tableHeight,
+                    response: {
+                        statusCode: 200
+                    },
+                    cols: [
+                        [{
+                                field: 'radio',
+                                type: 'radio',
+                                fixed: 'left',
+                                minWidth: 120,
+                            },
+                            {
+                                field: 'userName',
+                                title: '专家名',
+                                width: 360,
+                                minWidth: 120,
+                            }, {
+                                field: 'subspecialty',
+                                title: '擅长亚专科',
+                                width: 1280,
+                                minWidth: 120,
+                            },
+                        ]
+                    ],
+                    page: true,
+                    limit: 20,
+                    done: function() {
+                        $(".layui-table-main tr").each(function(index, val) {
+                            if ([2, 3].includes(index)) { // * 由于前面切片列表需要适应图片,这里index是2,3而不是0,1;layui-table-fixed的index需要-2
+                                $(".layui-table-fixed").each(function() { // layui-table-fixed的index需要-2
+                                    $($(this).find(".layui-table-body tbody tr")[index - 2]).height($(val).height())
+                                })
+                            }
+                        });
+                        $(".layui-table-header tr").each(function(index, val) {
+                            if ([2, 3].includes(index)) { // * 由于前面切片列表需要适应图片,这里index是2,3而不是0,1;
+                                $(".layui-table-fixed").each(function() { // layui-table-fixed的index需要-2
+                                    $($(this).find(".layui-table-header thead tr")[index - 2]).height($(val).height())
+                                })
+                            }
+                        });
+                    }
+                });
             }
+            form.render('radio');
             return false;
         });
         form.on('submit(formStep3-pre)', function(data) {

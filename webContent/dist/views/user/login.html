@@ -66,7 +66,21 @@
             router = layui.router(),
             search = router.search;
 
+        /**
+         * 低分辨率模式直接全屏
+         * by zhengkai.blog.csdn.net
+         */
+        function setFullScreen(index) {
+            const screenWidth = screen.width;
+            console.log(`screenWidth: ${screenWidth}`);
+            //笔记本分辨率，直接全屏
+            if (screenWidth <= 1600) {
+                // layer.full();
+            }
+        }
+
         form.render();
+        setFullScreen();
 
         //提交
         form.on('submit(LAY-user-login-submit)', function(obj) {
@@ -88,7 +102,7 @@
                     layui.data(setter.tableName, {
                         key: "userID",
                         value: res.data.userID
-                    });                    
+                    });
                     layui.data(setter.tableName, {
                         key: "role",
                         value: res.data.role

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 修改当前用户信息
  * @Date: 2022-03-23 09:50:21
- * @LastEditTime: 2022-06-30 18:17:21
+ * @LastEditTime: 2022-07-07 17:20:03
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\set\user\info.html
 -->
 
@@ -48,12 +48,24 @@
                                 <input type="text" name="phone" id="phone" value="" lay-verify="phone" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                        <div class="layui-form-item">
+                        <!-- <div class="layui-form-item">
                             <label class="layui-form-label">切片服务器地址</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="ip" id="slideCenterIP" value="" lay-verify="ip" autocomplete="off" class="layui-input">
+                                <input type="text" name="slideCenterIP" id="slideCenterIP" value="" lay-verify="ip" autocomplete="off" class="layui-input">
+                            </div>
+                        </div> -->
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">内网穿透</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="NATtraverse" id="NATtraverse" value="" lay-verify="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
+                        <!-- <div class="layui-form-item">
+                            <label class="layui-form-label">报告标题</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="ReportTitle" id="ReportTitle" value="" lay-verify="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div> -->
                         <div class="layui-form-item">
                             <label class="layui-form-label">擅长亚专科</label>
                             <div class="layui-input-inline">
@@ -116,12 +128,14 @@
                     document.getElementById("preview").setAttribute('value', randomUrl);
                     $('#phone').val(user.phone);
                     let xmSelectData = [];
-                    user.subspecialty.split(',').forEach(element => {
-                        xmSelectData.push({
-                            name: element,
-                            value: element
+                    if (![null, 'null', undefined].includes(user.subspecialty)) {
+                        user.subspecialty.split(',').forEach(element => {
+                            xmSelectData.push({
+                                name: element,
+                                value: element
+                            });
                         });
-                    });
+                    }
                     subspecialtySelect.setValue(xmSelectData);
                 } else {
                     layer.alert('查询不到用户数据!', {

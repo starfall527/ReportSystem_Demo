@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-07-01 16:11:04
+ * @LastEditTime: 2022-07-08 14:41:14
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -253,14 +253,14 @@
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-row layui-col-space15">
-                                <div class="layui-col-md4"></div>
-                                <div class="layui-col-md8">
+                                <div class="layui-col-md8"></div>
+                                <div class="layui-col-md4">
                                     <div class="layui-btn-container operation-btn" style="margin-top: 10px">
                                         <button class="layui-btn layui-btn-radius" lay-submit type="button" lay-filter="form-report">提交报告</button>
-                                        <button class="layui-btn layui-btn-normal layui-btn-radius">加做医嘱</button>
-                                        <button class="layui-btn layui-btn-warm layui-btn-radius">转诊</button>
+                                        <!-- <button class="layui-btn layui-btn-normal layui-btn-radius">加做医嘱</button> -->
+                                        <!-- <button class="layui-btn layui-btn-warm layui-btn-radius">转诊</button> -->
                                         <button class="layui-btn layui-btn-danger layui-btn-radius" data-type="returnReport">退回病例</button>
-                                        <button class="layui-btn layui-btn-primary layui-btn-radius">质控评价</button>
+                                        <!-- <button class="layui-btn layui-btn-primary layui-btn-radius">质控评价</button> -->
                                     </div>
                                 </div>
                             </div>
@@ -372,7 +372,12 @@
             url: 'api/case/query',
             type: 'POST',
             contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify({ data: { id: router.search.caseID } }),
+            data: JSON.stringify({
+                data: {
+                    id: router.search.caseID,
+                    userName: layui.data('layuiAdmin').userName
+                }
+            }),
             success: function(res) { // 查询到病例数据,设置各种监听,以及html文本
                 if (res.count > 0) {
                     caseData = res.data[0];
@@ -407,6 +412,11 @@
                     var cardTableData = [];
                     let cardID = 1;
                     slideUrl.forEach(element => {
+                        if (!['', null, undefined, 'null'].includes(res.NATtraverse)) {
+                            let a = `127.0.0.1:9804`;
+                            element.thumbnail = element.thumbnail.replace(a, res.NATtraverse);
+                            // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
+                        }
                         cardTableData.push({
                             "id": cardID++,
                             "image": element.thumbnail,
@@ -426,6 +436,7 @@
                     slideCardTable.on('row(currentTableFilter)', function(
                         obj) { // 单击事件,打开iframe显示切片
                         let thumbnailData = cardTable.getChecked("currentTableId");
+                        thumbnailData.data.userName = layui.data('layuiAdmin').userName;
                         layer.confirm('将打开选中切片，确定？', {
                             btn: ['确定', '取消']
                         }, function(index) {
@@ -440,7 +451,7 @@
                                         title: res.fileName,
                                         shade: false,
                                         maxmin: true,
-                                        area: ['90%', '90%'],
+                                        area: ['100%', '100%'],
                                         content: res.data
                                     }); // iframe弹窗
                                 },
@@ -459,7 +470,10 @@
                         elem: '#annotation-table',
                         url: 'api/slideCenter/annotationTable', //使用后端数据
                         response: { statusCode: 200 },
-                        where: { data: annotationPath },
+                        where: {
+                            data: annotationPath,
+                            userName: layui.data('layuiAdmin').userName
+                        },
                         cols: [
                             [
                                 { field: 'checkbox', type: 'checkbox', },
@@ -488,7 +502,7 @@
                             title: '切片',
                             shade: false,
                             maxmin: true,
-                            area: ['90%', '90%'],
+                            area: ['100%', '100%'],
                             content: slideUrl[0].slideUrl
                         }); // iframe弹窗
                     });

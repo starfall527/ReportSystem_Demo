@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-01 17:20:16
+ * @LastEditTime 2022-07-07 12:30:43
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -40,13 +40,14 @@ const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
      sign VARCHAR(255) ,
      info VARCHAR(255) ,
      subspecialty VARCHAR(255) , 
-     authorization VARCHAR(255) NOT NULL ,
+     authorization VARCHAR(255) ,
      slideCenterIP VARCHAR(255) ,
+     NATtraverse VARCHAR(255) ,
      isExamined INTEGER ,
      date timestamp NOT NULL default (datetime('now','localtime'))
      )`);
 
-// sqlMacros.sqlAlter('USER', 'slideCenterIP', 'VARCHAR(255)', ''); //新增字段
+sqlMacros.sqlAlter('USER', 'NATtraverse', 'VARCHAR(255)', ''); //新增字段
 
 /***
  * @description: ROLE表定义
@@ -65,6 +66,14 @@ const createRoleTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS ROLE(
     date timestamp NOT NULL default (datetime('now','localtime'))
     )`);
 
+
+function initUser() {
+    if (sqlMacros.getTableCount('USER', false) === 0) {
+        sqlMacros.sqlInsert(['name', 'userName', 'password', 'role','sign'],
+         ['admin', 'admin', '123456', '管理员','/sign/0_sign.jpeg'], 'USER');
+    }
+}
+initUser();
 // @note 用户列表
 router_user.get('/userTable', function(req, res) {
     let result = sqlMacros.sqlSelect('*', 'USER');
@@ -190,6 +199,11 @@ router_user.get('/login', function(req, res) {
     let menu = config.readConfigFile('./webContent/json/menu.json');
     if (user.length === 0) {
         logger.error('未找到用户');
+        res.send({
+            code: 500,
+            msg: '未找到用户',
+            data: {}
+        });
     } else {
         let role = sqlMacros.sqlSelect('*', 'ROLE', true, 'role', user[0].role);
         if (user[0].role === "专家端") {
@@ -209,36 +223,37 @@ router_user.get('/login', function(req, res) {
         } else if (user[0].role === "管理员") {
             menu = config.readConfigFile('./webContent/json/menu-admin.json');
         }
-    }
-    config.writeConfigFile('data', menu.data, './webContent/json/menu.json');
-    // * 根据登录者的role,更改menu.json的数据,加载对应的界面 后续考虑结合权限管理封装函数,准备好几份menu.json,读取后直接覆盖即可
 
-    var json = {
-        code: 500,
-        msg: '登录失败',
-        data: {}
-    };
-    if (user === undefined) {
-        json.msg = '未选中实验或查询无数据';
-    } else {
-        if (user[0].password === req.query.password) {
-            json = {
-                code: 200,
-                msg: '登录成功',
-                data: {
-                    userID: user[0].id,
-                    userName: user[0].userName,
-                    access_token: md5(`${user[0].id}${user[0].userName}${Date.now()}`),
-                    role: user[0].role,
-                    organization: user[0].organization
-                }
-            };
-            global.session.push(json.data); // * 暂存在全局变量 待优化
+        config.writeConfigFile('data', menu.data, './webContent/json/menu.json');
+        var json = {
+            code: 500,
+            msg: '登录失败',
+            data: {}
+        };
+        if (user === undefined) {
+            json.msg = '未选中实验或查询无数据';
         } else {
-            json.msg = '密码错误';
+            if (user[0].password === req.query.password) {
+                json = {
+                    code: 200,
+                    msg: '登录成功',
+                    data: {
+                        userID: user[0].id,
+                        userName: user[0].userName,
+                        access_token: md5(`${user[0].id}${user[0].userName}${Date.now()}`),
+                        role: user[0].role,
+                        organization: user[0].organization
+                    }
+                };
+                global.session.push(json.data); // * 暂存在全局变量 待优化
+            } else {
+                json.msg = '密码错误';
+            }
         }
+        res.send(json);
     }
-    res.send(json);
+    // * 根据登录者的role,更改menu.json的数据,加载对应的界面 后续考虑结合权限管理封装函数,准备好几份menu.json,读取后直接覆盖即可
+   
 });
 
 // session接口

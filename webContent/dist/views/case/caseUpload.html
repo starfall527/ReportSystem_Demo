@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-06-24 18:20:17
+ * @LastEditTime: 2022-07-07 13:50:06
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -18,8 +18,8 @@
             <div class="layui-card-header">病例列表（上传端）</div>
             <div class="layui-card-body">
                 <div class="layui-btn-container case-table-btn">
-                    <button class="layui-btn layui-btn-sm" data-type="newCase">新建病例</button>
-                    <button class="layui-btn layui-btn-sm" data-type="startConsultation">发起会诊</button>
+                    <button class="layui-btn" data-type="newCase">新建病例</button>
+                    <button class="layui-btn" data-type="startConsultation">发起会诊</button>
                 </div>
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
 
@@ -86,6 +86,10 @@
                         title: '病人姓名',
                         minWidth: 120
                     }, {
+                        field: 'doctor',
+                        title: '医生名',
+                        minWidth: 120
+                    }, {
                         field: 'hosName',
                         title: '医院名',
                         minWidth: 120
@@ -113,7 +117,22 @@
             ],
             page: true,
             limit: 20,
-            done: function(res) { soulTable.render(this); }
+            done: function(res) {
+                soulTable.render(this);
+                var that = this.elem.next();
+                res.data.forEach(function(item, index) {
+                    var tr = that.find('[data-index="' + index + '"]').children();
+                    tr.each(function() {
+                        var b = $(this).text();
+                        if (b === 'Normal') {
+                            $(this).text() = '常规病例'
+                        }
+                        if (b === 'TBS') {
+                            $(this).text() = 'TBS病例'
+                        }
+                    })
+                });
+            }
         });
 
 

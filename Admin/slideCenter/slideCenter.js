@@ -8,12 +8,13 @@
 
 const express = require("express");
 const router_slideCenter = express.Router();
+const sqlMacros = require("../database/macro");
 const fs = require('fs');
 var http = require("http");
 const logger = require('log4js').getLogger();
 const base64 = require('js-base64');
 const config = require('../config');
-
+// pmulqf2d.shenzhuo.vip:44901
 var options = {
     hostname: '127.0.0.1',
     port: 9804,
@@ -23,12 +24,12 @@ var options = {
     headers: { 'Content-Type': 'text/json' }
 };
 
-if (config.checkConfigProperty(config.readConfigFile().network, 'NATtraverse')) {
-    if (![null, undefined, ''].includes(config.readConfigFile().network.NATtraverse)) {
-        options.socket = config.readConfigFile().network.NATtraverse;
-        options.NATtraverse = config.readConfigFile().network.NATtraverse;
-    }
-}
+// if (config.checkConfigProperty(config.readConfigFile().network, 'NATtraverse')) {
+//     if (![null, undefined, ''].includes(config.readConfigFile().network.NATtraverse)) {
+//         options.socket = config.readConfigFile().network.NATtraverse;
+//         options.NATtraverse = config.readConfigFile().network.NATtraverse;
+//     }
+// }
 
 async function sendRequest(path) {
     return new Promise((resolve, reject) => {
@@ -56,29 +57,29 @@ async function sendRequest(path) {
  * @param {*} postfix       后缀,可以为空
  * @return {*}
  */
-function getFileList(path, filesList, isRecursive, postfix) {
+function getFileList(path, filesList, isRecursive, postfix, NATtraverse) {
     var filesList = [];
     let files = fs.readdirSync(path); // 需要用到同步读取
     files.forEach((file) => {
         let states = fs.statSync(path + "/" + file);
         // 判断是否是目录，是就继续递归
         if (states.isDirectory() && isRecursive) {
-            getFileList(path + "/" + file, filesList);
+            getFileList(path + "/" + file, filesList, NATtraverse);
         } else {
             if (postfix !== "") {
                 if (file.includes(postfix)) {
                     filesList.push({
                         path: path + "/" + file,
                         fileName: file,
-                        thumbnailUrl: getThumbnailUrl(path + "/" + file),
-                        labelUrl: getLabelUrl(path + "/" + file),
+                        thumbnailUrl: getThumbnailUrl(path + "/" + file, '', '', NATtraverse),
+                        labelUrl: getLabelUrl(path + "/" + file, '', '', NATtraverse),
                     });
                 }
             } else {
                 filesList.push({
                     path: path + "/" + file,
                     fileName: file,
-                    thumbnailUrl: getThumbnailUrl(path + "/" + file)
+                    thumbnailUrl: getThumbnailUrl(path + "/" + file, '', '', NATtraverse)
                 });
             }
         }
@@ -304,6 +305,7 @@ async function getSlideUri(path, tenantName, isReadOnly) {
  */
 async function getAnnotations(path, tenantName) {
     options.path = `/api/app/odm-slide/annotations?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}`;
+    options.path += '&r=' + Math.floor(Math.random() * 100 + 1);
     let uri = await sendRequest(options.path);
     return uri;
 }
@@ -315,10 +317,15 @@ async function getAnnotations(path, tenantName) {
  * @param {*} AnnotationId
  * @return {*} uri
  */
-function getAnnotationImage(path, tenantName, AnnotationId) {
+function getAnnotationImage(path, tenantName, AnnotationId, NATtraverse) {
     options.path = `/api/app/odm-slide/annotation-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&AnnotationId=${encodeURI(AnnotationId)}`;
     // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
     let uri = `http://${options.socket}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
+    if (!['', null, undefined, 'null'].includes(NATtraverse)) {
+        let a = `${options.hostname}:${options.port}`;
+        uri = uri.replace(a, NATtraverse);
+        // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
+    }
     return uri;
 }
 /***
@@ -327,11 +334,16 @@ function getAnnotationImage(path, tenantName, AnnotationId) {
  * @param {*} tenantName
  * @return {*} uri
  */
-function getThumbnailUrl(path, tenantName, imageName) {
+function getThumbnailUrl(path, tenantName, imageName, NATtraverse) {
     imageName = 'thumbnail';
     options.path = `/api/app/odm-slide/named-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&ImageName=${encodeURI(imageName)}`;
     // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
     let uri = `http://${options.socket}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
+    if (!['', null, undefined, 'null'].includes(NATtraverse)) {
+        let a = `${options.hostname}:${options.port}`;
+        uri = uri.replace(a, NATtraverse);
+        // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
+    }
     return uri;
 }
 
@@ -341,11 +353,16 @@ function getThumbnailUrl(path, tenantName, imageName) {
  * @param {*} tenantName
  * @return {*} uri
  */
-function getLabelUrl(path, tenantName, imageName) {
+function getLabelUrl(path, tenantName, imageName, NATtraverse) {
     imageName = 'label';
     options.path = `/api/app/odm-slide/named-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&ImageName=${encodeURI(imageName)}`;
     // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
     let uri = `http://${options.socket}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
+    if (!['', null, undefined, 'null'].includes(NATtraverse)) {
+        let a = `${options.hostname}:${options.port}`;
+        uri = uri.replace(a, NATtraverse);
+        // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
+    }
     return uri;
 }
 
@@ -447,9 +464,14 @@ router_slideCenter.post('/getSlideUrl', function(req, res) {
 router_slideCenter.get('/table', function(req, res) {
     let data = req.query;
     let tableData = [];
-    if (data.path !== '') {
-        tableData = getFileList(data.path, [], false, '.tron')
+    let NATtraverse = '';
+    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', req.query.userName);
+    if (user.length > 0) {
+        NATtraverse = user[0].NATtraverse;
     }
+    if (data.path !== '') {
+        tableData = getFileList(data.path, [], false, '.tron', NATtraverse)
+    };
     let pageData = getPageData(tableData, req.query.page, req.query.limit);
     var json = {
         code: 200,
@@ -468,11 +490,16 @@ router_slideCenter.get('/annotationTable', function(req, res) {
     let data = req.query.data;
     let tableData = [];
     let checkFlag = false;
+    let NATtraverse = '';
+    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', req.query.userName);
+    if (user.length > 0) {
+        NATtraverse = user[0].NATtraverse;
+    }
     data.forEach(annotationPath => {
         getAnnotations(annotationPath, '').then(annoRes => {
             let annotations = JSON.parse(annoRes);
             annotations.forEach(element => {
-                element.annotationUrl = getAnnotationImage(annotationPath, '', element.id);
+                element.annotationUrl = getAnnotationImage(annotationPath, '', element.id, NATtraverse);
                 tableData.push(element);
                 if (element.id === annotations[annotations.length - 1].id) {
                     if (annotationPath === data[data.length - 1]) { // 最后一个切片最后一个标注数据,直接返回
@@ -521,6 +548,11 @@ router_slideCenter.get('/openSlide', function(req, res) {
     let data = req.query;
     var thumbnail = '';
     var label = '';
+    let NATtraverse = '';
+    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', req.query.userName);
+    if (user.length > 0) {
+        NATtraverse = user[0].NATtraverse;
+    }
     getSlideUri(data.path, '', false).then(apiRes => {
         let qrcodeName = ' slideQrcode.png'
         let qrImgPath = path.join(process.cwd(), `/upload/slideQrcode.png`);
@@ -532,13 +564,11 @@ router_slideCenter.get('/openSlide', function(req, res) {
         // 创建可以写入流，当有pipe它的时候就会生成一个userStr.png的文件
         var img = fs.createWriteStream(qrImgPath);
         // 将生成的二维码流pipe进入刚刚创建的可写入流，并生成文件
-        if (!['', null, undefined, 'null'].includes(options.NATtraverse)) {
+        if (!['', null, undefined, 'null'].includes(NATtraverse)) {
             let a = `${options.hostname}:${options.port}`;
-            apiRes = apiRes.replace(a, options.NATtraverse);
-            thumbnail = getThumbnailUrl(data.path);
-            label = getLabelUrl(data.path);
-            console.log(thumbnail)
-            console.log(label)
+            thumbnail = getThumbnailUrl(data.path, '', '', NATtraverse);
+            label = getLabelUrl(data.path, '', '', NATtraverse);
+            apiRes = apiRes.replace(a, NATtraverse);
             // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
         } else {
             thumbnail = getThumbnailUrl(data.path);

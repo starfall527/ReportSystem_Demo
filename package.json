@@ -16,7 +16,7 @@
         "electron-rebuild": "electron-rebuild -w opencv4nodejs better-sqlite3 --abi=99",
         "packageWin": "electron-packager ./ electron --win --arch=x64 --icon=electron.ico --out=./dist --asar --app-version=1.0.0 --electron-version=16.0.5",
         "pkgWin": "pkg -t win app.js",
-        "pkg": "pkg package.json -d",
+        "pkg": "pkg package.json --public",
         "apidoc": "apidoc -i ./Admin/ -o ./document/",
         "pm2start": "pm2 start pm2setting.json",
         "pm2stop": "pm2 stop pm2setting.json",

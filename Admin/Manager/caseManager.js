@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-01 17:11:03
+ * @LastEditTime 2022-07-08 11:14:48
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -12,6 +12,7 @@ const router_case = express.Router();
 const logger = require('log4js').getLogger();
 const fs = require('fs');
 const path = require('path');
+const config = require('../config');
 
 /*** @note sql表定义
  * @description: pathCase表定义
@@ -223,6 +224,12 @@ router_case.post('/expertTable', function(req, res) {
  */
 router_case.post('/query', function(req, res) {
     let data = req.body.data;
+    let NATtraverse = '';
+    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', data.userName);
+    if (user.length > 0) {
+        NATtraverse = user[0].NATtraverse;
+    }
+    delete data.userName;
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
     let result = sqlMacros.sqlQuery('*', 'pathCase', reqKeys, reqValues, 'AND');
@@ -230,7 +237,8 @@ router_case.post('/query', function(req, res) {
         code: 200,
         msg: '成功',
         data: sqlMacros.getPageData(result, data.page, data.limit),
-        count: result.length
+        count: result.length,
+        NATtraverse: NATtraverse
     };
     if (result.length == 0) { json.msg = '查询无数据'; }
     res.send(json);
@@ -414,13 +422,25 @@ router_case.get('/openReport', function(req, res) {
         'TBS病例': 'TBS',
     };
     type = caseTypeDisplay[type];
-    var address = path.join('file:///', __dirname, `../../templet/report${type}.html`); //  路径和caseType相关
+    let executablePath = '';
+    if (![null, undefined, ''].includes(config.readConfigFile().chromePath)) {
+        executablePath = config.readConfigFile().chromePath;
+    }
+    const puppeteerConf = {
+        // headless: false,
+        defaultViewport: { width: 1300, height: 900 },
+        slowMo: 30,
+        devtools: false,
+        executablePath: executablePath // * 部署时需要配置chrome路径,否则无法生成pdf
+    };
+
+    var address = path.join('file:///', process.cwd(), `/templet/report${type}.html`); //  路径和caseType相关
     var reportPath = '';
     (async () => {
         if (option.length >= 3) {
             address = option[2];
         }
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch(puppeteerConf);
         const page = await browser.newPage();
         await page.setViewport({
             width: 1920,
@@ -476,7 +496,7 @@ router_case.get('/openReport', function(req, res) {
                 error.push("inspectionDateLabel");
             }
 
-            if (caseData.caseType === "Normal") {
+            if (caseData.caseType === "常规病例") {
                 if (![null, undefined].includes(document.getElementById("clinicalData"))) {
                     document.getElementById("clinicalData").innerHTML = caseData.clinicalData; // 送检日期
                 }
@@ -489,7 +509,7 @@ router_case.get('/openReport', function(req, res) {
                 if (![null, undefined].includes(document.getElementById("general"))) {
                     document.getElementById("general").innerHTML = caseData.general; // 大体所见
                 }
-            } else if (caseData.caseType === "TBS") {
+            } else if (caseData.caseType === "TBS病例") {
                 if (![null, undefined].includes(document.getElementById("sampleQuality"))) {
                     document.getElementById("sampleQuality").innerHTML =
                         `${caseData.isSatisfied};${caseData.unsatisfiedReason}`; // 标本质量
@@ -547,13 +567,13 @@ router_case.get('/openReport', function(req, res) {
 
         reportPath = 'report/report_' + caseData.id + '.pdf';
         await page.pdf({
-            path: 'upload/' + reportPath,
+            path: process.cwd() + '/upload/' + reportPath,
             format: "A4",
             printBackground: true,
             "-webkit-print-color-adjust": "exact",
         }).then(() => {
             sqlMacros.sqlMultiUpdate(['reportPath'], [reportPath], 'pathCase', 'id', caseData.id);
-            logger.info('pdf生成成功,path:' + reportPath);
+            logger.info('pdf生成成功,path:' + process.cwd() + '/upload/' + reportPath);
         });
         await browser.close();
     })();
