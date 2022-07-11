@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 修改当前用户信息
  * @Date: 2022-03-23 09:50:21
- * @LastEditTime: 2022-07-07 17:20:03
+ * @LastEditTime: 2022-07-11 10:32:17
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\set\user\info.html
 -->
 
@@ -60,12 +60,12 @@
                                 <input type="text" name="NATtraverse" id="NATtraverse" value="" lay-verify="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                        <!-- <div class="layui-form-item">
+                        <div class="layui-form-item">
                             <label class="layui-form-label">报告标题</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="ReportTitle" id="ReportTitle" value="" lay-verify="" autocomplete="off" class="layui-input">
+                                <input type="text" name="reportTitle" id="reportTitle" value="" lay-verify="title" autocomplete="off" class="layui-input">
                             </div>
-                        </div> -->
+                        </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">擅长亚专科</label>
                             <div class="layui-input-inline">
@@ -127,6 +127,7 @@
                     let randomUrl = user.sign += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
                     document.getElementById("preview").setAttribute('value', randomUrl);
                     $('#phone').val(user.phone);
+                    $('#reportTitle').val(user.reportTitle);
                     let xmSelectData = [];
                     if (![null, 'null', undefined].includes(user.subspecialty)) {
                         user.subspecialty.split(',').forEach(element => {

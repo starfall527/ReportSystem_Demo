@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-08 11:14:48
+ * @LastEditTime 2022-07-11 13:57:48
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -47,6 +47,8 @@ const createCaseTable = sqlMacros.sqlExecute(
     "status VARCHAR(255) NOT NULL ," + // 病例状态
     "caseType VARCHAR(255) ," + // 病例类型
     "pathologyNum VARCHAR(255) NOT NULL ," + // 病理号
+
+    "reportTitle VARCHAR(255) ," + // 报告标题
     "consultationNum VARCHAR(255) ," + // 会诊号
     "patName VARCHAR(255) NOT NULL ," + // 病人姓名
     "patientInfo VARCHAR(255) ," + // 病人信息
@@ -262,10 +264,10 @@ router_case.get('/delete', function(req, res) {
     res.send(json);
 });
 
-/*** @note  新增玻片数据
- * @api {post} /api/case/insert 新增玻片数据
+/*** @note  新增病例数据
+ * @api {post} /api/case/insert 新增病例数据
  * @apiName InsertCase
- * @apiGroup 玻片管理
+ * @apiGroup 病例管理
  * @apiParam {Object} data                  数据对象,具体字段由表单决定
  * @apiUse CommonResponse
  */
@@ -276,8 +278,12 @@ router_case.post('/insert', function(req, res) {
     reqKeys.push('status');
     reqValues.push('未诊断');
 
+    var json = { code: 200, msg: '成功' };
     if (reqKeys.includes('id')) { // 编辑病例
         sqlMacros.sqlMultiUpdate(reqKeys, reqValues, 'pathCase', ['id'], [data.id]);
+        json.caseID = data.id;
+        reqKeys = reqKeys.slice(-1);
+        reqValues = reqValues.slice(-1);
     } else { // 新增病例
         let user = sqlMacros.sqlQuery('*', 'USER', ['userName'], [data.expert], 'AND');
         if (user.length > 0) {
@@ -287,10 +293,9 @@ router_case.post('/insert', function(req, res) {
         let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
     }
     let newCase = sqlMacros.sqlQuery('*', 'pathCase', reqKeys, reqValues, 'AND');
-    var json = { code: 200, msg: '成功' };
     if (newCase.length > 0) {
         json.caseID = newCase[0].id;
-    } else { json = { code: 500, msg: '新增/编辑病例失败' }; }
+    } else { json = { code: 500, msg: '新增病例失败' }; } //状态不对,发起会诊后再编辑会错误弹这个
     res.send(json);
 });
 
@@ -417,6 +422,25 @@ router_case.get('/openReport', function(req, res) {
     var caseData = req.query;
     const option = process.argv;
     var type = caseData.caseType;
+    var userName = caseData.userName;
+    var user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', userName);
+    if (user.length > 0) {
+        user = user[0];
+        if (!['', null, undefined, 'null'].includes(user.reportTitle)) {
+            caseData.reportTitle = user.reportTitle;
+        } else {
+            let organization = sqlMacros.sqlSelect('*', 'organization', true, 'name', user.organization);
+            if (organization.length > 0) {
+                organization = organization[0];
+                caseData.reportTitle = organization.reportTitle;
+            }
+        }
+    } else {
+        logger.error(`用户不存在,无法生成报告,请联系管理员  userName:${userName}`);
+        var json = { code: 500, msg: '当前用户不存在,无法生成报告,请联系管理员' };
+        res.send(json);
+        return;
+    }
     let caseTypeDisplay = {
         '常规病例': 'Normal',
         'TBS病例': 'TBS',
@@ -437,9 +461,7 @@ router_case.get('/openReport', function(req, res) {
     var address = path.join('file:///', process.cwd(), `/templet/report${type}.html`); //  路径和caseType相关
     var reportPath = '';
     (async () => {
-        if (option.length >= 3) {
-            address = option[2];
-        }
+        if (option.length >= 3) { address = option[2]; }
         const browser = await puppeteer.launch(puppeteerConf);
         const page = await browser.newPage();
         await page.setViewport({
@@ -458,6 +480,11 @@ router_case.get('/openReport', function(req, res) {
                 }
             }
             let error = [];
+            if (![null, undefined].includes(document.getElementById("reportTitle")) ||
+                ![null, undefined].includes(caseData.reportTitle)) {
+                document.getElementById("reportTitle").innerHTML = caseData.reportTitle;
+                error.push("reportTitle");
+            }
             if (![null, undefined].includes(document.getElementById("pathologyNumLabel"))) {
                 document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
                 error.push("pathologyNumLabel");

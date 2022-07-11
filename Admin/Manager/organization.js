@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 组织管理
  * @Date 2022-06-24 18:30:19
- * @LastEditTime 2022-07-08 16:20:35
+ * @LastEditTime 2022-07-11 10:47:52
  * @FilePath \ReportSystem_Demo\Admin\Manager\organization.js
  */
 const express = require("express");
@@ -23,11 +23,11 @@ const createOrganizationTable = sqlMacros.sqlExecute(
     "id INTEGER not null PRIMARY KEY AUTOINCREMENT ," + // id 唯一标识
     "name VARCHAR(255) ," + // 组织名
     "status VARCHAR(255) ," + // 组织状态
-
+    "reportTitle VARCHAR(255) ," + // 报告标题
     "note VARCHAR(255)," + // 备注
     "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
 );
-// sqlMacros.sqlAlter('ORGANIZATION', 'name', 'VARCHAR(255)', ''); //新增字段
+// sqlMacros.sqlAlter('ORGANIZATION', 'reportTitle', 'VARCHAR(255)', ''); //新增字段
 
 /***
  * @description:@note 查询病例
@@ -59,7 +59,6 @@ router_organization.post('/insert', function(req, res) {
     let data = req.body.data;
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
-
     var json = { code: 200, msg: '成功' };
     if (reqKeys.includes('id')) { // 编辑组织
         sqlMacros.sqlMultiUpdate(reqKeys, reqValues, 'ORGANIZATION', ['id'], [data.id]);

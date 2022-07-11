@@ -305,7 +305,6 @@ async function getSlideUri(path, tenantName, isReadOnly) {
  */
 async function getAnnotations(path, tenantName) {
     options.path = `/api/app/odm-slide/annotations?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}`;
-    options.path += '&r=' + Math.floor(Math.random() * 100 + 1);
     let uri = await sendRequest(options.path);
     return uri;
 }

@@ -1,2 +1,222 @@
 [2022-07-08T10:48:17.851] [INFO] default - pdf生成成功,path:report/report_3.pdf
 [2022-07-08T10:49:04.516] [INFO] default - pdf生成成功,path:report/report_3.pdf
+[2022-07-08T17:16:39.965] [INFO] default - [
+  {
+    id: 'e7edc04a-ca6a-44ad-affc-17241c966116',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-08T09:00:09.7246227Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: 'ff88a01c-0f21-4c11-9a29-37de0b5e8ea4',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-08T09:00:20.2326239Z',
+    lastModificationTime: null,
+    shapeType: 0
+  }
+]
+[2022-07-08T17:18:37.943] [INFO] default - E:/切片/瑞康/G21-0848.tron
+[2022-07-08T17:18:38.035] [INFO] default - [
+  {
+    id: 'ecf1a202-c15d-44c7-b5d5-30ca969c78c3',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:11.4221562Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: '33b862d9-6030-42cf-ae46-eab8c21bc272',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:19.703208Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: 'c77c2f1b-410a-4db4-b62d-1e176a79dd47',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T06:03:53.5186712Z',
+    lastModificationTime: null,
+    shapeType: 0
+  }
+]
+[2022-07-08T18:02:12.387] [INFO] default - E:/切片/瑞康/G21-0848.tron
+[2022-07-08T18:02:12.550] [INFO] default - [
+  {
+    id: 'ecf1a202-c15d-44c7-b5d5-30ca969c78c3',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:11.4221562Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: '33b862d9-6030-42cf-ae46-eab8c21bc272',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:19.703208Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: 'c77c2f1b-410a-4db4-b62d-1e176a79dd47',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T06:03:53.5186712Z',
+    lastModificationTime: null,
+    shapeType: 0
+  }
+]
+[2022-07-08T18:05:34.853] [INFO] default - E:/切片/瑞康/G21-0848.tron
+[2022-07-08T18:05:34.929] [INFO] default - [
+  {
+    id: 'ecf1a202-c15d-44c7-b5d5-30ca969c78c3',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:11.4221562Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: '33b862d9-6030-42cf-ae46-eab8c21bc272',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:19.703208Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: 'c77c2f1b-410a-4db4-b62d-1e176a79dd47',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T06:03:53.5186712Z',
+    lastModificationTime: null,
+    shapeType: 0
+  }
+]
+[2022-07-08T18:08:02.957] [INFO] default - E:/切片/瑞康/G21-0848.tron
+[2022-07-08T18:08:03.064] [INFO] default - [
+  {
+    id: 'ecf1a202-c15d-44c7-b5d5-30ca969c78c3',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:11.4221562Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: '33b862d9-6030-42cf-ae46-eab8c21bc272',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:19.703208Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: 'c77c2f1b-410a-4db4-b62d-1e176a79dd47',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T06:03:53.5186712Z',
+    lastModificationTime: null,
+    shapeType: 0
+  }
+]
+[2022-07-08T18:19:36.443] [INFO] default - E:/切片/瑞康/G21-0848.tron
+[2022-07-08T18:19:36.634] [INFO] default - [
+  {
+    id: 'ecf1a202-c15d-44c7-b5d5-30ca969c78c3',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:11.4221562Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: '33b862d9-6030-42cf-ae46-eab8c21bc272',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:19.703208Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: 'c77c2f1b-410a-4db4-b62d-1e176a79dd47',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T06:03:53.5186712Z',
+    lastModificationTime: null,
+    shapeType: 0
+  }
+]
+[2022-07-08T18:25:44.689] [INFO] default - E:/切片/瑞康/G21-0848.tron
+[2022-07-08T18:25:44.767] [INFO] default - [
+  {
+    id: 'ecf1a202-c15d-44c7-b5d5-30ca969c78c3',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:11.4221562Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: '33b862d9-6030-42cf-ae46-eab8c21bc272',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T05:59:19.703208Z',
+    lastModificationTime: null,
+    shapeType: 0
+  },
+  {
+    id: 'c77c2f1b-410a-4db4-b62d-1e176a79dd47',
+    icon: 'mdi-triangle',
+    color: '#0071C0',
+    tags: '',
+    comments: '',
+    creationTime: '2022-07-07T06:03:53.5186712Z',
+    lastModificationTime: null,
+    shapeType: 0
+  }
+]

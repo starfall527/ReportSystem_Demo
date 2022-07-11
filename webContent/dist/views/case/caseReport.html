@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-07-08 14:41:14
+ * @LastEditTime: 2022-07-11 10:32:05
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -493,6 +493,9 @@
                         ],
                         page: false,
                         limit: 10,
+                        done: function(res) {
+                            // console.log(res.data)
+                        }
                     });
 
                     // @note 查看切片
@@ -548,15 +551,14 @@
                     contentType: 'application/json;charset=UTF-8',
                     data: JSON.stringify({
                         data: data.field,
-                        caseID: caseData.id
+                        caseID: caseData.id,
                     }),
                     success: function(res) {
                         if (caseStatus === "专家退回") {
                             layer.msg("退回成功,将返回列表");
                         } else if (caseStatus === "诊断完成") {
                             if (![null, undefined].includes(res.data)) {
-                                console.log(caseData)
-                                console.log(res.data)
+                                res.data.userName = layui.data('layuiAdmin').userName; // 数据包含userName,用于检查用户自定义标题
                                 admin.req({
                                     url: 'api/case/openReport',
                                     type: 'get',

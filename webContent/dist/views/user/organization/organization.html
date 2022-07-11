@@ -57,6 +57,10 @@
                         title: '状态',
                         minWidth: 120
                     }, {
+                        field: 'reportTitle',
+                        title: '报告标题',
+                        minWidth: 120
+                    }, {
                         field: 'date',
                         title: '注册时间',
                         minWidth: 120
@@ -97,6 +101,34 @@
                     //向服务端发送删除指令
                 });
             } else if (layEvent === 'edit') { //编辑
+                admin.popup({
+                    title: '编辑组织',
+                    id: 'LAY-popup-organization-edit',
+                    success: function(layero, index) {
+                        view(this.id).render('user/organization/organizationForm').done(function() {
+                            //监听提交
+                            form.on('submit(LAY-organization-front-submit)', function(data) {
+                                var field = data.field; //获取提交的字段
+                                field.id = obj.data.id;
+                                admin.req({
+                                    url: 'api/organization/insert',
+                                    type: 'POST',
+                                    contentType: 'application/json;charset=UTF-8',
+                                    data: JSON.stringify({ data: field }),
+                                    success: function(res) {
+                                        if (res.code === 200) { layer.msg('编辑成功'); }
+                                    },
+                                    done: function(res) {
+                                        layui.table.reload('organization-table'); //重载表格
+                                        layer.close(index);
+                                    }
+                                })
+                                layui.table.reload('organization-table'); //重载表格
+                                layer.close(index); //执行关闭 
+                            });
+                        });
+                    }
+                });
             }
         });
 
@@ -104,7 +136,6 @@
         $('#addOrganization').on('click', function() {
             admin.popup({
                 title: '添加组织',
-                // area: ['450px', '500px'],
                 id: 'LAY-popup-organization-add',
                 success: function(layero, index) {
                     view(this.id).render('user/organization/organizationForm').done(function() {
@@ -131,5 +162,38 @@
                 }
             });
         });
+
+
+        // 编辑组织 
+        $('#editOrganization').on('click', function() {
+            admin.popup({
+                title: '编辑组织',
+                id: 'LAY-popup-organization-edit',
+                success: function(layero, index) {
+                    view(this.id).render('user/organization/organizationForm').done(function() {
+                        //监听提交
+                        form.on('submit(LAY-organization-front-submit)', function(data) {
+                            var field = data.field; //获取提交的字段
+                            admin.req({
+                                url: 'api/organization/insert',
+                                type: 'POST',
+                                contentType: 'application/json;charset=UTF-8',
+                                data: JSON.stringify({ data: field }),
+                                success: function(res) {
+                                    if (res.code === 200) { layer.msg('编辑成功'); }
+                                },
+                                done: function(res) {
+                                    layui.table.reload('organization-table'); //重载表格
+                                    layer.close(index);
+                                }
+                            })
+                            layui.table.reload('organization-table'); //重载表格
+                            layer.close(index); //执行关闭 
+                        });
+                    });
+                }
+            });
+        });
+
     });
 </script>

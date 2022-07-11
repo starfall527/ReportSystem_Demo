@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-07 12:30:43
+ * @LastEditTime 2022-07-11 10:30:18
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -41,13 +41,14 @@ const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
      info VARCHAR(255) ,
      subspecialty VARCHAR(255) , 
      authorization VARCHAR(255) ,
+     reportTitle VARCHAR(255) ,
      slideCenterIP VARCHAR(255) ,
      NATtraverse VARCHAR(255) ,
      isExamined INTEGER ,
      date timestamp NOT NULL default (datetime('now','localtime'))
      )`);
 
-sqlMacros.sqlAlter('USER', 'NATtraverse', 'VARCHAR(255)', ''); //新增字段
+// sqlMacros.sqlAlter('USER', 'reportTitle', 'VARCHAR(255)', ''); //新增字段
 
 /***
  * @description: ROLE表定义
@@ -69,8 +70,8 @@ const createRoleTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS ROLE(
 
 function initUser() {
     if (sqlMacros.getTableCount('USER', false) === 0) {
-        sqlMacros.sqlInsert(['name', 'userName', 'password', 'role','sign'],
-         ['admin', 'admin', '123456', '管理员','/sign/0_sign.jpeg'], 'USER');
+        sqlMacros.sqlInsert(['name', 'userName', 'password', 'role', 'sign'],
+            ['admin', 'admin', '123456', '管理员', '/sign/0_sign.jpeg'], 'USER');
     }
 }
 initUser();
@@ -253,7 +254,6 @@ router_user.get('/login', function(req, res) {
         res.send(json);
     }
     // * 根据登录者的role,更改menu.json的数据,加载对应的界面 后续考虑结合权限管理封装函数,准备好几份menu.json,读取后直接覆盖即可
-   
 });
 
 // session接口
