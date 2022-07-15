@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-05-30 14:30:59
- * @LastEditTime: 2022-07-11 10:28:15
+ * @LastEditTime: 2022-07-15 14:41:12
  * @FilePath: \ReportSystem_Demo\templet\reportTBS.html
 -->
 <html>
@@ -64,6 +64,15 @@
         }
 
         .title {
+            color: black;
+            position: relative;
+            font-family: 'SimSun';
+            font-weight: bold;
+            font-size: 36px;
+            text-align: center;
+        }
+
+        .subtitle {
             color: black;
             position: relative;
             font-family: 'SimSun';
@@ -189,6 +198,7 @@
     <div class="page">
         <div class="pageBorder">
             <div class="title" id="reportTitle">宫颈液基细胞学诊断报告</div>
+            <div class="subtitle" id="subtitle"></div>
             <div class="labelBreak"></div>
             <div id="grid">
                 <div class="label grid-cell1" id="pathologyNumLabel">病理号:</div>

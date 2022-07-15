@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-23 09:50:20
- * @LastEditTime 2022-07-11 10:23:40
+ * @LastEditTime 2022-07-12 17:43:47
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\set.js
  */
 /** layuiAdmin.pro-v1.4.0 LPPL License By https://www.layui.com/admin/ */
@@ -20,7 +20,7 @@ layui.define(["form", "upload", 'admin'], function(t) {
             return new RegExp("^[a-zA-Z0-9_一-龥\\s·]+$").test(t) ? /(^\_)|(\__)|(\_+$)/.test(t) ? "用户名首尾不能出现下划线'_'" : /^\d+\d+\d$/.test(t) ? "用户名不能全为数字" : void 0 : "用户名不能有特殊字符"
         },
         pass: [/^[\S]{6,12}$/, "密码必须6到12位，且不能出现空格"],
-        title: [/^[\S]{1,12}$/, "标题字数需小于12，且不能出现空格"],
+        title: [/^[\S]{0,12}$/, "标题字数需小于12，且不能出现空格"],
         repass: function(t) {
             if (t !== i("#LAY_password").val()) return "两次密码输入不一致"
         },

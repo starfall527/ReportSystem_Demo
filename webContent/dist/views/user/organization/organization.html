@@ -20,7 +20,7 @@
             <script type="text/html" id="table-toolbar">
                 <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
-                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon"></i>组织详情</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event=""><i class="layui-icon"></i>组织详情</a>
             </script>
         </div>
     </div>
@@ -57,8 +57,8 @@
                         title: '状态',
                         minWidth: 120
                     }, {
-                        field: 'reportTitle',
-                        title: '报告标题',
+                        field: 'describe',
+                        title: '描述',
                         minWidth: 120
                     }, {
                         field: 'date',
@@ -107,7 +107,7 @@
                     success: function(layero, index) {
                         view(this.id).render('user/organization/organizationForm').done(function() {
                             //监听提交
-                            form.on('submit(LAY-organization-front-submit)', function(data) {
+                            form.on('submit(organizationForm-submit)', function(data) {
                                 var field = data.field; //获取提交的字段
                                 field.id = obj.data.id;
                                 admin.req({
@@ -140,7 +140,7 @@
                 success: function(layero, index) {
                     view(this.id).render('user/organization/organizationForm').done(function() {
                         //监听提交
-                        form.on('submit(LAY-organization-front-submit)', function(data) {
+                        form.on('submit(organizationForm-submit)', function(data) {
                             var field = data.field; //获取提交的字段
                             admin.req({
                                 url: 'api/organization/insert',
@@ -172,7 +172,7 @@
                 success: function(layero, index) {
                     view(this.id).render('user/organization/organizationForm').done(function() {
                         //监听提交
-                        form.on('submit(LAY-organization-front-submit)', function(data) {
+                        form.on('submit(organizationForm-submit)', function(data) {
                             var field = data.field; //获取提交的字段
                             admin.req({
                                 url: 'api/organization/insert',

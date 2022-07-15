@@ -633,14 +633,14 @@
                         $(".layui-table-main tr").each(function(index, val) {
                             if ([2, 3].includes(index)) { // * 由于前面切片列表需要适应图片,这里index是2,3而不是0,1;layui-table-fixed的index需要-2
                                 $(".layui-table-fixed").each(function() { // layui-table-fixed的index需要-2
-                                    $($(this).find(".layui-table-body tbody tr")[index - 2]).height($(val).height())
+                                    $($(this).find(".layui-table-body tbody tr")[index - 2]).height(38) //$(val).height()
                                 })
                             }
                         });
                         $(".layui-table-header tr").each(function(index, val) {
                             if ([2, 3].includes(index)) { // * 由于前面切片列表需要适应图片,这里index是2,3而不是0,1;
                                 $(".layui-table-fixed").each(function() { // layui-table-fixed的index需要-2
-                                    $($(this).find(".layui-table-header thead tr")[index - 2]).height($(val).height())
+                                    $($(this).find(".layui-table-header thead tr")[index - 2]).height(38) //$(val).height()
                                 })
                             }
                         });

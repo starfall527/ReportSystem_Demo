@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-07-07 13:50:06
+ * @LastEditTime: 2022-07-14 10:31:19
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -124,11 +124,18 @@
                     var tr = that.find('[data-index="' + index + '"]').children();
                     tr.each(function() {
                         var b = $(this).text();
+                        $(this).css('color', '#000000');
                         if (b === 'Normal') {
                             $(this).text() = '常规病例'
                         }
                         if (b === 'TBS') {
                             $(this).text() = 'TBS病例'
+                        }
+                        if (b === '等待诊断') {
+                            $(this).css('background-color', '#33CCFF');
+                        }
+                        if (b === '诊断完成') {
+                            $(this).css('background-color', '#00FF66');
                         }
                     })
                 });
@@ -160,7 +167,7 @@
                     //向服务端发送删除指令
                 });
             } else if (layEvent === 'edit') { //编辑
-                if (['等待诊断', '未诊断'].includes(data.status)) {
+                if (['等待诊断', '待发起会诊'].includes(data.status)) {
                     top.location.href = `./#/case/caseForm/caseID=${data.id}`;
                 } else {
                     layer.msg('该病例已诊断，不可编辑')

@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-11 13:57:48
+ * @LastEditTime 2022-07-15 14:47:20
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -92,6 +92,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "reportPath TEXT," + // 报告路径
     "signPath TEXT," + // 签名图路径
 
+    "freezeOrderDate VARCHAR(255) ," + // 冰冻预约时间
     "uploadDate timestamp," + // 上传时间
     "diagnoseDate timestamp," + // 诊断时间
     "confirmDate timestamp," + // 确认诊断时间
@@ -158,7 +159,7 @@ router_case.post('/table', function(req, res) {
     let data = {
         code: 200,
     };
-    data.status = ["未诊断", "等待诊断", "诊断完成"];
+    data.status = ["待发起会诊", "等待诊断", "诊断完成"];
     data.caseType = ["常规病例", "TBS病例"];
     res.send(data);
 });
@@ -276,7 +277,7 @@ router_case.post('/insert', function(req, res) {
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
     reqKeys.push('status');
-    reqValues.push('未诊断');
+    reqValues.push('待发起会诊');
 
     var json = { code: 200, msg: '成功' };
     if (reqKeys.includes('id')) { // 编辑病例
@@ -427,7 +428,8 @@ router_case.get('/openReport', function(req, res) {
     if (user.length > 0) {
         user = user[0];
         if (!['', null, undefined, 'null'].includes(user.reportTitle)) {
-            caseData.reportTitle = user.reportTitle;
+            caseData.reportTitle = JSON.parse(user.reportTitle)[type].reportTitle;
+            caseData.subtitle = JSON.parse(user.reportTitle)[type].subtitle;
         } else {
             let organization = sqlMacros.sqlSelect('*', 'organization', true, 'name', user.organization);
             if (organization.length > 0) {
@@ -480,9 +482,16 @@ router_case.get('/openReport', function(req, res) {
                 }
             }
             let error = [];
-            if (![null, undefined].includes(document.getElementById("reportTitle")) ||
-                ![null, undefined].includes(caseData.reportTitle)) {
+            if (![null, undefined].includes(document.getElementById("reportTitle")) &&
+                ![null, undefined, '无'].includes(caseData.reportTitle)) {
                 document.getElementById("reportTitle").innerHTML = caseData.reportTitle;
+                if (![null, undefined].includes(document.getElementById("subtitle"))) {
+                    if (![null, undefined, '', 'null', '无'].includes(caseData.subtitle)) {
+                        document.getElementById("subtitle").innerHTML = caseData.subtitle;
+                    } else {
+                        document.getElementById("subtitle").setAttribute("style", "display:none;");
+                    }
+                }
                 error.push("reportTitle");
             }
             if (![null, undefined].includes(document.getElementById("pathologyNumLabel"))) {

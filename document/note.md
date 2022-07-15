@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description:
  * @Date: 2022-06-10 16:13:43
- * @LastEditTime: 2022-07-08 11:41:04
+ * @LastEditTime: 2022-07-14 16:19:40
  * @FilePath: \ReportSystem_Demo\document\note.md
 -->
 
@@ -14,6 +14,7 @@ html栅格布局                https://blog.csdn.net/weixin_43183219/article/de
 
 生产部署问题
 目前采用的是pkg把程序打包成exe,再编写bat脚本守护进程
+服务器部署时,需要在防火墙设置里新建入站规则,开放9804端口
 
 1.puppeteer注意事项
 打包时需在根目录添加chrome-win文件夹(版本号取决于puppeteer),包含chrome.exe,在config.json内配置路径指向chrome.exe
