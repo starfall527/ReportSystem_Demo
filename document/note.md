@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description:
  * @Date: 2022-06-10 16:13:43
- * @LastEditTime: 2022-07-14 16:19:40
+ * @LastEditTime: 2022-07-19 14:23:53
  * @FilePath: \ReportSystem_Demo\document\note.md
 -->
 
@@ -21,3 +21,11 @@ html栅格布局                https://blog.csdn.net/weixin_43183219/article/de
 程序中launch
 https://blog.csdn.net/qq_31254489/article/details/118864759
 https://blog.csdn.net/cainiao1412/article/details/123459685
+
+
+slideCenter API 开发用账号
+https://web.sc.trial.omnipath.cc/
+组织:intemedic
+用户:user / advuser
+密码:abcdef
+user 是普通用户，advuser 是高级用户

@@ -6,7 +6,7 @@
 			"name": "caseManage",
 			"title": "病例管理",
 			"icon": "layui-icon-auz",
-			"jump": "case/caseExpert"
+			"jump": "case/caseUpload"
 		},
 		{
 			"name": "set",

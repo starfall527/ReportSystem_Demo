@@ -512,31 +512,27 @@
                 layer.msg('请选择数据');
                 return false;
             } else {
-                layer.confirm('将打开首个选中切片，确定？', {
-                    btn: ['确定', '取消']
-                }, function(index) {
-                    admin.req({
-                        url: 'api/slideCenter/openSlide',
-                        type: 'get',
-                        contentType: 'application/json;charset=UTF-8',
-                        data: checkData,
-                        success: function(res) {
-                            layer.open({
-                                type: 2,
-                                title: res.fileName,
-                                shade: false,
-                                maxmin: true,
-                                area: ['100%', '100%'],
-                                content: res.data
-                            }); // iframe弹窗
-                        },
-                        done: function(res) {
-                            layer.close(index);
-                            return false;
-                        }
-                    })
-                    return false;
-                });
+                admin.req({
+                    url: 'api/slideCenter/openSlide',
+                    type: 'get',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: checkData,
+                    success: function(res) {
+                        layer.open({
+                            type: 2,
+                            title: res.fileName,
+                            shade: false,
+                            maxmin: true,
+                            area: ['100%', '100%'],
+                            content: res.data
+                        }); // iframe弹窗
+                    },
+                    done: function(res) {
+                        layer.close(index);
+                        return false;
+                    }
+                })
+                return false;
             }
         })
 
@@ -617,12 +613,15 @@
                             {
                                 field: 'userName',
                                 title: '专家名',
-                                width: 360,
+                                width: 240,
                                 minWidth: 120,
                             }, {
                                 field: 'subspecialty',
                                 title: '擅长亚专科',
-                                width: 1280,
+                                minWidth: 120,
+                            }, {
+                                field: 'info',
+                                title: '简介',
                                 minWidth: 120,
                             },
                         ]

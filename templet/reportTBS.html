@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-05-30 14:30:59
- * @LastEditTime: 2022-07-15 14:41:12
+ * @LastEditTime: 2022-07-19 14:17:32
  * @FilePath: \ReportSystem_Demo\templet\reportTBS.html
 -->
 <html>
@@ -77,7 +77,7 @@
             position: relative;
             font-family: 'SimSun';
             font-weight: bold;
-            font-size: 36px;
+            font-size: 22px;
             text-align: center;
         }
 
@@ -213,9 +213,13 @@
             </div>
             <div class="labelBreak"></div>
             <div id="grid">
-                <div class="label grid-cell1" id="doctorLabel">医生:</div>
-                <div class="label grid-cell2" id="samplePartLabel">取材部位:</div>
-                <div class="label grid-cell3" id="historyLabel">病史:</div>
+                <div class="label grid-cell1" id="isMenopause">是否绝经:</div>
+                <div class="label grid-cell2" id="lastMenses">末次月经:</div>
+            </div>
+            <div class="labelBreak"></div>
+            <div id="grid">
+                <div class="label grid-cell1" id="samplePartLabel">取材部位:</div>
+                <div class="label grid-cell2" id="doctorLabel">医生:</div>               
             </div>
             <div class="labelBreak"></div>
 
@@ -239,14 +243,14 @@
             <div class="label-large" id="annotationLabel">病理图像:
                 <div class="labelBreak"></div>
                 <div id="grid">
-                    <div class="label grid-cell1"><img src="" id="annotation0" height="100px"></div>
-                    <div class="label grid-cell2"><img src="" id="annotation1" height="100px"></div>
-                    <div class="label grid-cell3"><img src="" id="annotation2" height="100px"></div>
+                    <div class="label grid-cell1"><img src="" id="annotation0" height="250px"></div>
+                    <div class="label grid-cell2"><img src="" id="annotation1" height="250px"></div>
+                    <div class="label grid-cell3"><img src="" id="annotation2" height="250px"></div>
                 </div>
             </div>
 
             <HR>
-            <div class="label-large" id="AnalysisLabel">远程病理专家诊断意见:</div>
+            <div class="label-large" id="AnalysisLabel">专家诊断意见:</div>
             <div class="label" id="squamousCellLabel" style="float: left;">鳞状上皮细胞分析:</div>
             <div class="text" id="squamousCell" style="left: 5px;">无</div>
             <div class="labelBreak"></div>

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-07-11 10:32:05
+ * @LastEditTime: 2022-07-20 10:49:56
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -12,6 +12,8 @@
         <a><cite>病例详情</cite></a>
     </div>
 </div>
+
+<script type="text/javascript" src="../../dist/lib/extend/html2canvas.js"></script>
 
 <div class="layui-fluid">
     <div class="layui-row layui-col-space10">
@@ -437,28 +439,24 @@
                         obj) { // 单击事件,打开iframe显示切片
                         let thumbnailData = cardTable.getChecked("currentTableId");
                         thumbnailData.data.userName = layui.data('layuiAdmin').userName;
-                        layer.confirm('将打开选中切片，确定？', {
-                            btn: ['确定', '取消']
-                        }, function(index) {
-                            admin.req({
-                                url: 'api/slideCenter/openSlide',
-                                type: 'get',
-                                contentType: 'application/json;charset=UTF-8',
-                                data: thumbnailData.data,
-                                success: function(res) {
-                                    layer.open({
-                                        type: 2,
-                                        title: res.fileName,
-                                        shade: false,
-                                        maxmin: true,
-                                        area: ['100%', '100%'],
-                                        content: res.data
-                                    }); // iframe弹窗
-                                },
-                                done: function(res) {}
-                            })
-                            layer.close(index);
-                        });
+                        admin.req({
+                            url: 'api/slideCenter/openSlide',
+                            type: 'get',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: thumbnailData.data,
+                            success: function(res) {
+                                layer.open({
+                                    id: 'slide-iframe',
+                                    type: 2,
+                                    title: res.fileName,
+                                    shade: false,
+                                    maxmin: true,
+                                    area: ['100%', '100%'],
+                                    content: res.data
+                                }); // iframe弹窗
+                            },
+                            done: function(res) {}
+                        })
                         return false;
                     });
 
@@ -523,7 +521,7 @@
         form.on('submit(form-report)', function(data) {
             var checkStatus = table.checkStatus('annotation-table'),
                 checkData = checkStatus.data;
-            if (checkData.length === 0) {
+            if (checkData.length === 0 && caseStatus === '专家退回') {
                 layer.msg("请选择标注图");
                 return false;
             } else {

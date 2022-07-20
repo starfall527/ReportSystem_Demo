@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 修改当前用户信息
  * @Date: 2022-03-23 09:50:21
- * @LastEditTime: 2022-07-15 14:26:56
+ * @LastEditTime: 2022-07-15 16:02:42
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\set\user\info.html
 -->
 
@@ -18,17 +18,16 @@
 
 <div class="layui-fluid">
     <div class="layui-row layui-col-space15">
-        <div class="layui-col-md7">
+        <div class="layui-col-md8" id="info-column">
             <div class="layui-card">
                 <div class="layui-card-header">设置我的资料</div>
                 <div class="layui-card-body" pad15>
                     <div class="layui-form" lay-filter="">
                         <div class="layui-form-item">
                             <label class="layui-form-label">用户名</label>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-inline" style="width:240px">
                                 <input type="text" name="userName" id="userName" value="" class="layui-input">
                             </div>
-                            <!-- <div class="layui-form-mid layui-word-aux">不可修改。一般用于后台登入名</div> -->
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">签名图</label>
@@ -44,13 +43,13 @@
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">手机</label>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-inline" style="width:240px">
                                 <input type="text" name="phone" id="phone" value="" lay-verify="phone" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">内网穿透</label>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-inline" style="width:240px">
                                 <input type="text" name="NATtraverse" id="NATtraverse" placeholder="" value="" lay-verify="" autocomplete="off" class="layui-input">
                             </div>
                             <div class="layui-form-mid layui-word-aux">请填写slideCenter服务器的内网穿透地址,如不需要内网穿透,则无需填写</div>
@@ -83,11 +82,11 @@
         </div>
 
 
-        <div class="layui-col-md5">
+        <div class="layui-col-md4" id="reportTitle-column">
             <div class="layui-card">
                 <div class="layui-card-header">设置报告标题</div>
                 <div class="layui-card-body" pad15>
-                    <div class="layui-form" lay-filter="layuiadmin-form-organizationAdmin" style="padding: 20px 0 0 0;">
+                    <div class="layui-form" style="padding: 20px 0 0 0;">
                         <div class="layui-form-item">
                             <label class="layui-form-label">病例类型</label>
                             <div class="layui-input-inline">
@@ -127,7 +126,6 @@
 </div>
 
 <script>
-    layui.use('set', layui.factory('set'));
     layui.define(['admin', 'form', 'laydate', 'table', 'laytpl', 'xmSelect'], function() {
         var $ = layui.$,
             admin = layui.admin,
@@ -141,7 +139,10 @@
 
         var reportTitleObj = { '常规病例': '', 'TBS病例': '' };
         document.getElementById("LAY_signSrc").setAttribute('style', "display: none");
-        document.getElementById("userName").setAttribute('value', layui.data('layuiAdmin').userName);
+        if (layui.data('layuiAdmin').role == '上传端') {
+            document.getElementById("info-column").setAttribute('class', 'layui-col-md12');
+            document.getElementById("reportTitle-column").setAttribute('style', "display: none");
+        }
 
         var userData;
         admin.req({
@@ -158,9 +159,12 @@
                     userData = res.data[0];
                     let randomUrl = userData.sign += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
                     document.getElementById("preview").setAttribute('value', randomUrl);
+                    $('#userName').val(layui.data('layuiAdmin').userName);
+                    $('#NATtraverse').val(userData.NATtraverse);
                     $('#phone').val(userData.phone);
                     $('#info').val(userData.info);
                     if (![null, 'null', '', 'undefined', {}].includes(userData.reportTitle)) {
+                        console.log(userData.reportTitle)
                         reportTitleObj = JSON.parse(userData.reportTitle);
                         $('#reportTitle').val(reportTitleObj['常规病例'].reportTitle);
                         $('#subtitle').val(reportTitleObj['常规病例'].subtitle);
@@ -174,6 +178,7 @@
                             });
                         });
                     }
+                    console.log(xmSelectData)
                     subspecialtySelect.setValue(xmSelectData);
                 } else {
                     layer.alert('查询不到用户数据!', {
@@ -259,9 +264,10 @@
         $('#reset').click(function() { // 重新填写
             subspecialtySelect.setValue([]);
             $('#phone').val('');
+            $('#NATtraverse').val('');
+            $('#info').val('');
             form.render();
         })
-
 
         // @note 设置报告标题
         form.on('submit(reportTitleForm-submit)', function(data) {
@@ -298,4 +304,5 @@
             form.render();
         })
     });
+    layui.use('set', layui.factory('set'));
 </script>

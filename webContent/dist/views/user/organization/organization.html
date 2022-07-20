@@ -129,6 +129,28 @@
                         });
                     }
                 });
+            } else if (layEvent === 'setTitle') {
+                // 组织报告使用popup,待定
+                admin.popup({
+                    title: '设置报告标题',
+                    // area: ['800px', '600px'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                    id: 'popup-setReportTitle',
+                    success: function(layero, index) {
+                        view(this.id).render('set/user/reportTitleForm', {
+                            organization: data
+                        }).done(function() {
+                            //监听提交
+                            form.on('submit(reportTitleForm-submit)', function(data) {
+                                var field = data.field; //获取提交的字段    
+                                reportTitle[`${data.field.caseType}`] = {
+                                    reportTitle: data.field.reportTitle,
+                                    subtitle: data.field.subtitle
+                                };
+                                layer.close(index); //执行关闭 
+                            });
+                        })
+                    }
+                })
             }
         });
 

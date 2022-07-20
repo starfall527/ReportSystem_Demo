@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 组织管理
  * @Date 2022-06-24 18:30:19
- * @LastEditTime 2022-07-15 14:49:47
+ * @LastEditTime 2022-07-18 09:37:52
  * @FilePath \ReportSystem_Demo\Admin\Manager\organization.js
  */
 const express = require("express");
@@ -96,7 +96,6 @@ router_organization.get('/delete', function(req, res) {
     var json = { code: 200, msg: '成功' };
     res.send(json);
 });
-
 
 
 module.exports = {

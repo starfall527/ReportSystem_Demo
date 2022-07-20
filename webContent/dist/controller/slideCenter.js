@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-07-08 14:06:10
+ * @LastEditTime 2022-07-18 09:33:57
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 
@@ -87,6 +87,7 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function(exports) {
             layer.confirm('将打开选中切片，确定？', {
                 btn: ['确定', '取消']
             }, function(index) {
+                data.userName = layui.data('layuiAdmin').userName; //传输用户名,用于查询内网穿透设置
                 admin.req({
                     url: 'api/slideCenter/openSlide',
                     type: 'get',

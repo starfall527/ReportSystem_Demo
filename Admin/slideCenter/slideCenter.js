@@ -516,6 +516,7 @@ router_slideCenter.get('/annotationTable', function(req, res) {
     let check = setInterval(() => {
         if (checkFlag) {
             let pageData = getPageData(tableData, req.query.page, req.query.limit);
+            console.log(pageData)
             var json = {
                 code: 200,
                 msg: '成功',
@@ -542,13 +543,13 @@ router_slideCenter.get('/annotationTable', function(req, res) {
 
 const qrImage = require('qr-image');
 const path = require('path');
-// * 获取切片信息 关键接口
+// * @note 获取切片信息 关键接口
 router_slideCenter.get('/openSlide', function(req, res) {
     let data = req.query;
     var thumbnail = '';
     var label = '';
     let NATtraverse = '';
-    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', req.query.userName);
+    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', data.userName);  //data里需要有userName
     if (user.length > 0) {
         NATtraverse = user[0].NATtraverse;
     }

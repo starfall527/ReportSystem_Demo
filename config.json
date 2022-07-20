@@ -20,5 +20,6 @@
     },    
     "network": {
         "NATtraverse":""
-    }
+    },
+    "chromePath":"./chrome-win/chrome"
 }
