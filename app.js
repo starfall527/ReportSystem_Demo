@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2021-10-21 17:26:04
- * @LastEditTime 2022-06-27 14:12:27
+ * @LastEditTime 2022-07-20 14:48:45
  * @FilePath \ReportSystem_Demo\app.js
  */
 const express = require("express");
@@ -57,6 +57,7 @@ process.on('uncaughtException', function (err) {
 });
 
 const slideCenter = require('./Admin/slideCenter/slideCenter');
+const slideCenterCloud = require('./Admin/slideCenter/slideCenterCloud');
 const userManager = require('./Admin/Manager/userManager');
 const caseManager = require('./Admin/Manager/caseManager');
 const organization = require('./Admin/Manager/organization');
@@ -70,6 +71,7 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 
+app.use('/api/slideCenterCloud', slideCenterCloud.router_slideCenter);
 app.use('/api/slideCenter', slideCenter.router_slideCenter);
 app.use('/api/user', userManager.router_user);
 app.use('/api/case', caseManager.router_case);

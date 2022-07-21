@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-07-18 09:33:57
+ * @LastEditTime 2022-07-21 16:09:14
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 
@@ -84,29 +84,24 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function(exports) {
         var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
         if (layEvent === 'openSlide') { //查看选中切片
-            layer.confirm('将打开选中切片，确定？', {
-                btn: ['确定', '取消']
-            }, function(index) {
-                data.userName = layui.data('layuiAdmin').userName; //传输用户名,用于查询内网穿透设置
-                admin.req({
-                    url: 'api/slideCenter/openSlide',
-                    type: 'get',
-                    contentType: 'application/json;charset=UTF-8',
-                    data: data,
-                    success: function(res) {
-                        layer.open({
-                            type: 2,
-                            title: res.fileName,
-                            shade: false,
-                            maxmin: true,
-                            area: ['100%', '100%'],
-                            content: res.data
-                        }); // iframe弹窗
-                    },
-                    done: function(res) {}
-                })
-                layer.close(index);
-            });
+            data.userName = layui.data('layuiAdmin').userName; //传输用户名,用于查询内网穿透设置
+            admin.req({
+                url: 'api/slideCenter/openSlide',
+                type: 'get',
+                contentType: 'application/json;charset=UTF-8',
+                data: data,
+                success: function(res) {
+                    layer.open({
+                        type: 2,
+                        title: res.fileName,
+                        shade: false,
+                        maxmin: true,
+                        area: ['100%', '100%'],
+                        content: res.data
+                    }); // iframe弹窗
+                },
+                done: function(res) {}
+            })
         }
     });
 
@@ -128,13 +123,11 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function(exports) {
         elem: '#tree',
         data: getData(),
         showCheckbox: false, //是否显示复选框
-
         id: 'tree',
         isJump: false, //是否允许点击节点时弹出新窗口跳转
 
         click: function(obj) {
-            var data = obj.data; //获取当前点击的节点数据
-            // layer.msg('状态：' + obj.state + `obj.field:${obj.data.field}`);
+            var data = obj.data; //获取当前点击的节点数据      
             layui.table.reload('slide-table-list', {
                 where: {
                     path: obj.data.field
@@ -154,28 +147,23 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function(exports) {
             if (checkData === undefined) {
                 return layer.msg('请选择数据');
             } else {
-                layer.confirm('将打开选中切片，确定？', {
-                    btn: ['确定', '取消']
-                }, function(index) {
-                    admin.req({
-                        url: 'api/slideCenter/openSlide',
-                        type: 'get',
-                        contentType: 'application/json;charset=UTF-8',
-                        data: checkData,
-                        success: function(res) {
-                            layer.open({
-                                type: 2,
-                                title: res.fileName,
-                                shade: false,
-                                maxmin: true,
-                                area: ['90%', '90%'],
-                                content: res.data
-                            }); // iframe弹窗
-                        },
-                        done: function(res) {}
-                    })
-                    layer.close(index);
-                });
+                admin.req({
+                    url: 'api/slideCenter/openSlide',
+                    type: 'get',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: checkData,
+                    success: function(res) {
+                        layer.open({
+                            type: 2,
+                            title: res.fileName,
+                            shade: false,
+                            maxmin: true,
+                            area: ['90%', '90%'],
+                            content: res.data
+                        }); // iframe弹窗
+                    },
+                    done: function(res) {}
+                })
             }
         },
         getUrlQrcode: function() { // * 获取二维码

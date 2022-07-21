@@ -14,7 +14,7 @@ var http = require("http");
 const logger = require('log4js').getLogger();
 const base64 = require('js-base64');
 const config = require('../config');
-// pmulqf2d.shenzhuo.vip:44901
+
 var options = {
     hostname: '127.0.0.1',
     port: 9804,
@@ -23,13 +23,6 @@ var options = {
     path: `/api/app/odm-slide/slide-uri`,
     headers: { 'Content-Type': 'text/json' }
 };
-
-// if (config.checkConfigProperty(config.readConfigFile().network, 'NATtraverse')) {
-//     if (![null, undefined, ''].includes(config.readConfigFile().network.NATtraverse)) {
-//         options.socket = config.readConfigFile().network.NATtraverse;
-//         options.NATtraverse = config.readConfigFile().network.NATtraverse;
-//     }
-// }
 
 async function sendRequest(path) {
     return new Promise((resolve, reject) => {
@@ -48,6 +41,8 @@ async function sendRequest(path) {
         console.error(err);
     })
 }
+
+// #region @note 获取文件树
 
 /***
  * @description: @note 遍历读取文件
@@ -145,30 +140,6 @@ function unique(arr) {
         }
     }
     return newArr;
-}
-
-
-/***
- * @description: 获取当前分页数据
- * @param {array} sqlData   sql操作后获得的数据
- * @param {*} page      页码
- * @param {*} limit     每页显示数据条数
- * @return {*}
- * @TODO 先取所有数据,再截取分页数据,资源大概会有一点点点浪费(小问题)
- */
-function getPageData(sqlData, page, limit) {
-    let data;
-    if (sqlData === undefined) {
-        return [];
-    }
-    if (page != undefined || limit != undefined) {
-        let start = (page - 1) * limit,
-            end = page * limit;
-        data = sqlData.slice(start, end);
-    } else {
-        data = sqlData;
-    }
-    return data;
 }
 
 // #region layui-tree格式的数据,参考用
@@ -273,15 +244,7 @@ function getTreeJson(path, tree) {
     }
 }
 
-function unique(arr) {
-    var newArr = [];
-    for (var i = 0; i < arr.length; i++) {
-        if (newArr.indexOf(arr[i]) == -1) {
-            newArr.push(arr[i])
-        }
-    }
-    return newArr;
-}
+// #endregion
 
 // #region @note router处理
 
@@ -471,7 +434,8 @@ router_slideCenter.get('/table', function(req, res) {
     if (data.path !== '') {
         tableData = getFileList(data.path, [], false, '.tron', NATtraverse)
     };
-    let pageData = getPageData(tableData, req.query.page, req.query.limit);
+    console.log(tableData)
+    let pageData =sqlMacros.getPageData(tableData, req.query.page, req.query.limit);
     var json = {
         code: 200,
         msg: '成功',
@@ -549,7 +513,7 @@ router_slideCenter.get('/openSlide', function(req, res) {
     var thumbnail = '';
     var label = '';
     let NATtraverse = '';
-    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', data.userName);  //data里需要有userName
+    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', data.userName); //data里需要有userName
     if (user.length > 0) {
         NATtraverse = user[0].NATtraverse;
     }
