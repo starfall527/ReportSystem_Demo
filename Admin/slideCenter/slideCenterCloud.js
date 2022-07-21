@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-07-20 11:49:11
- * @LastEditTime 2022-07-21 17:32:10
+ * @LastEditTime 2022-07-21 18:14:27
  * @FilePath \ReportSystem_Demo\Admin\slideCenter\slideCenterCloud.js
  */
 
@@ -82,7 +82,6 @@ router_slideCenter.get('/table', function(req, res) {
 
         let postfix = '.tron';
         var filesList = [];
-        let files = [] //fs.readdirSync(path); // 需要用到同步读取
         getSlides(data.path, 'intemedic', 20).then(apiRes => {
             apiRes = JSON.parse(apiRes);
             if (!['', null, undefined, 'null'].includes(apiRes.items)) {
@@ -135,7 +134,7 @@ async function getSlideUrl(path, tenantName, isReadOnly, userName) {
     })
 }
 
-async function getThumbnailUrl(path, tenantName) {
+function getThumbnailUrl(path, tenantName) {
     let url = `${options.socket}/api/app/odm-slide/named-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&ImageName=thumbnail`;
     return url;
 }
@@ -152,7 +151,7 @@ async function getThumbnail(path, tenantName) {
     })
 }
 
-async function getLabelUrl(path, tenantName) {
+function getLabelUrl(path, tenantName) {
     let url = `${options.socket}/api/app/odm-slide/named-image?Path=${encodeURI(path)}&TenantName=${encodeURI(tenantName)}&ImageName=label`;
     return url;
 }
