@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-07-20 11:49:11
- * @LastEditTime 2022-07-22 18:03:30
+ * @LastEditTime 2022-07-22 18:29:59
  * @FilePath \ReportSystem_Demo\Admin\slideCenter\slideCenterCloud.js
  */
 
@@ -30,7 +30,11 @@ async function sendHttpsRequest(url, options) {
         var req = https.request(url, options, function(res) {
             res.on('data', (d) => {
                 // console.log(d);
-                resolve(d.toString());
+                if (options.returnBase64) {
+                    resolve(d.toString('base64'));
+                } else {
+                    resolve(d.toString());
+                }
             });
         });
         req.on("error", function(err) {
@@ -95,6 +99,21 @@ function loginKingMed() {
 }
 loginKingMed();
 
+async function testThumbnail() {
+    let url = `${options.socket}/api/app/odm-slide/named-image?Path=/test/G21-0848.tron&TenantName=intemedic&ImageName=thumbnail`;
+    let httpsOptions = {
+        headers: {
+            authorization: "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkM4OTcxQkEzQTBENDBEQTI5QUI1OTAxN0IzQUFDRDZBIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE2NTg0ODUyODUsImV4cCI6MTY5MDAyMTI4NSwiaXNzIjoiaHR0cHM6Ly9hdXRoLnNjLnRyaWFsLm9tbmlwYXRoLmNjOjQ0MyIsImF1ZCI6IkFwcCIsImNsaWVudF9pZCI6Ik9kbV9BcHAiLCJiYWNrZW5kIjoidHJ1ZSIsImlhdCI6MTY1ODQ4NTI4NSwic2NvcGUiOlsiQXBwIl19.bbeMQ5H0L4Q7faB_lJ0gLuBF19g5rNPCNNR1TZbARgvzoGRfOfQvJ6ZwSA2UN-3Y4vFJLqjbN92jQbKcrfV4b01eqDAL389ZJ6y-43maEO2hkvK-xfSpBsfiJJxP1HUuTT7I3Kc8phpToOfEhNX3pE3IIAvJbW-O0cxiG7Ojbq3-is11pnrAlc_VIbde2BPofNvD6wNYN15P0qDjKwyFeH9JtIRvbydzCIkZJ00VHMjzB-3IV0jdcTJbfBedgQA3XS7w6s50Ox8NiUw-OuUUw0864khHhhOMY6IMFfvtjnxl7VVzT7FbY9H5trMA6hWutk_9aryoWzD6t_uXz3nvnw"
+        },
+        path: url,
+        returnBase64: true
+    }
+    let thumbnail;
+    await sendHttpsRequest(url, httpsOptions).then(apiRes => {
+        thumbnail = apiRes;
+    })
+}
+
 // 向金域上传切片
 router_slideCenter.get('/uploadSlide', async function(req, res) {
     let data = req.query;
@@ -111,11 +130,21 @@ router_slideCenter.get('/uploadSlide', async function(req, res) {
         slideUrl = 'https://auth.sc.trial.omnipath.cc' + apiRes + '&vendor-script=http://server/vendor-script.js';
     })
 
+    url = `${options.socket}/api/app/odm-slide/named-image?Path=${encodeURI(data.path)}&TenantName=${encodeURI(data.tenantName)}&ImageName=thumbnail`;
+    let thumbnail;
+    httpsOptions.path = url;
+    httpsOptions.returnBase64 = true;
+    await sendHttpsRequest(url, httpsOptions).then(apiRes => {
+        thumbnail = apiRes;
+        console.log(thumbnail)
+    })
+
     let kingMedUrl = 'https://rpdp-uat.kingmed.com.cn/dp/xzw/slide';
     let barcode = data.barcode;
     let postData = JSON.stringify({
         barcode: barcode,
         labelWithOverview: 'test',
+        overview: thumbnail,
         url: slideUrl,
         scannerModel: 'NEO-5X',
         createDateTime: new Date().Format("yyyy-MM-dd hh:mm:ss"),
