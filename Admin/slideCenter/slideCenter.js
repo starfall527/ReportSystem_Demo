@@ -479,7 +479,7 @@ router_slideCenter.get('/annotationTable', function(req, res) {
     let timeout = 0;
     let check = setInterval(() => {
         if (checkFlag) {
-            let pageData = getPageData(tableData, req.query.page, req.query.limit);
+            let pageData =sqlMacros.getPageData(tableData, req.query.page, req.query.limit);
             console.log(pageData)
             var json = {
                 code: 200,

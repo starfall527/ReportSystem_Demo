@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-07-20 11:49:11
- * @LastEditTime 2022-07-21 18:14:27
+ * @LastEditTime 2022-07-22 18:03:30
  * @FilePath \ReportSystem_Demo\Admin\slideCenter\slideCenterCloud.js
  */
 
@@ -29,9 +29,31 @@ async function sendHttpsRequest(url, options) {
     return new Promise((resolve, reject) => {
         var req = https.request(url, options, function(res) {
             res.on('data', (d) => {
+                // console.log(d);
                 resolve(d.toString());
             });
         });
+        req.on("error", function(err) {
+            console.log('statusCode:', err.statusCode);
+            console.log(err.message);
+            reject(err.message);
+        });
+        req.end();
+    }).catch(err => {
+        console.error(err);
+    })
+}
+
+
+async function sendHttpsPostRequest(url, options, postData) {
+    return new Promise((resolve, reject) => {
+        var req = https.request(url, options, function(res) {
+            res.on('data', (d) => {
+                // console.log(d);
+                resolve(d.toString());
+            });
+        });
+        req.write(postData);
         req.on("error", function(err) {
             console.log('statusCode:', err.statusCode);
             console.log(err.message);
@@ -56,14 +78,77 @@ router_slideCenter.get('/getToken', function(req, res) {
     res.send(json);
 });
 
-// 向金域上传切片
-router_slideCenter.get('/uploadSlide', function(req, res) {
-    let data = req.query;
-    var json = {
-        code: 200,
-        msg: '成功',
+function loginKingMed() {
+    let url = "https://rpdp-uat.kingmed.com.cn/dp/sa/login";
+    let httpsOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        path: url,
+        data: { username: 'testuser1', password: '123456' }
     };
-    res.send(json);
+    let postData = JSON.stringify(httpsOptions.data);
+    sendHttpsPostRequest(url, httpsOptions, postData).then(apiRes => {
+        console.log(apiRes)
+    })
+}
+loginKingMed();
+
+// 向金域上传切片
+router_slideCenter.get('/uploadSlide', async function(req, res) {
+    let data = req.query;
+    let url = `${options.socket}/api/app/odm-slide/slide-uri?Path=${encodeURI(data.path)}&TenantName=${encodeURI(data.tenantName)}&IsReadOnly=${encodeURI(data.isReadOnly)}`;
+    let httpsOptions = {
+        headers: {
+            authorization: global.scToken
+        },
+        path: url
+    }
+    let checkFlag = false;
+    var slideUrl = '';
+    await sendHttpsRequest(url, httpsOptions).then(apiRes => {
+        slideUrl = 'https://auth.sc.trial.omnipath.cc' + apiRes + '&vendor-script=http://server/vendor-script.js';
+    })
+
+    let kingMedUrl = 'https://rpdp-uat.kingmed.com.cn/dp/xzw/slide';
+    let barcode = data.barcode;
+    let postData = JSON.stringify({
+        barcode: barcode,
+        labelWithOverview: 'test',
+        url: slideUrl,
+        scannerModel: 'NEO-5X',
+        createDateTime: new Date().Format("yyyy-MM-dd hh:mm:ss"),
+        vendor: 'intemedic',
+        user: 'testuser1'
+    });
+    if (slideUrl != '') {
+        sendHttpsPostRequest(kingMedUrl, {
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json',
+                "Cookie": "JSESSIONID=D8839DBA2F9B36D8EA836DC7827D85DE"
+            }
+        }, postData).then(kingMedRes => {
+            console.log(`kingMedRes`);
+            console.log(kingMedRes);
+            var json = {
+                code: 200,
+                msg: '成功'
+            };
+            res.send(json);
+        })
+    } else {
+        var json = {
+            code: 500,
+            msg: '获取切片地址失败'
+        };
+        res.send(json);
+
+    }
+
 });
 
 // getSlideUrl('/test/G21-0848.tron', 'intemedic', false, 'advuser');
@@ -94,6 +179,8 @@ router_slideCenter.get('/table', function(req, res) {
                                 fileName: item.displayName,
                                 thumbnailUrl: getThumbnailUrl(item.path, 'intemedic'),
                                 labelUrl: getLabelUrl(item.path, 'intemedic'),
+                                tenantName: 'intemedic',
+                                isReadOnly: false,
                             });
                         }
                     } else {
@@ -101,6 +188,8 @@ router_slideCenter.get('/table', function(req, res) {
                             path: item.path,
                             fileName: item.displayName,
                             thumbnailUrl: getThumbnailUrl(item.path, 'intemedic'),
+                            tenantName: 'intemedic',
+                            isReadOnly: false,
                         });
                     }
                 });
