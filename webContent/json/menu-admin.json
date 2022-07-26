@@ -4,7 +4,7 @@
 	"data": [
 		{
 			"name": "kingMed",
-			"title": "金域切片管理",
+			"title": "切片上传",
 			"icon": "layui-icon-auz",
 			"jump": "kingMed/kingMed"
 		}

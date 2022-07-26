@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 组织管理
  * @Date 2022-06-24 18:30:19
- * @LastEditTime 2022-07-18 09:37:52
+ * @LastEditTime 2022-07-26 14:21:31
  * @FilePath \ReportSystem_Demo\Admin\Manager\organization.js
  */
 const express = require("express");
@@ -28,7 +28,7 @@ const createOrganizationTable = sqlMacros.sqlExecute(
     "note VARCHAR(255)," + // 备注
     "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
 );
-sqlMacros.sqlAlter('ORGANIZATION', 'describe', 'VARCHAR(255)', ''); //新增字段
+// sqlMacros.sqlAlter('ORGANIZATION', 'describe', 'VARCHAR(255)', ''); //新增字段
 
 /***
  * @description:@note 查询病例

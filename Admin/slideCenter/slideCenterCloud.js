@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-07-20 11:49:11
- * @LastEditTime 2022-07-26 09:49:45
+ * @LastEditTime 2022-07-26 16:30:05
  * @FilePath \ReportSystem_Demo\Admin\slideCenter\slideCenterCloud.js
  */
 
@@ -25,6 +25,11 @@ var options = {
     path: `/api/app/odm-slide/slide-uri`,
     headers: { 'Content-Type': 'text/json' }
 };
+// global.kingmedAPI= 'https://rpdp-uat.kingmed.com.cn'; // 测试接口
+// global.userInfo = { username: 'testuser1', password: '123456' } // 测试接口
+
+global.kingmedAPI = 'https://epathology.kingmed.com.cn'; // 生产接口
+global.userInfo = { username: 'intemedic', password: '9565454239' } // 生产接口
 
 async function sendHttpsRequest(url, options) {
     return new Promise((resolve, reject) => {
@@ -32,8 +37,8 @@ async function sendHttpsRequest(url, options) {
             res.on('data', (d) => {
                 // console.log(d);
                 if (options.returnBase64) {
-                    fs.writeFileSync('./tmp.png', d, { encoding: 'base64' }); // 保存base64图片
-                    resolve(d.toString('base64'));
+                    let base64str = 'data:image/jpeg;base64,' + d.toString('base64')
+                    resolve(base64str);
                 } else {
                     resolve(d.toString());
                 }
@@ -77,7 +82,9 @@ async function sendHttpsPostRequest(url, options, postData) {
 router_slideCenter.get('/getToken', function(req, res) {
     let data = req.query;
     if (![null, undefined, '', 'null'].includes(data.access_token)) {
-        global.scToken = 'Bearer ' + data.access_token;
+        global.scToken = 'Bearer ' + data.access_token; // * 返回的token前面要加 Bearer 否则无效
+        // global.tenantName = 'intemedic';
+        global.tenantName = 'kingmed';
     }
     var json = {
         code: 200,
@@ -87,14 +94,17 @@ router_slideCenter.get('/getToken', function(req, res) {
 });
 
 function loginKingMed() {
-    let url = "https://rpdp-uat.kingmed.com.cn/dp/sa/login";
+    // let url = "https://rpdp-uat.kingmed.com.cn/dp/sa/login"; // 测试接口
+    // let url = "https://epathology.kingmed.com.cn/dp/sa/login";
+    let url = `${global.kingmedAPI}/dp/sa/login`;
+
     let httpsOptions = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         path: url,
-        data: { username: 'testuser1', password: '123456' }
+        data: global.userInfo // 生产接口账号
     };
     let postData = JSON.stringify(httpsOptions.data);
     sendHttpsPostRequest(url, httpsOptions, postData).then(apiRes => {
@@ -117,7 +127,39 @@ async function testThumbnail() {
         thumbnail = apiRes;
     })
 }
-testThumbnail();
+// testThumbnail();
+
+// 查看sc切片
+router_slideCenter.get('/openSlide', async function(req, res) {
+    if (!['', null, undefined, 'null'].includes(global.scToken)) {
+        let data = req.query;
+        let url = `${options.socket}/api/app/odm-slide/slide-uri?Path=${encodeURI(data.path)}&userName=sas_user&TenantName=${encodeURI(data.tenantName)}&IsReadOnly=false`;
+        let httpsOptions = {
+            headers: {
+                authorization: global.scToken
+            },
+            path: url
+        }
+        var slideUrl = '';
+        await sendHttpsRequest(url, httpsOptions).then(apiRes => {
+            slideUrl = 'https://web.sc.trial.omnipath.cc' + apiRes + '&vendorScript=https://web.sc.trial.omnipath.cc/static/vendor/kingmed.js';
+            // * slideUrl加入vendor-script的公网地址
+            // console.log(slideUrl)
+        })
+
+        var json = {
+            code: 200,
+            msg: '成功',
+            data: {
+                fileName: data.fileName,
+                scToken: global.scToken,
+                slideUrl: slideUrl
+            }
+        };
+        res.send(json);
+    }
+});
+
 
 // 向金域上传切片
 router_slideCenter.get('/uploadSlide', async function(req, res) {
@@ -157,18 +199,18 @@ router_slideCenter.get('/uploadSlide', async function(req, res) {
         })
         httpsOptions.returnBase64 = false;
 
-        let kingMedUrl = 'https://rpdp-uat.kingmed.com.cn/dp/xzw/slide';
+        let kingMedUrl = `${global.kingmedAPI}/dp/xzw/slide`;
         let barcode = data.barcode;
         let postData = JSON.stringify({
             barcode: barcode,
             labelWithOverview: thumbnail,
             overview: thumbnail, // 切片缩略图
             label: label, // 标签图
-            url: slideUrl, 
+            url: slideUrl,
             scannerModel: 'IMD-NEO-5X', // * 扫描仪型号
             createDateTime: new Date().Format("yyyy-MM-dd hh:mm:ss"),
             vendor: 'InteMedic', // 厂商名 大小写敏感,错误则导致无法截图
-            user: 'testuser1'
+            user: global.userInfo.username // 测试接口账号
         });
         if (slideUrl != '') {
             sendHttpsPostRequest(kingMedUrl, {
@@ -215,11 +257,11 @@ router_slideCenter.get('/table', function(req, res) {
     }
     if (data.path !== '') {
         // tableData = getFileList(data.path, [], false, '.tron', NATtraverse)
-        // tableData = getFileListAPI(data.path, [], false, '.tron', 'intemedic');
+        // tableData = getFileListAPI(data.path, [], false, '.tron', global.tenantName);
 
         let postfix = '.tron';
         var filesList = [];
-        getSlides(data.path, 'intemedic', 20).then(apiRes => {
+        getSlides(data.path, global.tenantName, 20).then(apiRes => {
             apiRes = JSON.parse(apiRes);
             if (!['', null, undefined, 'null'].includes(apiRes.items)) {
                 apiRes.items.forEach((item) => {
@@ -229,9 +271,9 @@ router_slideCenter.get('/table', function(req, res) {
                             filesList.push({
                                 path: item.path,
                                 fileName: item.displayName,
-                                thumbnailUrl: getThumbnailUrl(item.path, 'intemedic'),
-                                labelUrl: getLabelUrl(item.path, 'intemedic'),
-                                tenantName: 'intemedic',
+                                thumbnailUrl: getThumbnailUrl(item.path, global.tenantName),
+                                labelUrl: getLabelUrl(item.path, global.tenantName),
+                                tenantName: global.tenantName,
                                 isReadOnly: false,
                             });
                         }
@@ -239,8 +281,8 @@ router_slideCenter.get('/table', function(req, res) {
                         filesList.push({
                             path: item.path,
                             fileName: item.displayName,
-                            thumbnailUrl: getThumbnailUrl(item.path, 'intemedic'),
-                            tenantName: 'intemedic',
+                            thumbnailUrl: getThumbnailUrl(item.path, global.tenantName),
+                            tenantName: global.tenantName,
                             isReadOnly: false,
                         });
                     }
@@ -338,7 +380,7 @@ var folderList = [];
 // @note 获取tree数据
 router_slideCenter.get('/getFolders', function(req, res) {
     if (!['', null, undefined, 'null'].includes(global.scToken)) {
-        getFolders(req.query.path, 'intemedic', 20).then(apiRes => {
+        getFolders(req.query.path, global.tenantName, 20).then(apiRes => {
             var rootNode = {
                 title: req.query.title,
                 field: req.query.path,
@@ -420,15 +462,15 @@ async function getFileListAPI(path, filesList, isRecursive, postfix, tenantName)
                         filesList.push({
                             path: file.path,
                             fileName: file.displayName,
-                            thumbnailUrl: getThumbnailUrl(file.path, 'intemedic'),
-                            labelUrl: getLabelUrl(file.path, 'intemedic'),
+                            thumbnailUrl: getThumbnailUrl(file.path, global.tenantName),
+                            labelUrl: getLabelUrl(file.path, global.tenantName),
                         });
                     }
                 } else {
                     filesList.push({
                         path: file.path,
                         fileName: file,
-                        thumbnailUrl: getThumbnailUrl(file.path, 'intemedic'),
+                        thumbnailUrl: getThumbnailUrl(file.path, global.tenantName),
                     });
                 }
             });

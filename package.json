@@ -39,11 +39,9 @@
         "md5": "^2.3.0",
         "multiparty": "^4.2.3",
         "opencv4nodejs": "^5.6.0",
-        "puppeteer": "^14.2.0",
         "qr-image": "^3.2.0",
         "qrcode-reader": "^1.0.4",
-        "tape": "^5.5.3",
-        "wkhtmltopdf": "^0.4.0"
+        "tape": "^5.5.3"
     },
     "bin": "app.js",
     "pkg": {
@@ -84,7 +82,7 @@
         "opencvBinDir": "D:\\opencv-4.1.0\\opencv\\build\\x64\\vc15\\bin"
     },
     "apidoc": {
-        "name": "病例管理报告系统",
+        "name": "金域切片管理系统",
         "description": "接口文档",
         "title": "接口文档"
     }

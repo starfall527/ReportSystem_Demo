@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-15 14:47:20
+ * @LastEditTime 2022-07-26 14:17:30
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -411,216 +411,221 @@ router_case.post('/edit', function(req, res) {
     res.send(json);
 });
 
-const puppeteer = require("puppeteer");
-const { resolve } = require("path");
-/*** @note  生成报告
- * @description: 生成报告
- * @param {*} openReport
- * @param {*} res
- * @return {*}
- */
-router_case.get('/openReport', function(req, res) {
-    var caseData = req.query;
-    const option = process.argv;
-    var type = caseData.caseType;
-    var userName = caseData.userName;
-    var user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', userName);
-    if (user.length > 0) {
-        user = user[0];
-        if (!['', null, undefined, 'null'].includes(user.reportTitle)) {
-            caseData.reportTitle = JSON.parse(user.reportTitle)[type].reportTitle;
-            caseData.subtitle = JSON.parse(user.reportTitle)[type].subtitle;
-        } else {
-            let organization = sqlMacros.sqlSelect('*', 'organization', true, 'name', user.organization);
-            if (organization.length > 0) {
-                organization = organization[0];
-                caseData.reportTitle = organization.reportTitle;
-            }
-        }
-    } else {
-        logger.error(`用户不存在,无法生成报告,请联系管理员  userName:${userName}`);
-        var json = { code: 500, msg: '当前用户不存在,无法生成报告,请联系管理员' };
-        res.send(json);
-        return;
-    }
-    let caseTypeDisplay = {
-        '常规病例': 'Normal',
-        'TBS病例': 'TBS',
-    };
-    type = caseTypeDisplay[type];
-    let executablePath = '';
-    if (![null, undefined, ''].includes(config.readConfigFile().chromePath)) {
-        executablePath = config.readConfigFile().chromePath;
-    }
-    const puppeteerConf = {
-        // headless: false,
-        defaultViewport: { width: 1300, height: 900 },
-        slowMo: 30,
-        devtools: false,
-        executablePath: executablePath // * 部署时需要配置chrome路径,否则无法生成pdf
-    };
+// #region 生成pdf
 
-    var address = path.join('file:///', process.cwd(), `/templet/report${type}.html`); //  路径和caseType相关
-    var reportPath = '';
-    (async () => {
-        if (option.length >= 3) { address = option[2]; }
-        const browser = await puppeteer.launch(puppeteerConf);
-        const page = await browser.newPage();
-        await page.setViewport({
-            width: 1920,
-            height: 1080
-        }); // 设置视窗
-        await page.goto(address, { waitUntil: "networkidle2" });
-        await page.evaluate((caseData) => {
-            let annotationUrl = JSON.parse(caseData.annotation);
-            for (const key in caseData) {
-                if (Object.hasOwnProperty.call(caseData, key)) {
-                    const element = caseData[key];
-                    if ([null, ''].includes(element) && key !== "unsatisfiedReason") {
-                        caseData[key] = '无';
-                    }
-                }
-            }
-            let error = [];
-            if (![null, undefined].includes(document.getElementById("reportTitle")) &&
-                ![null, undefined, '无'].includes(caseData.reportTitle)) {
-                document.getElementById("reportTitle").innerHTML = caseData.reportTitle;
-                if (![null, undefined].includes(document.getElementById("subtitle"))) {
-                    if (![null, undefined, '', 'null', '无'].includes(caseData.subtitle)) {
-                        document.getElementById("subtitle").innerHTML = caseData.subtitle;
-                    } else {
-                        document.getElementById("subtitle").setAttribute("style", "display:none;");
-                    }
-                }
-                error.push("reportTitle");
-            }
-            if (![null, undefined].includes(document.getElementById("pathologyNumLabel"))) {
-                document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
-                error.push("pathologyNumLabel");
-            }
-            if (![null, undefined].includes(document.getElementById("patNameLabel"))) {
-                document.getElementById("patNameLabel").innerHTML += caseData.patName; // 病人姓名
-                error.push("patNameLabel");
-            }
-            // $('#patNameLabel').val($('#patNameLabel').val() + caseData.patName); // 还没验证 可以简化代码
-            if (![null, undefined].includes(document.getElementById("genderLabel"))) {
-                document.getElementById("genderLabel").innerHTML += caseData.gender; // 性别
-                error.push("genderLabel");
-            }
-            if (![null, undefined].includes(document.getElementById("ageLabel"))) {
-                document.getElementById("ageLabel").innerHTML += caseData.age; // 年龄
-                error.push("ageLabel");
-            }
-            if (![null, undefined].includes(document.getElementById("doctorLabel"))) {
-                document.getElementById("doctorLabel").innerHTML += caseData.doctor; // 医生
-                error.push("doctorLabel");
-            }
-            if (![null, undefined].includes(document.getElementById("samplePartLabel"))) {
-                document.getElementById("samplePartLabel").innerHTML += caseData.samplePart; // 取样位置
-                error.push("samplePartLabel");
-            }
-            if (![null, undefined].includes(document.getElementById("historyLabel"))) {
-                document.getElementById("historyLabel").innerHTML += caseData.history; // 病史
-                error.push("historyLabel");
-            }
-            if (![null, undefined].includes(document.getElementById("unitLabel"))) {
-                document.getElementById("unitLabel").innerHTML += caseData.unit; // 送检单位
-                error.push("unitLabel");
-            }
-            if (![null, undefined].includes(document.getElementById("inspectionDateLabel"))) {
-                document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate; // 送检日期
-                error.push("inspectionDateLabel");
-            }
+// const puppeteer = require("puppeteer");
+// const { resolve } = require("path");
+// /*** @note  生成报告
+//  * @description: 生成报告
+//  * @param {*} openReport
+//  * @param {*} res
+//  * @return {*}
+//  */
+// router_case.get('/openReport', function(req, res) {
+//     var caseData = req.query;
+//     const option = process.argv;
+//     var type = caseData.caseType;
+//     var userName = caseData.userName;
+//     var user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', userName);
+//     if (user.length > 0) {
+//         user = user[0];
+//         if (!['', null, undefined, 'null'].includes(user.reportTitle)) {
+//             caseData.reportTitle = JSON.parse(user.reportTitle)[type].reportTitle;
+//             caseData.subtitle = JSON.parse(user.reportTitle)[type].subtitle;
+//         } else {
+//             let organization = sqlMacros.sqlSelect('*', 'organization', true, 'name', user.organization);
+//             if (organization.length > 0) {
+//                 organization = organization[0];
+//                 caseData.reportTitle = organization.reportTitle;
+//             }
+//         }
+//     } else {
+//         logger.error(`用户不存在,无法生成报告,请联系管理员  userName:${userName}`);
+//         var json = { code: 500, msg: '当前用户不存在,无法生成报告,请联系管理员' };
+//         res.send(json);
+//         return;
+//     }
+//     let caseTypeDisplay = {
+//         '常规病例': 'Normal',
+//         'TBS病例': 'TBS',
+//     };
+//     type = caseTypeDisplay[type];
+//     let executablePath = '';
+//     if (![null, undefined, ''].includes(config.readConfigFile().chromePath)) {
+//         executablePath = config.readConfigFile().chromePath;
+//     }
+//     const puppeteerConf = {
+//         // headless: false,
+//         defaultViewport: { width: 1300, height: 900 },
+//         slowMo: 30,
+//         devtools: false,
+//         executablePath: executablePath // * 部署时需要配置chrome路径,否则无法生成pdf
+//     };
 
-            if (caseData.caseType === "常规病例") {
-                if (![null, undefined].includes(document.getElementById("clinicalData"))) {
-                    document.getElementById("clinicalData").innerHTML = caseData.clinicalData; // 送检日期
-                }
-                if (![null, undefined].includes(document.getElementById("imgCheck"))) {
-                    document.getElementById("imgCheck").innerHTML = caseData.imgCheck; // 影像学检查
-                }
-                if (![null, undefined].includes(document.getElementById("originDiagnosis"))) {
-                    document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis; // 原诊断意见
-                }
-                if (![null, undefined].includes(document.getElementById("general"))) {
-                    document.getElementById("general").innerHTML = caseData.general; // 大体所见
-                }
-            } else if (caseData.caseType === "TBS病例") {
-                if (![null, undefined].includes(document.getElementById("sampleQuality"))) {
-                    document.getElementById("sampleQuality").innerHTML =
-                        `${caseData.isSatisfied};${caseData.unsatisfiedReason}`; // 标本质量
-                }
-                if (![null, undefined].includes(document.getElementById("component"))) {
-                    document.getElementById("component").innerHTML = caseData.component; // 细胞成分
-                }
-                if (![null, undefined].includes(document.getElementById("inflammation"))) {
-                    document.getElementById("inflammation").innerHTML = caseData.inflammation; // 炎症
-                }
-                if (![null, undefined].includes(document.getElementById("reactChange"))) {
-                    document.getElementById("reactChange").innerHTML = caseData.reactChange; // 反应性改变
-                }
-                if (![null, undefined].includes(document.getElementById("pathogen"))) {
-                    document.getElementById("pathogen").innerHTML = caseData.pathogen; // 病原体
-                }
-                if (![null, undefined].includes(document.getElementById("squamousCell"))) {
-                    document.getElementById("squamousCell").innerHTML = caseData.squamousCell; // 鳞状上皮细胞分析
-                }
-                if (![null, undefined].includes(document.getElementById("glandularCell"))) {
-                    document.getElementById("glandularCell").innerHTML = caseData.glandularCell; // 腺上皮细胞分析
-                }
-                if (![null, undefined].includes(document.getElementById("otherAnalysis"))) {
-                    document.getElementById("otherAnalysis").innerHTML = caseData.otherAnalysis; // 其它分析
-                }
-            }
+//     var address = path.join('file:///', process.cwd(), `/templet/report${type}.html`); //  路径和caseType相关
+//     var reportPath = '';
+//     (async () => {
+//         if (option.length >= 3) { address = option[2]; }
+//         const browser = await puppeteer.launch(puppeteerConf);
+//         const page = await browser.newPage();
+//         await page.setViewport({
+//             width: 1920,
+//             height: 1080
+//         }); // 设置视窗
+//         await page.goto(address, { waitUntil: "networkidle2" });
+//         await page.evaluate((caseData) => {
+//             let annotationUrl = JSON.parse(caseData.annotation);
+//             for (const key in caseData) {
+//                 if (Object.hasOwnProperty.call(caseData, key)) {
+//                     const element = caseData[key];
+//                     if ([null, ''].includes(element) && key !== "unsatisfiedReason") {
+//                         caseData[key] = '无';
+//                     }
+//                 }
+//             }
+//             let error = [];
+//             if (![null, undefined].includes(document.getElementById("reportTitle")) &&
+//                 ![null, undefined, '无'].includes(caseData.reportTitle)) {
+//                 document.getElementById("reportTitle").innerHTML = caseData.reportTitle;
+//                 if (![null, undefined].includes(document.getElementById("subtitle"))) {
+//                     if (![null, undefined, '', 'null', '无'].includes(caseData.subtitle)) {
+//                         document.getElementById("subtitle").innerHTML = caseData.subtitle;
+//                     } else {
+//                         document.getElementById("subtitle").setAttribute("style", "display:none;");
+//                     }
+//                 }
+//                 error.push("reportTitle");
+//             }
+//             if (![null, undefined].includes(document.getElementById("pathologyNumLabel"))) {
+//                 document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
+//                 error.push("pathologyNumLabel");
+//             }
+//             if (![null, undefined].includes(document.getElementById("patNameLabel"))) {
+//                 document.getElementById("patNameLabel").innerHTML += caseData.patName; // 病人姓名
+//                 error.push("patNameLabel");
+//             }
+//             // $('#patNameLabel').val($('#patNameLabel').val() + caseData.patName); // 还没验证 可以简化代码
+//             if (![null, undefined].includes(document.getElementById("genderLabel"))) {
+//                 document.getElementById("genderLabel").innerHTML += caseData.gender; // 性别
+//                 error.push("genderLabel");
+//             }
+//             if (![null, undefined].includes(document.getElementById("ageLabel"))) {
+//                 document.getElementById("ageLabel").innerHTML += caseData.age; // 年龄
+//                 error.push("ageLabel");
+//             }
+//             if (![null, undefined].includes(document.getElementById("doctorLabel"))) {
+//                 document.getElementById("doctorLabel").innerHTML += caseData.doctor; // 医生
+//                 error.push("doctorLabel");
+//             }
+//             if (![null, undefined].includes(document.getElementById("samplePartLabel"))) {
+//                 document.getElementById("samplePartLabel").innerHTML += caseData.samplePart; // 取样位置
+//                 error.push("samplePartLabel");
+//             }
+//             if (![null, undefined].includes(document.getElementById("historyLabel"))) {
+//                 document.getElementById("historyLabel").innerHTML += caseData.history; // 病史
+//                 error.push("historyLabel");
+//             }
+//             if (![null, undefined].includes(document.getElementById("unitLabel"))) {
+//                 document.getElementById("unitLabel").innerHTML += caseData.unit; // 送检单位
+//                 error.push("unitLabel");
+//             }
+//             if (![null, undefined].includes(document.getElementById("inspectionDateLabel"))) {
+//                 document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate; // 送检日期
+//                 error.push("inspectionDateLabel");
+//             }
 
-            if (annotationUrl.length > 0) {
-                for (let i = 0; i < 3; i++) {
-                    if (![null, undefined].includes(document.getElementById(`annotation${i}`))) {
-                        if (i < annotationUrl.length) { // 上限3个标注图
-                            document.getElementById(`annotation${i}`).setAttribute('src', annotationUrl[i].annotationUrl); // 标注图   
-                        } else { document.getElementById(`annotation${i}`).setAttribute('style', "display:none;"); } // 标注图 
-                    }
-                }
-            }
-            if (![null, undefined].includes(document.getElementById("diagnosis"))) {
-                document.getElementById("diagnosis").innerHTML = caseData.diagnosis; // 其它分析
-            }
-            if (![null, undefined].includes(document.getElementById("signImg"))) {
-                document.getElementById("signImg").setAttribute('src',
-                    '../upload' + caseData.signPath + '?' + Math.floor(Math.random() * 100 + 1)); // 电子签名 这里路径是图片相对于模板的路径
-            }
-            if (![null, undefined].includes(document.getElementById("diagnoseDate"))) {
-                document.getElementById("diagnoseDate").innerHTML = caseData.diagnoseDate; // 诊断日期
-            }
-            return error;
-        }, caseData).then(error => {
-            // console.log(error);
-        });
-        await page.waitForTimeout(1000); // 等待图片加载完成
-        // await page.screenshot({
-        //     path: './' + caseData.pathologyNum + '.png'
-        // }); // 截图
+//             if (caseData.caseType === "常规病例") {
+//                 if (![null, undefined].includes(document.getElementById("clinicalData"))) {
+//                     document.getElementById("clinicalData").innerHTML = caseData.clinicalData; // 送检日期
+//                 }
+//                 if (![null, undefined].includes(document.getElementById("imgCheck"))) {
+//                     document.getElementById("imgCheck").innerHTML = caseData.imgCheck; // 影像学检查
+//                 }
+//                 if (![null, undefined].includes(document.getElementById("originDiagnosis"))) {
+//                     document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis; // 原诊断意见
+//                 }
+//                 if (![null, undefined].includes(document.getElementById("general"))) {
+//                     document.getElementById("general").innerHTML = caseData.general; // 大体所见
+//                 }
+//             } else if (caseData.caseType === "TBS病例") {
+//                 if (![null, undefined].includes(document.getElementById("sampleQuality"))) {
+//                     document.getElementById("sampleQuality").innerHTML =
+//                         `${caseData.isSatisfied};${caseData.unsatisfiedReason}`; // 标本质量
+//                 }
+//                 if (![null, undefined].includes(document.getElementById("component"))) {
+//                     document.getElementById("component").innerHTML = caseData.component; // 细胞成分
+//                 }
+//                 if (![null, undefined].includes(document.getElementById("inflammation"))) {
+//                     document.getElementById("inflammation").innerHTML = caseData.inflammation; // 炎症
+//                 }
+//                 if (![null, undefined].includes(document.getElementById("reactChange"))) {
+//                     document.getElementById("reactChange").innerHTML = caseData.reactChange; // 反应性改变
+//                 }
+//                 if (![null, undefined].includes(document.getElementById("pathogen"))) {
+//                     document.getElementById("pathogen").innerHTML = caseData.pathogen; // 病原体
+//                 }
+//                 if (![null, undefined].includes(document.getElementById("squamousCell"))) {
+//                     document.getElementById("squamousCell").innerHTML = caseData.squamousCell; // 鳞状上皮细胞分析
+//                 }
+//                 if (![null, undefined].includes(document.getElementById("glandularCell"))) {
+//                     document.getElementById("glandularCell").innerHTML = caseData.glandularCell; // 腺上皮细胞分析
+//                 }
+//                 if (![null, undefined].includes(document.getElementById("otherAnalysis"))) {
+//                     document.getElementById("otherAnalysis").innerHTML = caseData.otherAnalysis; // 其它分析
+//                 }
+//             }
 
-        reportPath = 'report/report_' + caseData.id + '.pdf';
-        await page.pdf({
-            path: process.cwd() + '/upload/' + reportPath,
-            format: "A4",
-            printBackground: true,
-            "-webkit-print-color-adjust": "exact",
-        }).then(() => {
-            sqlMacros.sqlMultiUpdate(['reportPath'], [reportPath], 'pathCase', 'id', caseData.id);
-            logger.info('pdf生成成功,path:' + process.cwd() + '/upload/' + reportPath);
-        });
-        await browser.close();
-    })();
+//             if (annotationUrl.length > 0) {
+//                 for (let i = 0; i < 3; i++) {
+//                     if (![null, undefined].includes(document.getElementById(`annotation${i}`))) {
+//                         if (i < annotationUrl.length) { // 上限3个标注图
+//                             document.getElementById(`annotation${i}`).setAttribute('src', annotationUrl[i].annotationUrl); // 标注图   
+//                         } else { document.getElementById(`annotation${i}`).setAttribute('style', "display:none;"); } // 标注图 
+//                     }
+//                 }
+//             }
+//             if (![null, undefined].includes(document.getElementById("diagnosis"))) {
+//                 document.getElementById("diagnosis").innerHTML = caseData.diagnosis; // 其它分析
+//             }
+//             if (![null, undefined].includes(document.getElementById("signImg"))) {
+//                 document.getElementById("signImg").setAttribute('src',
+//                     '../upload' + caseData.signPath + '?' + Math.floor(Math.random() * 100 + 1)); // 电子签名 这里路径是图片相对于模板的路径
+//             }
+//             if (![null, undefined].includes(document.getElementById("diagnoseDate"))) {
+//                 document.getElementById("diagnoseDate").innerHTML = caseData.diagnoseDate; // 诊断日期
+//             }
+//             return error;
+//         }, caseData).then(error => {
+//             // console.log(error);
+//         });
+//         await page.waitForTimeout(1000); // 等待图片加载完成
+//         // await page.screenshot({
+//         //     path: './' + caseData.pathologyNum + '.png'
+//         // }); // 截图
 
-    var json = {
-        code: 200,
-        msg: '成功',
-        reportPath: reportPath
-    };
-    res.send(json);
-});
+//         reportPath = 'report/report_' + caseData.id + '.pdf';
+//         await page.pdf({
+//             path: process.cwd() + '/upload/' + reportPath,
+//             format: "A4",
+//             printBackground: true,
+//             "-webkit-print-color-adjust": "exact",
+//         }).then(() => {
+//             sqlMacros.sqlMultiUpdate(['reportPath'], [reportPath], 'pathCase', 'id', caseData.id);
+//             logger.info('pdf生成成功,path:' + process.cwd() + '/upload/' + reportPath);
+//         });
+//         await browser.close();
+//     })();
+
+//     var json = {
+//         code: 200,
+//         msg: '成功',
+//         reportPath: reportPath
+//     };
+//     res.send(json);
+// });
+
+
+// #endregion
 
 module.exports = {
     router_case
