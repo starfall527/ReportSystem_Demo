@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-15 14:02:35
+ * @LastEditTime 2022-07-25 09:51:54
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -67,11 +67,15 @@ const createRoleTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS ROLE(
     date timestamp NOT NULL default (datetime('now','localtime'))
     )`);
 
-
 function initUser() {
     if (sqlMacros.getTableCount('USER', false) === 0) {
         sqlMacros.sqlInsert(['name', 'userName', 'password', 'role', 'sign'],
             ['admin', 'admin', '123456', '管理员', '/sign/0_sign.jpeg'], 'USER');
+    }
+    
+    if (sqlMacros.getTableCount('USER', false) === 0) {
+        sqlMacros.sqlInsert(['name', 'userName', 'password', 'role', 'sign'],
+            ['testuser1', 'testuser1', '123456', '管理员', '/sign/0_sign.jpeg'], 'USER');
     }
 }
 initUser();

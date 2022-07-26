@@ -126,7 +126,8 @@
                         // 发送公有云验证请求
                         grant_type: 'client_credentials',
                         client_id: 'Odm_App',
-                        client_secret: '123456'
+                        client_secret: '123456',
+                        data:{}
                     }, function(res) {
                         let token = 'Bearer ' + res.access_token;
                         layui.data(setter.tableName, {

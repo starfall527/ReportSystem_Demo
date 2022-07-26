@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-07-20 11:49:11
- * @LastEditTime 2022-07-22 18:29:59
+ * @LastEditTime 2022-07-26 09:49:45
  * @FilePath \ReportSystem_Demo\Admin\slideCenter\slideCenterCloud.js
  */
 
@@ -15,6 +15,7 @@ const logger = require('log4js').getLogger();
 const base64 = require('js-base64');
 const config = require('../config');
 const https = require('https');
+const jimp = require('jimp');
 
 var options = {
     hostname: '127.0.0.1',
@@ -31,6 +32,7 @@ async function sendHttpsRequest(url, options) {
             res.on('data', (d) => {
                 // console.log(d);
                 if (options.returnBase64) {
+                    fs.writeFileSync('./tmp.png', d, { encoding: 'base64' }); // 保存base64图片
                     resolve(d.toString('base64'));
                 } else {
                     resolve(d.toString());
@@ -48,10 +50,12 @@ async function sendHttpsRequest(url, options) {
     })
 }
 
-
 async function sendHttpsPostRequest(url, options, postData) {
     return new Promise((resolve, reject) => {
         var req = https.request(url, options, function(res) {
+            if (!['', null, undefined, 'null'].includes(res.headers['set-cookie'])) {
+                global.cookie = res.headers['set-cookie'][0].split(';')[0]; // 获取cookie
+            }
             res.on('data', (d) => {
                 // console.log(d);
                 resolve(d.toString());
@@ -100,7 +104,7 @@ function loginKingMed() {
 loginKingMed();
 
 async function testThumbnail() {
-    let url = `${options.socket}/api/app/odm-slide/named-image?Path=/test/G21-0848.tron&TenantName=intemedic&ImageName=thumbnail`;
+    let url = `${options.socket}/api/app/odm-slide/named-image?Path=/test/G21-0848.tron&TenantName=intemedic&ImageName=label+macro`;
     let httpsOptions = {
         headers: {
             authorization: "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IkM4OTcxQkEzQTBENDBEQTI5QUI1OTAxN0IzQUFDRDZBIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE2NTg0ODUyODUsImV4cCI6MTY5MDAyMTI4NSwiaXNzIjoiaHR0cHM6Ly9hdXRoLnNjLnRyaWFsLm9tbmlwYXRoLmNjOjQ0MyIsImF1ZCI6IkFwcCIsImNsaWVudF9pZCI6Ik9kbV9BcHAiLCJiYWNrZW5kIjoidHJ1ZSIsImlhdCI6MTY1ODQ4NTI4NSwic2NvcGUiOlsiQXBwIl19.bbeMQ5H0L4Q7faB_lJ0gLuBF19g5rNPCNNR1TZbARgvzoGRfOfQvJ6ZwSA2UN-3Y4vFJLqjbN92jQbKcrfV4b01eqDAL389ZJ6y-43maEO2hkvK-xfSpBsfiJJxP1HUuTT7I3Kc8phpToOfEhNX3pE3IIAvJbW-O0cxiG7Ojbq3-is11pnrAlc_VIbde2BPofNvD6wNYN15P0qDjKwyFeH9JtIRvbydzCIkZJ00VHMjzB-3IV0jdcTJbfBedgQA3XS7w6s50Ox8NiUw-OuUUw0864khHhhOMY6IMFfvtjnxl7VVzT7FbY9H5trMA6hWutk_9aryoWzD6t_uXz3nvnw"
@@ -113,75 +117,94 @@ async function testThumbnail() {
         thumbnail = apiRes;
     })
 }
+testThumbnail();
 
 // 向金域上传切片
 router_slideCenter.get('/uploadSlide', async function(req, res) {
-    let data = req.query;
-    let url = `${options.socket}/api/app/odm-slide/slide-uri?Path=${encodeURI(data.path)}&TenantName=${encodeURI(data.tenantName)}&IsReadOnly=${encodeURI(data.isReadOnly)}`;
-    let httpsOptions = {
-        headers: {
-            authorization: global.scToken
-        },
-        path: url
-    }
-    let checkFlag = false;
-    var slideUrl = '';
-    await sendHttpsRequest(url, httpsOptions).then(apiRes => {
-        slideUrl = 'https://auth.sc.trial.omnipath.cc' + apiRes + '&vendor-script=http://server/vendor-script.js';
-    })
-
-    url = `${options.socket}/api/app/odm-slide/named-image?Path=${encodeURI(data.path)}&TenantName=${encodeURI(data.tenantName)}&ImageName=thumbnail`;
-    let thumbnail;
-    httpsOptions.path = url;
-    httpsOptions.returnBase64 = true;
-    await sendHttpsRequest(url, httpsOptions).then(apiRes => {
-        thumbnail = apiRes;
-        console.log(thumbnail)
-    })
-
-    let kingMedUrl = 'https://rpdp-uat.kingmed.com.cn/dp/xzw/slide';
-    let barcode = data.barcode;
-    let postData = JSON.stringify({
-        barcode: barcode,
-        labelWithOverview: 'test',
-        overview: thumbnail,
-        url: slideUrl,
-        scannerModel: 'NEO-5X',
-        createDateTime: new Date().Format("yyyy-MM-dd hh:mm:ss"),
-        vendor: 'intemedic',
-        user: 'testuser1'
-    });
-    if (slideUrl != '') {
-        sendHttpsPostRequest(kingMedUrl, {
-            method: 'POST',
+    if (!['', null, undefined, 'null'].includes(global.scToken)) {
+        let data = req.query;
+        let url = `${options.socket}/api/app/odm-slide/slide-uri?Path=${encodeURI(data.path)}&userName=sas_user&TenantName=${encodeURI(data.tenantName)}&IsReadOnly=${encodeURI(data.isReadOnly)}`;
+        let httpsOptions = {
             headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*',
-                'Content-Type': 'application/json',
-                "Cookie": "JSESSIONID=D8839DBA2F9B36D8EA836DC7827D85DE"
-            }
-        }, postData).then(kingMedRes => {
-            console.log(`kingMedRes`);
-            console.log(kingMedRes);
+                authorization: global.scToken
+            },
+            path: url
+        }
+        let checkFlag = false;
+        var slideUrl = '';
+        await sendHttpsRequest(url, httpsOptions).then(apiRes => {
+            slideUrl = 'https://web.sc.trial.omnipath.cc' + apiRes + '&vendorScript=https://web.sc.trial.omnipath.cc/static/vendor/kingmed.js';
+            // * slideUrl加入vendor-script的公网地址
+            // console.log(slideUrl)
+        })
+
+        url = `${options.socket}/api/app/odm-slide/named-image?Path=${encodeURI(data.path)}&TenantName=${encodeURI(data.tenantName)}&ImageName=thumbnail`;
+        let thumbnail;
+        httpsOptions.path = url;
+        httpsOptions.returnBase64 = true;
+        await sendHttpsRequest(url, httpsOptions).then(apiRes => {
+            thumbnail = apiRes;
+            // console.log(thumbnail);
+        })
+
+        url = `${options.socket}/api/app/odm-slide/named-image?Path=${encodeURI(data.path)}&TenantName=${encodeURI(data.tenantName)}&ImageName=label`;
+        let label;
+        httpsOptions.path = url;
+        httpsOptions.returnBase64 = true;
+        await sendHttpsRequest(url, httpsOptions).then(apiRes => {
+            label = apiRes;
+            // console.log(label);
+        })
+        httpsOptions.returnBase64 = false;
+
+        let kingMedUrl = 'https://rpdp-uat.kingmed.com.cn/dp/xzw/slide';
+        let barcode = data.barcode;
+        let postData = JSON.stringify({
+            barcode: barcode,
+            labelWithOverview: thumbnail,
+            overview: thumbnail, // 切片缩略图
+            label: label, // 标签图
+            url: slideUrl, 
+            scannerModel: 'IMD-NEO-5X', // * 扫描仪型号
+            createDateTime: new Date().Format("yyyy-MM-dd hh:mm:ss"),
+            vendor: 'InteMedic', // 厂商名 大小写敏感,错误则导致无法截图
+            user: 'testuser1'
+        });
+        if (slideUrl != '') {
+            sendHttpsPostRequest(kingMedUrl, {
+                method: 'POST',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': '*',
+                    'Content-Type': 'application/json',
+                    "Cookie": global.cookie
+                }
+            }, postData).then(kingMedRes => {
+                console.log(`kingMedRes: ${kingMedRes}`);
+                var json = {
+                    code: 200,
+                    msg: '成功'
+                };
+                res.send(json);
+            })
+        } else {
             var json = {
-                code: 200,
-                msg: '成功'
+                code: 500,
+                msg: '获取切片地址失败'
             };
             res.send(json);
-        })
+        }
     } else {
         var json = {
             code: 500,
-            msg: '获取切片地址失败'
+            msg: '未获取token,无法访问slideCenter'
         };
         res.send(json);
-
     }
 
 });
 
-// getSlideUrl('/test/G21-0848.tron', 'intemedic', false, 'advuser');
-
+// @note 获取sc文件树
 router_slideCenter.get('/table', function(req, res) {
     let data = req.query;
     let tableData = [];
@@ -247,9 +270,7 @@ async function getSlideUrl(path, tenantName, isReadOnly, userName) {
         },
         path: url
     }
-    sendHttpsRequest(url, httpsOptions).then(res => {
-        console.log(res)
-    })
+    sendHttpsRequest(url, httpsOptions).then(res => {})
 }
 
 function getThumbnailUrl(path, tenantName) {
@@ -310,15 +331,6 @@ async function getSlides(path, tenantName, maxResultCount) {
     }
     let result = await sendHttpsRequest(url, httpsOptions);
     return result;
-}
-
-// function to create file from base64 encoded string
-function base64_decode(base64str, file) {
-    // create buffer object from base64 encoded string, it is important to tell the constructor that the string is base64 encoded
-    var bitmap = Buffer.from(base64str, 'base64');
-    // write buffer to file
-    fs.writeFileSync(file, bitmap);
-    console.log('******** File created from base64 encoded string ********');
 }
 
 var folderList = [];
@@ -425,111 +437,6 @@ async function getFileListAPI(path, filesList, isRecursive, postfix, tenantName)
     })
 }
 // #endregion
-
-
-/***
- * @description: 获取tree 格式与layui-tree的格式一致
- * @param {*} path
- * @param {*} tenantName
- * @return {*}
- */
-async function getTree(path, tenantName, tree) {
-    let folderList = [];
-    getFolders(path, tenantName).then(apiRes => {
-        if (apiRes !== undefined) {
-            apiRes = JSON.parse(apiRes);
-            apiRes.items.forEach(item => {
-                if (!['', null, undefined, 'null'].includes(item.path)) {
-                    let path = item.path.replace(/\\/g, '/');
-                    if (path[path.length - 1] == '/') {
-                        path = path.slice(0, path.length - 1); // 去掉最后一个/
-                    }
-                    if (item.hasChildFolder === true) {
-                        let child = getFolders(path, tenantName); // todo 迭代还没做 晚点补上
-                    }
-                    folderList.push(item.path);
-                }
-            })
-        }
-        return folderList;
-    })
-}
-
-
-/***
- * @description: 获取tree 格式与layui-tree的格式一致
- * @param {*} path
- * @param {*} tenantName
- * @return {*}
- */
-function getTreeJson(path, treeJson) {
-    let treeJsonList = [];
-
-    for (let i = treeJson.length - 1; i >= 0; i--) {
-        if (treeJson[i].includes(".intemedic")) {
-            treeJson.splice(i, 1);
-        }
-    } // * 过滤掉slideCenter自己生成的文件夹(.intemedic)
-
-    let rootFolder = '';
-    if (treeJson.length > 0) {
-        treeJson[treeJson.length - 1].lastIndexOf('/') > 0 ?
-            rootFolder = treeJson[treeJson.length - 1].substring(0, treeJson[treeJson.length - 1].lastIndexOf('/')) :
-            rootFolder = treeJson[treeJson.length - 1];
-        if (rootFolder != '/') {
-            treeJson.push(rootFolder);
-        }
-    } // * 将根目录添加到treeJson
-    else {
-        treeJsonList.push({
-            path: path,
-            pathArray: path === '/' ? ['/'] : path.split('/'),
-            title: path === '/' ? '/' : path.split('/').pop(),
-            pathLength: path === '/' ? 1 : path.split('/').length,
-            children: [],
-            field: path
-        })
-    }
-
-    treeJson.forEach(element => {
-        if (element[0] === '/') {
-            element = '.' + element;
-        }
-        treeJsonList.push({
-            path: element,
-            pathArray: element === './' ? ['./'] : element.split('/'),
-            title: element === './' ? '/' : element.split('/').pop(),
-            pathLength: element === './' ? 1 : element.split('/').length,
-            children: [],
-            field: element
-        })
-    });
-    let maxLength = 0,
-        minLength = 0;
-    treeJsonList.forEach(element => {
-        maxLength = Math.max(maxLength, element.pathLength);
-        minLength = Math.min(minLength, element.pathLength);
-    });
-    for (let i = maxLength; i >= minLength; i--) {
-        (treeJsonList.filter(element => element.pathLength === i)).forEach(element => {
-            treeJsonList.forEach(parent => {
-                if (element.path.includes(parent.path) && parent.pathLength === i - 1) {
-                    parent.children.push({
-                        title: element.title,
-                        children: element.children,
-                        field: element.field
-                    })
-                }
-            });
-        });
-    } // * 从最长的路径开始，将treeJsonList中所有的element.children按照父子关系更新
-    if (treeJsonList.length > 0) {
-        return [treeJsonList[treeJsonList.length - 1]]; // * 返回根节点即可
-    } else {
-        return treeJsonList;
-    }
-}
-
 
 function getArrayUnion(array1, array2) {
     array1.forEach(element => {
