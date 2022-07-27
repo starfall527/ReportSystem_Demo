@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-07-20 11:49:11
- * @LastEditTime 2022-07-26 16:30:05
+ * @LastEditTime 2022-07-26 17:58:50
  * @FilePath \ReportSystem_Demo\Admin\slideCenter\slideCenterCloud.js
  */
 
@@ -31,13 +31,19 @@ var options = {
 global.kingmedAPI = 'https://epathology.kingmed.com.cn'; // 生产接口
 global.userInfo = { username: 'intemedic', password: '9565454239' } // 生产接口
 
+/***
+ * @description: 发送https请求
+ * @param {*} url
+ * @param {*} options
+ * @return {*}
+ */
 async function sendHttpsRequest(url, options) {
     return new Promise((resolve, reject) => {
         var req = https.request(url, options, function(res) {
             res.on('data', (d) => {
                 // console.log(d);
-                if (options.returnBase64) {
-                    let base64str = 'data:image/jpeg;base64,' + d.toString('base64')
+                if (options.returnBase64) { // base64解码
+                    let base64str = 'data:image/jpeg;base64,' + d.toString('base64'); // 返回指定格式(jpg)的base64字符串
                     resolve(base64str);
                 } else {
                     resolve(d.toString());
@@ -84,7 +90,7 @@ router_slideCenter.get('/getToken', function(req, res) {
     if (![null, undefined, '', 'null'].includes(data.access_token)) {
         global.scToken = 'Bearer ' + data.access_token; // * 返回的token前面要加 Bearer 否则无效
         // global.tenantName = 'intemedic';
-        global.tenantName = 'kingmed';
+        global.tenantName = 'kingmed'; 
     }
     var json = {
         code: 200,
@@ -94,10 +100,7 @@ router_slideCenter.get('/getToken', function(req, res) {
 });
 
 function loginKingMed() {
-    // let url = "https://rpdp-uat.kingmed.com.cn/dp/sa/login"; // 测试接口
-    // let url = "https://epathology.kingmed.com.cn/dp/sa/login";
-    let url = `${global.kingmedAPI}/dp/sa/login`;
-
+    let url = `${global.kingmedAPI}/dp/sa/login`; // 登录接口
     let httpsOptions = {
         method: 'POST',
         headers: {
@@ -111,9 +114,9 @@ function loginKingMed() {
         console.log(apiRes)
     })
 }
-loginKingMed();
+loginKingMed(); // 启动时登录金域
 
-async function testThumbnail() {
+async function testThumbnail() { // 测试 从slideCenter获取缩略图
     let url = `${options.socket}/api/app/odm-slide/named-image?Path=/test/G21-0848.tron&TenantName=intemedic&ImageName=label+macro`;
     let httpsOptions = {
         headers: {
