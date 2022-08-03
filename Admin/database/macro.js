@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-11 10:29:19
+ * @LastEditTime 2022-08-02 15:26:11
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -388,6 +388,40 @@ function sqlDropTable(table) {
 }
 
 
+
+// #region @note 数组操作
+function intersectionSet(arrA, arrB) { // * 交集
+    //  arrA = ["a", "b", "c", "d"];
+    //  arrB = ["a", "b", "e"];
+    //  result = ["a", "b"]
+    return arrA.filter(item => arrB.includes(item));
+}
+
+function unionSet(arrA, arrB) { // * 并集
+    //  arrA = ["a", "b", "c", "d"];
+    //  arrB = ["a", "b", "e"];
+    //  result = ["a", "b", "c", "d" ,"e"];
+    return [arrA, arrB.filter(item => !arrA.includes(item))];
+}
+
+function differenceSet(arrA, arrB) { // * 差集,返回A有B没有的项的集合
+    //  arrA = ["a", "b", "c", "d"];
+    //  arrB = ["a", "b", "e"];
+    //  result = ["c", "d"];
+    return arrA.filter(item => !arrB.includes(item));
+}
+
+function uniqueArray(arr) { // 去除重复项
+    var newArr = [];
+    for (var i = 0; i < arr.length; i++) {
+        if (newArr.indexOf(arr[i]) == -1) {
+            newArr.push(arr[i])
+        }
+    }
+    return newArr;
+}
+// #endregion
+
 module.exports = {
     sqlExecute,
     sqlSelect,
@@ -405,4 +439,10 @@ module.exports = {
 
     getPageData,
     getSqlInsertString,
+
+
+    intersectionSet,
+    unionSet,
+    differenceSet,
+    uniqueArray
 };

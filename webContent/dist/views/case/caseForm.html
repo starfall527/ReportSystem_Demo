@@ -27,6 +27,12 @@
                                                 <option value="TBS病例">TBS病例</option>
                                             </select>
                                         </div>
+                                        <!-- <div class="layui-input-block">
+                                            <select name="subCaseType" id="subCaseType" lay-filter="subCaseType" lay-verify="required">
+                                                <option value="非妇科">非妇科</option>
+                                                <option value="妇科">妇科</option>
+                                            </select>
+                                        </div> -->
                                     </div>
                                 </div>
 
@@ -76,13 +82,13 @@
                                     <div class="layui-inline">
                                         <label class="layui-form-label">医生名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="doctor" id="doctor" lay-verify="" class="layui-input">
+                                            <input type="text" name="doctor" id="doctor" lay-verify="" class="layui-input" disabled>
                                         </div>
                                     </div>
                                     <div class="layui-inline">
                                         <label class="layui-form-label">医院名</label>
                                         <div class="layui-input-block">
-                                            <input type="text" name="hosName" id="hosName" lay-verify="" class="layui-input">
+                                            <input type="text" name="hosName" id="hosName" lay-verify="" class="layui-input" disabled>
                                         </div>
                                     </div>
                                 </div>
@@ -197,6 +203,7 @@
                                 <div class="layui-form-item">
                                     <div class="layui-input-block">
                                         <button class="layui-btn next" lay-submit lay-filter="formStep">下一步</button>
+                                        <button class="layui-btn" lay-submit lay-filter="save-form-submit">保存</button>
                                         <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                                     </div>
                                 </div>
@@ -243,6 +250,7 @@
                                         <div class="layui-btn-container form-step-btn" style="margin-top: 10px;">
                                             <button class="layui-btn pre" lay-submit lay-filter="formStep2-pre" id="step-btn">上一步</button>
                                             <button class="layui-btn next" lay-submit lay-filter="formStep2-next">下一步</button>
+                                            <button class="layui-btn" lay-submit lay-filter="save-form-submit">保存</button>
                                         </div>
                                     </div>
                                 </div>
@@ -354,7 +362,6 @@
                 success: function(res) {
                     if (res.data.length > 0) {
                         caseData = res.data[0];
-                        // console.log(caseData);
                         $('#caseType').val(caseData.caseType);
                         $('#pathologyNum').val(caseData.pathologyNum);
                         $('#patName').val(caseData.patName);
@@ -366,8 +373,8 @@
                         $('#subspecialty').val(caseData.subspecialty);
                         $('#inspectionDate').val(caseData.inspectionDate);
                         $('#unit').val(caseData.unit);
-                        $('#doctor').val(caseData.doctor);
-                        $('#hosName').val(caseData.hosName);
+                        $('#doctor').val(layui.data('layuiAdmin').userName);
+                        $('#hosName').val(layui.data('layuiAdmin').organization);
                         $('#clinicalData').val(caseData.clinicalData);
                         $('#history').val(caseData.history);
                         $('#imgCheck').val(caseData.imgCheck);
@@ -385,10 +392,10 @@
         form.render('select');
         // select同步筛选条件
         form.on('select(caseType)', function(data) {
-            if (data.value === 'Normal') {
+            if (data.value === '常规病例') {
                 $('#general').attr('style', 'display:block');
                 $('#generalLabel').attr('style', 'display:block');
-            } else if (data.value === 'TBS') {
+            } else if (data.value === 'TBS病例') {
                 $('#general').attr('style', 'display:none');
                 $('#generalLabel').attr('style', 'display:none');
             }
@@ -453,22 +460,6 @@
                 where: queryData,
                 page: { curr: 1 }
             });
-
-            // admin.req({
-            //     url: 'api/case/insert',
-            //     type: 'POST',
-            //     contentType: 'application/json;charset=UTF-8',
-            //     data: JSON.stringify({
-            //         data: data.field,
-            //     }),
-            //     success: function(res) {
-            //         layer.msg('添加成功,即将跳转回列表');
-            //         setTimeout(() => {
-            //             top.location.href = './#/case/caseUpload'; // 跳转回列表
-            //         }, 1500);
-            //     },
-            //     done: function(res) {}
-            // })
             return false;
         });
 
@@ -504,6 +495,27 @@
             return false;
         });
 
+        /* 监听表单提交 */
+        form.on('submit(save-form-submit)', function(data) {
+            data.field.doctor = layui.data('layuiAdmin').userName;
+            Object.keys(data.field).forEach(element => {
+                caseData[element] = data.field[element]; //逐个赋值
+            });
+            admin.req({
+                url: 'api/case/insert',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
+                    data: caseData
+                }),
+                success: function(res) {
+                    layer.msg('保存成功');
+                }
+            })
+
+            return false;
+        });
+
         // 打开选中切片
         form.on('submit(openSlide)', function(data) {
             var checkStatus = table.checkStatus('slide-table-list'),
@@ -535,7 +547,6 @@
                 return false;
             }
         })
-
 
         form.on('submit(formStep)', function(data) {
             data.field.doctor = layui.data('layuiAdmin').userName;

@@ -38,7 +38,7 @@
         "md5": "^2.3.0",
         "multiparty": "^4.2.3",
         "opencv4nodejs": "^5.6.0",
-        "puppeteer": "^14.2.0",
+        "puppeteer": "^14.4.1",
         "qr-image": "^3.2.0",
         "qrcode-reader": "^1.0.4",
         "tape": "^5.5.3",

@@ -122,26 +122,26 @@
                     });
 
                     
-                    $.post('https://auth.sc.trial.omnipath.cc/connect/token', {
-                        // 发送公有云验证请求
-                        grant_type: 'client_credentials',
-                        client_id: 'Odm_App',
-                        client_secret: '123456'
-                    }, function(res) {
-                        let token = 'Bearer ' + res.access_token;
-                        layui.data(setter.tableName, {
-                            key: "cloudToken",
-                            value: token
-                        });
-                        admin.req({
-                            url: 'api/slideCenterCloud/getToken',
-                            type: 'get',
-                            contentType: 'application/json;charset=UTF-8',
-                            data: res,
-                            success: function(res) {},
-                            done: function(res) {}
-                        })
-                    });
+                    // $.post('https://auth.sc.trial.omnipath.cc/connect/token', {
+                    //     // 发送公有云验证请求
+                    //     grant_type: 'client_credentials',
+                    //     client_id: 'Odm_App',
+                    //     client_secret: '123456'
+                    // }, function(res) {
+                    //     let token = 'Bearer ' + res.access_token;
+                    //     layui.data(setter.tableName, {
+                    //         key: "cloudToken",
+                    //         value: token
+                    //     });
+                    //     admin.req({
+                    //         url: 'api/slideCenterCloud/getToken',
+                    //         type: 'get',
+                    //         contentType: 'application/json;charset=UTF-8',
+                    //         data: res,
+                    //         success: function(res) {},
+                    //         done: function(res) {}
+                    //     })
+                    // });
 
                     table.set({
                         headers: { //通过 request 头传递 全局设置table的token

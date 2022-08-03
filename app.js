@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2021-10-21 17:26:04
- * @LastEditTime 2022-07-20 14:48:45
+ * @LastEditTime 2022-08-01 11:49:50
  * @FilePath \ReportSystem_Demo\app.js
  */
 const express = require("express");
@@ -49,7 +49,7 @@ log4js.configure({
 
 global.session = [];
 
-process.on('uncaughtException', function (err) {
+process.on('uncaughtException', function(err) {
     //打印出错误
     console.log(err);
     //打印出错误的调用栈方便调试
@@ -77,13 +77,13 @@ app.use('/api/user', userManager.router_user);
 app.use('/api/case', caseManager.router_case);
 app.use('/api/organization', organization.router_organization);
 
-app.listen(9000, function () {
+app.listen(9000, function() {
     console.log("the server is started!!!");
 });
 
 app.use(express.static(path.join(process.cwd(), '/upload')));
 
-Date.prototype.Format = function (fmt) { 
+Date.prototype.Format = function(fmt) {
     var o = {
         "M+": this.getMonth() + 1, //月份 
         "d+": this.getDate(), //日 
@@ -91,11 +91,11 @@ Date.prototype.Format = function (fmt) {
         "m+": this.getMinutes(), //分 
         "s+": this.getSeconds() //秒 
     };
-    if (/(y+)/.test(fmt)){ //根据y的长度来截取年
-	fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    if (/(y+)/.test(fmt)) { //根据y的长度来截取年
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
     }
-    for (var k in o){
-	if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    for (var k in o) {
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     }
     return fmt;
 };

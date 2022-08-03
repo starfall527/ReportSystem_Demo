@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-15 14:47:20
+ * @LastEditTime 2022-08-02 16:56:50
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -46,11 +46,11 @@ const createCaseTable = sqlMacros.sqlExecute(
     "id INTEGER not null PRIMARY KEY AUTOINCREMENT ," + // id 唯一标识
     "status VARCHAR(255) NOT NULL ," + // 病例状态
     "caseType VARCHAR(255) ," + // 病例类型
-    "pathologyNum VARCHAR(255) NOT NULL ," + // 病理号
+    "pathologyNum VARCHAR(255) ," + // 病理号
 
     "reportTitle VARCHAR(255) ," + // 报告标题
     "consultationNum VARCHAR(255) ," + // 会诊号
-    "patName VARCHAR(255) NOT NULL ," + // 病人姓名
+    "patName VARCHAR(255) ," + // 病人姓名
     "patientInfo VARCHAR(255) ," + // 病人信息
     "gender VARCHAR(255) ," + // 性别
     "age VARCHAR(255) ," + // 病人年龄
@@ -67,6 +67,9 @@ const createCaseTable = sqlMacros.sqlExecute(
     "doctor VARCHAR(255)," + // 医生名
     "doctorTel VARCHAR(255)," + // 医生电话
     "expert VARCHAR(255)," + // 会诊专家
+
+    "lastMenses VARCHAR(255)," + // 末次月经
+    "isMenopause VARCHAR(255)," + // 是否绝经    
 
     "samplePart VARCHAR(255)," + // 取样部位 
     "clinicalData VARCHAR(255)," + // 临床资料
@@ -157,10 +160,45 @@ router_case.get('/table', function(req, res) {
 router_case.post('/table', function(req, res) {
     // 处理soul-table数据 返回各个字段所有可能出现的值
     let data = {
+        status: [],
+        caseType: [],
+        subspecialty: [],
+        expert: [],
         code: 200,
+        msg: '成功',
     };
-    data.status = ["待发起会诊", "等待诊断", "诊断完成"];
-    data.caseType = ["常规病例", "TBS病例"];
+    let userName = req.body.userName;
+    let result = [];
+    let cases = sqlMacros.sqlSelect('*', 'pathCase');
+    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', userName);
+    let mode = 'organization'; // 是否仅看自己的病例
+    if (mode === 'organization') { // 看同组织的病例
+        if (user.length > 0) {
+            cases.forEach(element => {
+                if (element.hosName === user[0].organization) { // 只能看自己建立的病例
+                    result.push(element);
+                }
+            });
+        }
+    } else if (mode === 'self') {
+        cases.forEach(element => {
+            if (element.doctor === userName) { // 只看自己建立的病例
+                result.push(element);
+            }
+        });
+    }
+
+    cases.forEach(element => {
+        data.status.push(element.status);
+        data.caseType.push(element.caseType);
+        data.subspecialty.push(element.subspecialty);
+        data.expert.push(element.expert);
+    });
+    data.status = sqlMacros.uniqueArray(data.status);
+    data.caseType = sqlMacros.uniqueArray(data.caseType);
+    data.subspecialty = sqlMacros.uniqueArray(data.subspecialty);
+    data.expert = sqlMacros.uniqueArray(data.expert);
+
     res.send(data);
 });
 
@@ -213,10 +251,42 @@ router_case.get('/expertTable', function(req, res) {
 router_case.post('/expertTable', function(req, res) {
     // 处理soul-table数据 返回各个字段所有可能出现的值
     let data = {
+        status: [],
+        caseType: [],
+        subspecialty: [],
+        hosName: [],
+        doctor: [],
         code: 200,
+        msg: '成功',
     };
-    data.status = ["等待诊断", "诊断完成"];
-    data.caseType = ["常规病例", "TBS病例"];
+    let userName = req.body.userName;
+    let result = [];
+    let cases = sqlMacros.sqlSelect('*', 'pathCase');
+
+    cases.forEach(element => {
+        if (element.expert !== null && ['等待诊断', '诊断完成'].includes(element.status)) {
+            let experts = element.expert.split('/');
+            experts.forEach(expertsElement => {
+                if (expertsElement === userName) {
+                    result.push(element);
+                }
+            });
+        }
+    }); // * 搜索指派给该专家的病例 未发起的病例不显示
+
+    result.forEach(element => {
+        data.status.push(element.status);
+        data.caseType.push(element.caseType);
+        data.subspecialty.push(element.subspecialty);
+        data.hosName.push(element.hosName);
+        data.doctor.push(element.doctor);
+    });
+    data.status = sqlMacros.uniqueArray(data.status);
+    data.caseType = sqlMacros.uniqueArray(data.caseType);
+    data.subspecialty = sqlMacros.uniqueArray(data.subspecialty);
+    data.hosName = sqlMacros.uniqueArray(data.hosName);
+    data.doctor = sqlMacros.uniqueArray(data.doctor);
+
     res.send(data);
 });
 
@@ -313,18 +383,43 @@ router_case.post('/insert', function(req, res) {
 router_case.post('/startConsultation', function(req, res) {
     let caseData = req.body.data;
     let flag = true;
-    ["pathologyNum", "patName", "expert", "slideUrl"].forEach(element => {
-        if (caseData[element] === "" || caseData[element] === undefined || caseData[element] === null) {
-            flag = false;
-        }
-    }); // * 需要检查该病例的各个必填项是否为空,包括病理号,病人名,专家名,切片url等等
-    if (flag) {
-        let result = sqlMacros.sqlMultiUpdate(['status'], ['等待诊断'], 'pathCase', 'id', caseData.id);
-        res.send({
-            code: 200,
-            msg: '成功'
+
+    if (caseData.length > 0) {
+        let incompleteData = [];
+        caseData.forEach(caseElement => {
+            flag = true;
+            ["pathologyNum", "patName", "expert", "slideUrl"].forEach(element => {
+                if ([null, undefined, "", 'null'].includes(caseElement[element])) {
+                    flag = false;
+                    incompleteData.push(caseElement);
+                }
+            }); // * 需要检查该病例的各个必填项是否为空,包括病理号,病人名,专家名,切片url等等  
+            if (flag) {
+                let result = sqlMacros.sqlMultiUpdate(['status', 'uploadDate'],
+                    ['等待诊断', new Date().Format("yyyy-MM-dd hh:mm:ss")], 'pathCase', 'id', caseElement.id);
+            }
         });
-    } else { res.send({ code: 500, msg: '病例信息未完善,请检查数据完整性' }); }
+        sqlMacros.uniqueArray(incompleteData);
+        if (incompleteData.length === 0) {
+            res.send({
+                code: 200,
+                msg: '成功'
+            });
+        } else { res.send({ code: 500, msg: '有病例信息未完善,请检查数据完整性' }); }
+    } else {
+        ["pathologyNum", "patName", "expert", "slideUrl"].forEach(element => {
+            if (caseData[element] === "" || caseData[element] === undefined || caseData[element] === null) {
+                flag = false;
+            }
+        }); // * 需要检查该病例的各个必填项是否为空,包括病理号,病人名,专家名,切片url等等
+        if (flag) {
+            let result = sqlMacros.sqlMultiUpdate(['status', 'uploadDate'], ['等待诊断', new Date().Format("yyyy-MM-dd hh:mm:ss")], 'pathCase', 'id', caseData.id);
+            res.send({
+                code: 200,
+                msg: '成功'
+            });
+        } else { res.send({ code: 500, msg: '有病例信息未完善,请检查数据完整性' }); }
+    }
 });
 
 /*** @note  选择专家
@@ -462,6 +557,7 @@ router_case.get('/openReport', function(req, res) {
 
     var address = path.join('file:///', process.cwd(), `/templet/report${type}.html`); //  路径和caseType相关
     var reportPath = '';
+    let checkFlag = false;
     (async () => {
         if (option.length >= 3) { address = option[2]; }
         const browser = await puppeteer.launch(puppeteerConf);
@@ -502,7 +598,6 @@ router_case.get('/openReport', function(req, res) {
                 document.getElementById("patNameLabel").innerHTML += caseData.patName; // 病人姓名
                 error.push("patNameLabel");
             }
-            // $('#patNameLabel').val($('#patNameLabel').val() + caseData.patName); // 还没验证 可以简化代码
             if (![null, undefined].includes(document.getElementById("genderLabel"))) {
                 document.getElementById("genderLabel").innerHTML += caseData.gender; // 性别
                 error.push("genderLabel");
@@ -519,10 +614,6 @@ router_case.get('/openReport', function(req, res) {
                 document.getElementById("samplePartLabel").innerHTML += caseData.samplePart; // 取样位置
                 error.push("samplePartLabel");
             }
-            if (![null, undefined].includes(document.getElementById("historyLabel"))) {
-                document.getElementById("historyLabel").innerHTML += caseData.history; // 病史
-                error.push("historyLabel");
-            }
             if (![null, undefined].includes(document.getElementById("unitLabel"))) {
                 document.getElementById("unitLabel").innerHTML += caseData.unit; // 送检单位
                 error.push("unitLabel");
@@ -531,45 +622,49 @@ router_case.get('/openReport', function(req, res) {
                 document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate; // 送检日期
                 error.push("inspectionDateLabel");
             }
+            if (![null, undefined].includes(document.getElementById("historyLabel"))) {
+                document.getElementById("historyLabel").innerHTML += caseData.history; // 病史
+                error.push("historyLabel");
+            }
+            if (![null, undefined].includes(document.getElementById("clinicalData"))) {
+                document.getElementById("clinicalData").innerHTML += caseData.clinicalData; // 临床资料
+            }
+            if (![null, undefined].includes(document.getElementById("imgCheck"))) {
+                document.getElementById("imgCheck").innerHTML += caseData.imgCheck; // 影像学检查
+            }
 
             if (caseData.caseType === "常规病例") {
-                if (![null, undefined].includes(document.getElementById("clinicalData"))) {
-                    document.getElementById("clinicalData").innerHTML = caseData.clinicalData; // 送检日期
-                }
-                if (![null, undefined].includes(document.getElementById("imgCheck"))) {
-                    document.getElementById("imgCheck").innerHTML = caseData.imgCheck; // 影像学检查
-                }
                 if (![null, undefined].includes(document.getElementById("originDiagnosis"))) {
-                    document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis; // 原诊断意见
+                    document.getElementById("originDiagnosis").innerHTML += caseData.originDiagnosis; // 原诊断意见
                 }
                 if (![null, undefined].includes(document.getElementById("general"))) {
-                    document.getElementById("general").innerHTML = caseData.general; // 大体所见
+                    document.getElementById("general").innerHTML += caseData.general; // 大体所见
                 }
             } else if (caseData.caseType === "TBS病例") {
                 if (![null, undefined].includes(document.getElementById("sampleQuality"))) {
-                    document.getElementById("sampleQuality").innerHTML =
+                    document.getElementById("sampleQuality").innerHTML +=
                         `${caseData.isSatisfied};${caseData.unsatisfiedReason}`; // 标本质量
                 }
                 if (![null, undefined].includes(document.getElementById("component"))) {
-                    document.getElementById("component").innerHTML = caseData.component; // 细胞成分
+                    document.getElementById("component").innerHTML += caseData.component; // 细胞成分
                 }
                 if (![null, undefined].includes(document.getElementById("inflammation"))) {
-                    document.getElementById("inflammation").innerHTML = caseData.inflammation; // 炎症
+                    document.getElementById("inflammation").innerHTML += caseData.inflammation; // 炎症
                 }
                 if (![null, undefined].includes(document.getElementById("reactChange"))) {
-                    document.getElementById("reactChange").innerHTML = caseData.reactChange; // 反应性改变
+                    document.getElementById("reactChange").innerHTML += caseData.reactChange; // 反应性改变
                 }
                 if (![null, undefined].includes(document.getElementById("pathogen"))) {
-                    document.getElementById("pathogen").innerHTML = caseData.pathogen; // 病原体
+                    document.getElementById("pathogen").innerHTML += caseData.pathogen; // 病原体
                 }
                 if (![null, undefined].includes(document.getElementById("squamousCell"))) {
-                    document.getElementById("squamousCell").innerHTML = caseData.squamousCell; // 鳞状上皮细胞分析
+                    document.getElementById("squamousCell").innerHTML += caseData.squamousCell; // 鳞状上皮细胞分析
                 }
                 if (![null, undefined].includes(document.getElementById("glandularCell"))) {
-                    document.getElementById("glandularCell").innerHTML = caseData.glandularCell; // 腺上皮细胞分析
+                    document.getElementById("glandularCell").innerHTML += caseData.glandularCell; // 腺上皮细胞分析
                 }
                 if (![null, undefined].includes(document.getElementById("otherAnalysis"))) {
-                    document.getElementById("otherAnalysis").innerHTML = caseData.otherAnalysis; // 其它分析
+                    document.getElementById("otherAnalysis").innerHTML += caseData.otherAnalysis; // 其它分析
                 }
             }
 
@@ -583,7 +678,7 @@ router_case.get('/openReport', function(req, res) {
                 }
             }
             if (![null, undefined].includes(document.getElementById("diagnosis"))) {
-                document.getElementById("diagnosis").innerHTML = caseData.diagnosis; // 其它分析
+                document.getElementById("diagnosis").innerHTML += caseData.diagnosis; // 其它分析
             }
             if (![null, undefined].includes(document.getElementById("signImg"))) {
                 document.getElementById("signImg").setAttribute('src',
@@ -596,7 +691,13 @@ router_case.get('/openReport', function(req, res) {
         }, caseData).then(error => {
             // console.log(error);
         });
-        await page.waitForTimeout(1000); // 等待图片加载完成
+        // await page.waitForFunction('window.renderdone', {
+        //     polling: 120
+        // });
+
+        function imagesHaveLoaded() { return Array.from(document.images).every((i) => i.complete); }
+        await page.waitForFunction(imagesHaveLoaded); // 等待图片加载完成
+        await page.waitForTimeout(100); // * 额外延时
         // await page.screenshot({
         //     path: './' + caseData.pathologyNum + '.png'
         // }); // 截图
@@ -610,16 +711,31 @@ router_case.get('/openReport', function(req, res) {
         }).then(() => {
             sqlMacros.sqlMultiUpdate(['reportPath'], [reportPath], 'pathCase', 'id', caseData.id);
             logger.info('pdf生成成功,path:' + process.cwd() + '/upload/' + reportPath);
+            checkFlag = true;
         });
         await browser.close();
-    })();
-
-    var json = {
-        code: 200,
-        msg: '成功',
-        reportPath: reportPath
-    };
-    res.send(json);
+    })()
+    let timeout = 0;
+    let check = setInterval(() => {
+        if (checkFlag) {
+            var json = {
+                code: 200,
+                msg: '成功',
+                reportPath: reportPath
+            };
+            clearInterval(check);
+            res.send(json);
+        } else {
+            timeout += 200;
+            if (timeout >= 15000) { // 设置超时5秒
+                clearInterval(check);
+                res.send({
+                    code: 500,
+                    msg: '报告生成超时'
+                });
+            }
+        }
+    }, 200);
 });
 
 module.exports = {

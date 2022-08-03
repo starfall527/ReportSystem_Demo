@@ -408,7 +408,6 @@ router_slideCenter.get('/getSlides', function(req, res) {
 router_slideCenter.post('/getSlideUrl', function(req, res) {
     let data = req.body.data;
     let filePath = data.filePath;
-
     getSlideUri(filePath, '', false).then(res => {
         var json = {
             code: 200,
@@ -434,8 +433,7 @@ router_slideCenter.get('/table', function(req, res) {
     if (data.path !== '') {
         tableData = getFileList(data.path, [], false, '.tron', NATtraverse)
     };
-    console.log(tableData)
-    let pageData =sqlMacros.getPageData(tableData, req.query.page, req.query.limit);
+    let pageData = sqlMacros.getPageData(tableData, req.query.page, req.query.limit);
     var json = {
         code: 200,
         msg: '成功',
@@ -479,8 +477,7 @@ router_slideCenter.get('/annotationTable', function(req, res) {
     let timeout = 0;
     let check = setInterval(() => {
         if (checkFlag) {
-            let pageData =sqlMacros.getPageData(tableData, req.query.page, req.query.limit);
-            console.log(pageData)
+            let pageData = sqlMacros.getPageData(tableData, req.query.page, req.query.limit);
             var json = {
                 code: 200,
                 msg: '成功',

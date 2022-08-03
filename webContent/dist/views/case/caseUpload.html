@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-07-14 10:31:19
+ * @LastEditTime: 2022-08-02 16:56:14
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -61,8 +61,8 @@
             },
             cols: [
                 [{
-                        field: 'radio',
-                        type: 'radio',
+                        field: 'checkbox',
+                        type: 'checkbox',
                         fixed: 'left',
                     },
                     {
@@ -73,13 +73,11 @@
                         field: 'caseType',
                         title: '病例类型',
                         minWidth: 120,
-                        // width: 150, // 优先从这列压缩宽度
                         filter: true
                     }, {
                         field: 'status',
                         title: '状态',
                         minWidth: 120,
-                        // width: 150, // 优先从这列压缩宽度
                         filter: true
                     }, {
                         field: 'patName',
@@ -96,11 +94,13 @@
                     }, {
                         field: 'subspecialty',
                         title: '亚专科',
-                        minWidth: 120
+                        minWidth: 120,
+                        filter: true
                     }, {
                         field: 'expert',
                         title: '指派专家',
-                        minWidth: 120
+                        minWidth: 120,
+                        filter: true
                     }, {
                         field: 'date',
                         title: '上传时间',
@@ -197,13 +197,37 @@
             active[type] ? active[type].call(this) : '';
         });
         var active = {
-            newCase: function() { top.location.href = `./#/case/caseForm`; },
+            newCase: function() {
+                admin.req({
+                    url: 'api/case/insert',
+                    type: 'POST',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({
+                        data: {
+                            expert: "未指定",
+                            hosName: layui.data('layuiAdmin').organization,
+                            doctor: layui.data('layuiAdmin').userName,
+                        }
+                    }),
+                    success: function(res) {
+                        setTimeout(() => {
+                            top.location.href = `./#/case/caseForm/caseID=${res.caseID}`;
+                        }, 100);
+                    },
+                    done: function(res) {}
+                })
+            },
             startConsultation: function() {
                 var checkStatus = table.checkStatus('case-table'),
-                    checkData = checkStatus.data[0];
+                    checkData = checkStatus.data;
                 if (checkData === undefined) {
                     return layer.msg('请选择病例');
                 } else {
+                    for (var i = checkData.length - 1; i >= 0; i--) {
+                        if (checkData[i].status !== '待发起会诊') {
+                            checkData.splice(i, 1);
+                        }
+                    }
                     admin.req({
                         url: 'api/case/startConsultation',
                         type: 'POST',

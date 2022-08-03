@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-07-20 11:49:11
- * @LastEditTime 2022-07-22 18:29:59
+ * @LastEditTime 2022-08-02 14:07:32
  * @FilePath \ReportSystem_Demo\Admin\slideCenter\slideCenterCloud.js
  */
 
@@ -69,7 +69,7 @@ async function sendHttpsPostRequest(url, options, postData) {
     })
 }
 
-// 获取公有云sc的token
+// 获取公有云slideCenter的token
 router_slideCenter.get('/getToken', function(req, res) {
     let data = req.query;
     if (![null, undefined, '', 'null'].includes(data.access_token)) {
@@ -97,7 +97,7 @@ function loginKingMed() {
         console.log(apiRes)
     })
 }
-loginKingMed();
+// loginKingMed();
 
 async function testThumbnail() {
     let url = `${options.socket}/api/app/odm-slide/named-image?Path=/test/G21-0848.tron&TenantName=intemedic&ImageName=thumbnail`;

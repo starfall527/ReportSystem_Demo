@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-07-20 10:49:56
+ * @LastEditTime: 2022-08-02 14:26:42
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -261,7 +261,7 @@
                                         <button class="layui-btn layui-btn-radius" lay-submit type="button" lay-filter="form-report">提交报告</button>
                                         <!-- <button class="layui-btn layui-btn-normal layui-btn-radius">加做医嘱</button> -->
                                         <!-- <button class="layui-btn layui-btn-warm layui-btn-radius">转诊</button> -->
-                                        <button class="layui-btn layui-btn-danger layui-btn-radius" data-type="returnReport">退回病例</button>
+                                        <button class="layui-btn layui-btn-danger layui-btn-radius" data-type="returnReport" lay-submit type="button" lay-filter="form-report">退回病例</button>
                                         <!-- <button class="layui-btn layui-btn-primary layui-btn-radius">质控评价</button> -->
                                     </div>
                                 </div>
@@ -321,7 +321,7 @@
         var componentSelect = xmSelect.render({ // 细胞成分
             el: '#component-select',
             data: [
-                { name: '鳞状细胞', value: '萎缩' },
+                { name: '鳞状细胞', value: '鳞状细胞' },
                 { name: '颈管细胞', value: '颈管细胞' },
                 { name: '化生细胞', value: '化生细胞' },
             ]
@@ -396,8 +396,10 @@
                     document.getElementById("age").innerHTML += caseData.age;
                     document.getElementById("pathologyNum").innerHTML += caseData.pathologyNum;
                     document.getElementById("hosName").innerHTML += caseData.hosName;
-                    document.getElementById("uploadDate").innerHTML += caseData.date;
+                    document.getElementById("uploadDate").innerHTML += caseData.uploadDate;
+                    document.getElementById("clinicalData").innerHTML = caseData.clinicalData;
                     document.getElementById("general").innerHTML = caseData.general;
+                    document.getElementById("imgCheck").innerHTML = caseData.imgCheck;
                     document.getElementById("unit").innerHTML += caseData.unit;
                     document.getElementById("samplePart").innerHTML = caseData.samplePart;
 
@@ -515,13 +517,11 @@
             done: function(res) {}
         })
 
-
-
         // @note 表格提交
         form.on('submit(form-report)', function(data) {
             var checkStatus = table.checkStatus('annotation-table'),
                 checkData = checkStatus.data;
-            if (checkData.length === 0 && caseStatus === '专家退回') {
+            if (checkData.length === 0 && caseStatus !== "专家退回") {
                 layer.msg("请选择标注图");
                 return false;
             } else {
@@ -530,6 +530,10 @@
                 delete data.field.layTableCheckbox;
                 data.field.unsatisfiedReason = reasonSelect.getValue('valueStr');
                 data.field.component = componentSelect.getValue('valueStr');
+                if ([null, 'null', '', undefined].includes(data.field.component) && caseStatus !== "专家退回" && data.field.caseType === "TBS") {
+                    layer.msg("请选择细胞成分");
+                    return false;
+                }
                 data.field.reactChange = reactChangeSelect.getValue('valueStr');
                 data.field.pathogen = pathogenSelect.getValue('valueStr');
                 data.field.otherAnalysis = otherSelect.getValue('valueStr');
@@ -562,14 +566,22 @@
                                     type: 'get',
                                     contentType: 'application/json;charset=UTF-8',
                                     data: res.data,
+                                    success: function(res) {
+                                        window.location.href = `./#/case/caseExpert`;
+                                        table.reload('case-table');
+                                    },
                                 });
-                                layer.msg('提交成功,将返回病例列表');
-                            } else { layer.alert('提交失败'); }
+                                layer.msg('提交成功,报告生成后将返回病例列表,请耐心等待');
+                            } else {
+                                layer.alert('提交失败');
+                            }
                         }
-                        setTimeout(() => {
-                            window.location.href = `./#/case/caseExpert`;
-                            table.reload('case-table');
-                        }, 3000);
+                        if (caseStatus !== "诊断完成") {
+                            setTimeout(() => {
+                                window.location.href = `./#/case/caseExpert`;
+                                table.reload('case-table');
+                            }, 2000);
+                        }
                     },
                 })
             }
