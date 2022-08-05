@@ -23,16 +23,36 @@
                                         <label class="layui-form-label">病例类型</label>
                                         <div class="layui-input-block">
                                             <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
-                                                <option value="常规病例">常规病例</option>
+                                                <option value="常规病例" selected>常规病例</option>
                                                 <option value="TBS病例">TBS病例</option>
                                             </select>
                                         </div>
-                                        <!-- <div class="layui-input-block">
-                                            <select name="subCaseType" id="subCaseType" lay-filter="subCaseType" lay-verify="required">
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" id="isGynecologyLabel" style="display:none">是否妇科</label>
+                                        <div class="layui-input-block" id="isGynecologyBlock" style="display:none">
+                                            <select name="isGynecology" id="isGynecology" lay-filter="isGynecology">
                                                 <option value="非妇科">非妇科</option>
                                                 <option value="妇科">妇科</option>
                                             </select>
-                                        </div> -->
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" id="isMenopauseLabel" style="display:none">是否绝经</label>
+                                        <div class="layui-input-block" id="isMenopauseBlock" style="display:none">
+                                            <select name="isMenopause" id="isMenopause" lay-filter="isMenopause">
+                                                <option value="否">否</option>
+                                                <option value="是">是</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" id="lastMensesLabel" style="display:none">绝经日期</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="lastMenses" id="lastMenses" lay-verify="" placeholder="" class="layui-input" style="display:none">
+                                        </div>
                                     </div>
                                 </div>
 
@@ -245,12 +265,11 @@
                                         <table class="layui-show" id="slide-table-list" lay-filter="slide-table-list">
                                         </table>
                                         <script type="text/html" id="slide-table-toolbar" lay-filter="table-toolbar">
-                                            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openSlide">查看选中切片</a>
+                                            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openSlide">查看切片</a>
                                         </script>
                                         <div class="layui-btn-container form-step-btn" style="margin-top: 10px;">
                                             <button class="layui-btn pre" lay-submit lay-filter="formStep2-pre" id="step-btn">上一步</button>
                                             <button class="layui-btn next" lay-submit lay-filter="formStep2-next">下一步</button>
-                                            <button class="layui-btn" lay-submit lay-filter="save-form-submit">保存</button>
                                         </div>
                                     </div>
                                 </div>
@@ -353,7 +372,7 @@
         router = layui.router();
 
         var caseData = {};
-        if (![null, undefined, ''].includes(router.search.caseID)) {
+        if (![null, undefined, ''].includes(router.search.caseID)) { // caseID非空,编辑模式
             admin.req({
                 url: '/api/case/query',
                 type: 'POST',
@@ -381,7 +400,30 @@
                         $('#note').val(caseData.note);
                         $('#originDiagnosis').val(caseData.originDiagnosis);
                         $('#general').val(caseData.general);
-                        layui.form.render("select"); //layUI设置
+
+                        if (caseData.caseType === '常规病例') {
+                            $('#general').attr('style', 'display:block');
+                            $('#generalLabel').attr('style', 'display:block');
+                            $('#isGynecologyBlock').attr('style', 'display:none');
+                            $('#isGynecologyLabel').attr('style', 'display:none');
+                            $('#isGynecology').val('非妇科');
+                        } else if (caseData.caseType === 'TBS病例') {
+                            $('#general').attr('style', 'display:none');
+                            $('#generalLabel').attr('style', 'display:none');
+
+                            $('#isGynecologyBlock').attr('style', 'display:block');
+                            $('#isGynecologyLabel').attr('style', 'display:block');
+                            $('#isMenopauseBlock').attr('style', 'display:block');
+                            $('#isMenopauseLabel').attr('style', 'display:block');
+                            if (caseData.isMenopause === "是") {
+                                $('#lastMenses').attr('style', 'display:block');
+                                $('#lastMensesLabel').attr('style', 'display:block');
+                            }
+                            $('#isGynecology').val(caseData.isGynecology);
+                            $('#isMenopause').val(caseData.isMenopause);
+                            $('#lastMenses').val(caseData.lastMenses);
+                        }
+                        form.render("select"); //刷新select选择框渲染
                     }
                 }
             });
@@ -390,14 +432,53 @@
             $('#hosName').val(layui.data('layuiAdmin').organization);
         }
         form.render('select');
+
         // select同步筛选条件
         form.on('select(caseType)', function(data) {
             if (data.value === '常规病例') {
                 $('#general').attr('style', 'display:block');
                 $('#generalLabel').attr('style', 'display:block');
+                $('#isGynecologyBlock').attr('style', 'display:none');
+                $('#isGynecologyLabel').attr('style', 'display:none');
+
+                $('#isMenopauseLabel').attr('style', 'display:none');
+                $('#isMenopauseBlock').attr('style', 'display:none');
+                $('#lastMenses').attr('style', 'display:none');
+                $('#lastMensesLabel').attr('style', 'display:none');
             } else if (data.value === 'TBS病例') {
                 $('#general').attr('style', 'display:none');
                 $('#generalLabel').attr('style', 'display:none');
+                $('#isGynecologyBlock').attr('style', 'display:block');
+                $('#isGynecologyLabel').attr('style', 'display:block');
+            }
+        })
+
+        // 根据 是否妇科 判断是否显示 是否绝经 绝经日期
+        form.on('select(isGynecology)', function(data) {
+            if (data.value === '妇科') {
+                $('#isMenopauseLabel').attr('style', 'display:block');
+                $('#isMenopauseBlock').attr('style', 'display:block');
+                if (caseData.isMenopause === "是") {
+                    $('#lastMenses').attr('style', 'display:block');
+                    $('#lastMensesLabel').attr('style', 'display:block');
+                }
+            } else if (data.value === '非妇科') {
+                $('#isMenopauseLabel').attr('style', 'display:none');
+                $('#isMenopauseBlock').attr('style', 'display:none');
+                $('#lastMenses').attr('style', 'display:none');
+                $('#lastMensesLabel').attr('style', 'display:none');
+            }
+        })
+
+        // 根据 是否绝经 判断是否显示绝经日期
+        form.on('select(isMenopause)', function(data) {
+            if (data.value === '是') {
+                $('#lastMensesLabel').attr('style', 'display:block');
+                $('#lastMenses').attr('style', 'display:block');
+                $('#lastMenses').val('');
+            } else if (data.value === '否') {
+                $('#lastMensesLabel').attr('style', 'display:none');
+                $('#lastMenses').attr('style', 'display:none');
             }
         })
 
@@ -419,6 +500,9 @@
         laydate.render({
             elem: '#inspectionDate',
             type: 'datetime'
+        });
+        laydate.render({
+            elem: '#lastMenses'
         });
 
         $('#chooseSlide').on('click', function() {

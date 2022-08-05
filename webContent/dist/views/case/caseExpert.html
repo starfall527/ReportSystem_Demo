@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-01 17:35:00
+ * @LastEditTime: 2022-08-05 14:42:25
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -59,7 +59,7 @@
                 [{
                     field: 'pathologyNum',
                     title: '病理号',
-                    minWidth: 120
+                    minWidth: 80
                 }, {
                     field: 'caseType',
                     title: '病例类型',
@@ -144,7 +144,8 @@
                     'TBS病例': 'TBS',
                 };
                 if (data.status === '诊断完成') {
-                    // layer.msg('诊断已完成');                     // 是否需要限制重复诊断？
+                    // layer.msg('诊断已完成,请勿重复诊断');                     // 是否需要限制重复诊断？
+                    // 添加确认弹窗？
                     top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${caseTypeDisplay[data.caseType]}`;
                 } else {
                     top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${caseTypeDisplay[data.caseType]}`;

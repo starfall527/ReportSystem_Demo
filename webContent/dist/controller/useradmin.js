@@ -245,7 +245,8 @@ layui.define(["table", "form", "admin", 'upload'], function(e) {
                 width: 150,
                 align: "center",
                 fixed: "right",
-                toolbar: "#table-useradmin-admin"
+                toolbar: "#table-useradmin-admin",
+                hide: true
             }]
         ],
         response: {

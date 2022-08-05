@@ -83,7 +83,7 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function(exports) {
         var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
         var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
-        if (layEvent === 'openSlide') { //查看选中切片
+        if (layEvent === 'openSlide') { //查看切片
             data.userName = layui.data('layuiAdmin').userName; //传输用户名,用于查询内网穿透设置
             admin.req({
                 url: 'api/slideCenter/openSlide',

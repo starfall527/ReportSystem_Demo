@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-02 16:56:50
+ * @LastEditTime 2022-08-05 14:43:37
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -68,7 +68,8 @@ const createCaseTable = sqlMacros.sqlExecute(
     "doctorTel VARCHAR(255)," + // 医生电话
     "expert VARCHAR(255)," + // 会诊专家
 
-    "lastMenses VARCHAR(255)," + // 末次月经
+    "isGynecology VARCHAR(255)," + // 是否妇科    
+    "lastMenses timestamp," + // 末次月经
     "isMenopause VARCHAR(255)," + // 是否绝经    
 
     "samplePart VARCHAR(255)," + // 取样部位 
@@ -101,7 +102,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "confirmDate timestamp," + // 确认诊断时间
     "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
 );
-// sqlMacros.sqlAlter('pathCase','consultationNum','VARCHAR(255)',''); //新增字段
+// sqlMacros.sqlAlter('pathCase', 'lastMenses', 'timestamp', ''); //新增字段
 
 /***
  * @description:@note 查询病例
@@ -319,10 +320,12 @@ router_case.post('/query', function(req, res) {
 
 
 /*** @note  删除病例
- * @description: 删除
- * @param {*} delete
- * @param {*} res
- * @return {*}
+ * @api {get} /api/case/delete 删除病例
+ * @apiName deleteCase
+ * @apiGroup 病例管理
+ * @apiParam {Object} data                  数据对象,具体字段由表单决定
+ * @apiParam {Object} data.id               病例id
+ * @apiUse CommonResponse
  */
 router_case.get('/delete', function(req, res) {
     let data = req.query;
@@ -344,6 +347,19 @@ router_case.get('/delete', function(req, res) {
  */
 router_case.post('/insert', function(req, res) {
     let data = req.body.data;
+    if (data.caseType === "常规病例") {
+        data.isGynecology = "非妇科";
+        data.isMenopause = '';
+        data.lastMenses = '';
+    } else if (data.caseType === "TBS病例") {
+        if (data.isGynecology === "非妇科") {
+            data.isMenopause = '';
+            data.lastMenses = '';
+        }
+        if (data.isMenopause === "否") {
+            data.lastMenses = '';
+        }
+    }
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
     reqKeys.push('status');
@@ -371,7 +387,7 @@ router_case.post('/insert', function(req, res) {
 });
 
 /*** @note  发起会诊
- * @api {post} /api/case/startConsultation 新增玻片数据
+ * @api {post} /api/case/startConsultation 发起会诊
  * @apiName startConsultation
  * @apiGroup 病例管理
  * @apiParam {Object} data                  数据对象
@@ -492,27 +508,14 @@ router_case.post('/update', function(req, res) {
     res.send(json);
 });
 
-// @note 编辑病例数据
-router_case.post('/edit', function(req, res) {
-    let data = req.body.data;
-    var reqKeys = Object.keys(data);
-    var reqValues = Object.values(data);
-    let result = sqlMacros.sqlMultiUpdate(reqKeys, reqValues,
-        'pathCase', 'id', req.body.caseID);
-    var json = {
-        code: 200,
-        msg: '成功'
-    };
-    res.send(json);
-});
-
 const puppeteer = require("puppeteer");
 const { resolve } = require("path");
-/*** @note  生成报告
- * @description: 生成报告
- * @param {*} openReport
- * @param {*} res
- * @return {*}
+/*** @note 生成报告
+ * @api {post} /api/case/openReport 生成报告
+ * @apiName openReport
+ * @apiGroup 病例管理
+ * @apiUse CommonResponse
+ * @apiParam {String} reportPath 报告路径
  */
 router_case.get('/openReport', function(req, res) {
     var caseData = req.query;
@@ -555,7 +558,7 @@ router_case.get('/openReport', function(req, res) {
         executablePath: executablePath // * 部署时需要配置chrome路径,否则无法生成pdf
     };
 
-    var address = path.join('file:///', process.cwd(), `/templet/report${type}.html`); //  路径和caseType相关
+    var address = path.join('file:///', process.cwd(), `upload/templet/report${type}.html`); //  路径和caseType相关
     var reportPath = '';
     let checkFlag = false;
     (async () => {
@@ -572,7 +575,7 @@ router_case.get('/openReport', function(req, res) {
             for (const key in caseData) {
                 if (Object.hasOwnProperty.call(caseData, key)) {
                     const element = caseData[key];
-                    if ([null, ''].includes(element) && key !== "unsatisfiedReason") {
+                    if ([null, ''].includes(element) &&  !["unsatisfiedReason",'isMenopause'].includes(key)) {
                         caseData[key] = '无';
                     }
                 }
@@ -590,6 +593,20 @@ router_case.get('/openReport', function(req, res) {
                 }
                 error.push("reportTitle");
             }
+            if (caseData.caseType === "TBS病例" && caseData.isGynecology === "妇科") {
+                if (![null, undefined].includes(document.getElementById("isMenopause"))) {
+                    document.getElementById("isMenopause").innerHTML += caseData.isMenopause;
+                    if (![null, undefined].includes(document.getElementById("lastMenses"))) {
+                        if (caseData.isMenopause === "是") {
+
+                        } document.getElementById("lastMenses").innerHTML += caseData.lastMenses; 
+                    }
+                }
+            } else {
+                document.getElementById("isMenopause").setAttribute("style", "display:none;");
+                document.getElementById("lastMenses").setAttribute("style", "display:none;");
+            }
+
             if (![null, undefined].includes(document.getElementById("pathologyNumLabel"))) {
                 document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
                 error.push("pathologyNumLabel");
@@ -622,9 +639,9 @@ router_case.get('/openReport', function(req, res) {
                 document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate; // 送检日期
                 error.push("inspectionDateLabel");
             }
-            if (![null, undefined].includes(document.getElementById("historyLabel"))) {
-                document.getElementById("historyLabel").innerHTML += caseData.history; // 病史
-                error.push("historyLabel");
+            if (![null, undefined].includes(document.getElementById("history"))) {
+                document.getElementById("history").innerHTML += caseData.history; // 病史
+                error.push("history");
             }
             if (![null, undefined].includes(document.getElementById("clinicalData"))) {
                 document.getElementById("clinicalData").innerHTML += caseData.clinicalData; // 临床资料
@@ -682,10 +699,10 @@ router_case.get('/openReport', function(req, res) {
             }
             if (![null, undefined].includes(document.getElementById("signImg"))) {
                 document.getElementById("signImg").setAttribute('src',
-                    '../upload' + caseData.signPath + '?' + Math.floor(Math.random() * 100 + 1)); // 电子签名 这里路径是图片相对于模板的路径
+                    '../../upload' + caseData.signPath + '?' + Math.floor(Math.random() * 100 + 1)); // 电子签名 这里路径是图片相对于模板的路径
             }
             if (![null, undefined].includes(document.getElementById("diagnoseDate"))) {
-                document.getElementById("diagnoseDate").innerHTML = caseData.diagnoseDate; // 诊断日期
+                document.getElementById("diagnoseDate").innerHTML += caseData.diagnoseDate; // 诊断日期
             }
             return error;
         }, caseData).then(error => {

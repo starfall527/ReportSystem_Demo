@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-02 14:26:42
+ * @LastEditTime: 2022-08-04 11:23:18
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -236,9 +236,9 @@
                                     <div class="layui-col-md4">
                                         <div class="layui-label" id="report-doctor">送检医生:</div>
                                     </div>
-                                    <div class="layui-col-md4">
+                                    <!-- <div class="layui-col-md4">
                                         <div class="layui-label" id="report-doctorTel">送检医生电话:</div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="layui-row layui-col-space15">
                                     <div class="layui-col-md4">
@@ -405,7 +405,7 @@
 
                     document.getElementById("report-unit").innerHTML += caseData.unit;
                     document.getElementById("report-doctor").innerHTML += caseData.doctor;
-                    document.getElementById("report-doctorTel").innerHTML += caseData.doctorTel;
+                    // document.getElementById("report-doctorTel").innerHTML += caseData.doctorTel;
                     document.getElementById("report-pathologyNum").innerHTML += caseData.pathologyNum;
                     document.getElementById("report-patName").innerHTML += caseData.patName;
                     document.getElementById("report-uploadDate").innerHTML += caseData.date;
