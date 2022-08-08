@@ -23,8 +23,8 @@
                                         <label class="layui-form-label">病例类型</label>
                                         <div class="layui-input-block">
                                             <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
-                                                <option value="常规病例" selected>常规病例</option>
                                                 <option value="TBS病例">TBS病例</option>
+                                                <option value="常规病例">常规病例</option>
                                             </select>
                                         </div>
                                     </div>
@@ -173,12 +173,30 @@
                                                 <textarea name="clinicalData" id="clinicalData" class="layui-textarea" placeholder="必选项,请填写"></textarea>
                                             </div>
                                         </div>
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">临床资料附图</label>
+                                            <div class="layui-input-inline layui-btn-container" style="width: auto;">
+                                                <button type="button" class="layui-btn layui-btn-primary" id="clinicalDataFigureUpload" style="margin-left:15px">
+                                                    <i class="layui-icon">&#xe67c;</i>上传图片
+                                                </button>
+                                                <button class="layui-btn layui-btn-primary" lay-submit type="button" layadmin-event="clinicalDataFigure" id="clinicalDataFigure">查看附图</button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="layui-col-md6">
                                         <div class="layui-form-item">
-                                            <label class="layui-form-label">病史</label>
+                                            <label class="layui-form-label">影像学检查</label>
                                             <div class="layui-input-block">
-                                                <textarea name="history" id="history" class="layui-textarea"></textarea>
+                                                <textarea name="imgCheck" id="imgCheck" class="layui-textarea"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">影像学检查附图</label>
+                                            <div class="layui-input-inline layui-btn-container" style="width: auto;">
+                                                <button type="button" class="layui-btn layui-btn-primary" id="imgCheckFigureUpload" style="margin-left:15px">
+                                                    <i class="layui-icon">&#xe67c;</i>上传图片
+                                                </button>
+                                                <button class="layui-btn layui-btn-primary" lay-submit type="button" layadmin-event="imgCheckFigure" id="imgCheckFigure">查看附图</button>
                                             </div>
                                         </div>
                                     </div>
@@ -186,9 +204,9 @@
                                 <div class="layui-row layui-col-space5" style="margin-right:20px;">
                                     <div class="layui-col-md6">
                                         <div class="layui-form-item">
-                                            <label class="layui-form-label">影像学检查</label>
+                                            <label class="layui-form-label">病史</label>
                                             <div class="layui-input-block">
-                                                <textarea name="imgCheck" id="imgCheck" class="layui-textarea"></textarea>
+                                                <textarea name="history" id="history" class="layui-textarea"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -356,10 +374,14 @@
     .layui-table img {
         max-width: 200px
     }
+
+    .layui-form-label {
+        white-space: nowrap !important;
+    }
 </style>
 
 <script>
-    layui.define(['admin', 'form', 'laydate', 'view', 'stepLay', 'table'], function() {
+    layui.define(['admin', 'form', 'laydate', 'view', 'stepLay', 'table', 'upload'], function() {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
@@ -368,7 +390,8 @@
             view = layui.view,
             step = layui.stepLay,
             table = layui.table,
-            form = layui.form;
+            form = layui.form,
+            upload = layui.upload;
         router = layui.router();
 
         var caseData = {};
@@ -381,6 +404,7 @@
                 success: function(res) {
                     if (res.data.length > 0) {
                         caseData = res.data[0];
+                        console.log(caseData);
                         $('#caseType').val(caseData.caseType);
                         $('#pathologyNum').val(caseData.pathologyNum);
                         $('#patName').val(caseData.patName);
@@ -400,6 +424,8 @@
                         $('#note').val(caseData.note);
                         $('#originDiagnosis').val(caseData.originDiagnosis);
                         $('#general').val(caseData.general);
+                        $('#clinicalDataFigure').val(caseData.clinicalDataFigure);
+                        $('#imgCheckFigure').val(caseData.imgCheckFigure);
 
                         if (caseData.caseType === '常规病例') {
                             $('#general').attr('style', 'display:block');
@@ -425,6 +451,82 @@
                         }
                         form.render("select"); //刷新select选择框渲染
                     }
+
+                    // @note 上传附图
+                    var clinicalDataFigureUploadInst = upload.render({
+                        elem: "#clinicalDataFigureUpload",
+                        url: 'api/case/uploadFigure',
+                        accept: 'images',
+                        method: 'get',
+                        acceptMime: 'image/*',
+                        headers: {},
+                        before: function() {
+                            this.headers.id = caseData.id;
+                            this.headers.type = "clinicalDataFigure";
+                        },
+                        done: function(res) {
+                            if (200 == res.code) { layer.msg('上传成功') } else { layer.msg('上传失败') }
+                            let randomUrl = res.url += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                            document.getElementById("clinicalDataFigure").setAttribute('value', randomUrl);
+                        },
+                        error: function(err) { console.log(err); }
+                    });
+
+                    var imgCheckFigureUploadInst = upload.render({
+                        elem: "#imgCheckFigureUpload",
+                        url: 'api/case/uploadFigure',
+                        accept: 'images',
+                        method: 'get',
+                        acceptMime: 'image/*',
+                        headers: {},
+                        before: function() {
+                            this.headers.id = caseData.id;
+                            this.headers.type = "imgCheckFigure";
+                        },
+                        done: function(res) {
+                            if (200 == res.code) { layer.msg('上传签名成功') } else { layer.msg('上传签名失败') }
+                            let randomUrl = res.url += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                            document.getElementById("imgCheckFigure").setAttribute('value', randomUrl);
+                        },
+                        error: function(err) { console.log(err); }
+                    });
+
+                    admin.events.clinicalDataFigure = function(t) {
+                        var i = document.getElementById("clinicalDataFigure").getAttribute('value');
+                        if (![null, undefined, '', 'null'].includes(i)) {
+                            layer.photos({
+                                photos: {
+                                    title: "查看临床资料附图",
+                                    data: [{
+                                        src: i
+                                    }]
+                                },
+                                shade: .01,
+                                closeBtn: 1,
+                                anim: 5
+                            })
+                        } else {
+                            layer.msg("暂无影像学检查附图");
+                        }
+                    };
+                    admin.events.imgCheckFigure = function(t) {
+                        var i = document.getElementById("imgCheckFigure").getAttribute('value');
+                        if (![null, undefined, '', 'null'].includes(i)) {
+                            layer.photos({
+                                photos: {
+                                    title: "查看影像学检查附图",
+                                    data: [{
+                                        src: i
+                                    }]
+                                },
+                                shade: .01,
+                                closeBtn: 1,
+                                anim: 5
+                            })
+                        } else {
+                            layer.msg("暂无影像学检查附图");
+                        }
+                    };
                 }
             });
         } else {
@@ -487,7 +589,7 @@
             filter: 'stepForm',
             width: '100%', //设置容器宽度
             stepWidth: '950px',
-            height: Math.max($(document).height() - $('#stepForm').offset().top - 55, 760),
+            height: Math.max($(document).height() - $('#stepForm').offset().top - 55, 790),
             stepItems: [{ title: '填写病例信息' },
                 { title: '选择病例切片' },
                 { title: '选择会诊专家' }

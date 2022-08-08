@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-04 11:23:18
+ * @LastEditTime: 2022-08-08 14:37:25
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -43,10 +43,10 @@
                         </div>
                     </div>
                     <div class="layui-row layui-col-space15" style="margin-left: 20px;">
-                        <div class="layui-col-md8">
+                        <div class="layui-col-md6">
                             <div class="layui-label" id="uploadDate">申请时间:</div>
                         </div>
-                        <div class="layui-col-md4">
+                        <div class="layui-col-md6">
                             <div class="layui-label" id="unit">送检单位:</div>
                         </div>
                     </div>
@@ -55,10 +55,12 @@
                     <fieldset class="layui-elem-field" style="margin-top:20px;">
                         <legend>临床资料</legend>
                         <div class="layui-field-box" id="clinicalData">无</div>
+                        <div><img src="" id="clinicalDataFigure" style="height:160px;margin-left: 10px;"></div>
                     </fieldset>
                     <fieldset class="layui-elem-field" style="margin-top:20px;">
                         <legend>影像学检查</legend>
                         <div class="layui-field-box" id="imgCheck">无</div>
+                        <div><img src="" id="imgCheckFigure" style="height:160px;margin-left: 10px;"></div>
                     </fieldset>
                     <fieldset class="layui-elem-field" style="margin-top:20px;">
                         <legend>取材部位</legend>
@@ -411,6 +413,13 @@
                     document.getElementById("report-uploadDate").innerHTML += caseData.date;
                     document.getElementById("expert-label").innerHTML += layui.data('layuiAdmin').userName;
                     document.getElementById("sign").setAttribute('src', caseData.signPath);
+
+                    if (![null, undefined, '', 'null'].includes(caseData.clinicalDataFigure)) {
+                        document.getElementById("clinicalDataFigure").setAttribute('src', caseData.clinicalDataFigure);
+                    }
+                    if (![null, undefined, '', 'null'].includes(caseData.imgCheckFigure)) {
+                        document.getElementById("imgCheckFigure").setAttribute('src', caseData.imgCheckFigure);
+                    }
 
                     slideUrl = JSON.parse(caseData.slideUrl);
                     var cardTableData = [];

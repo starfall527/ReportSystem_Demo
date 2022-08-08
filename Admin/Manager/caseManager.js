@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-05 14:43:37
+ * @LastEditTime 2022-08-08 15:19:50
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -13,6 +13,12 @@ const logger = require('log4js').getLogger();
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
+
+/*** @note apidoc定义常规回复
+ * @apiDefine CommonResponse
+ * @apiSuccess {Number} code             状态码
+ * @apiSuccess {String} msg              消息
+ */
 
 /*** @note sql表定义
  * @description: pathCase表定义
@@ -74,7 +80,9 @@ const createCaseTable = sqlMacros.sqlExecute(
 
     "samplePart VARCHAR(255)," + // 取样部位 
     "clinicalData VARCHAR(255)," + // 临床资料
+    "clinicalDataFigure VARCHAR(255)," + // 临床资料附图
     "imgCheck VARCHAR(255)," + // 影像学检查
+    "imgCheckFigure VARCHAR(255)," + // 影像学检查附图
     "history VARCHAR(255)," + // 病史
     "general VARCHAR(255)," + // 大体所见
     "originDiagnosis VARCHAR(255)," + // 原诊断意见
@@ -102,7 +110,8 @@ const createCaseTable = sqlMacros.sqlExecute(
     "confirmDate timestamp," + // 确认诊断时间
     "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
 );
-// sqlMacros.sqlAlter('pathCase', 'lastMenses', 'timestamp', ''); //新增字段
+// sqlMacros.sqlAlter('pathCase', 'clinicalDataFigure', 'VARCHAR(255)', ''); //新增字段
+// sqlMacros.sqlAlter('pathCase', 'imgCheckFigure', 'VARCHAR(255)', ''); //新增字段
 
 /***
  * @description:@note 查询病例
@@ -154,7 +163,7 @@ router_case.get('/table', function(req, res) {
 });
 
 /***
- * @description:@note 查询病例
+ * @description:@note 查询病例筛选值
  * @param {*} res
  * @return {*}
  */
@@ -347,6 +356,7 @@ router_case.get('/delete', function(req, res) {
  */
 router_case.post('/insert', function(req, res) {
     let data = req.body.data;
+    delete data.file;
     if (data.caseType === "常规病例") {
         data.isGynecology = "非妇科";
         data.isMenopause = '';
@@ -367,6 +377,11 @@ router_case.post('/insert', function(req, res) {
 
     var json = { code: 200, msg: '成功' };
     if (reqKeys.includes('id')) { // 编辑病例
+        let user = sqlMacros.sqlQuery('*', 'USER', ['userName'], [data.expert], 'AND');
+        if (user.length > 0) {
+            reqKeys.push('signPath');
+            reqValues.push(user[0].sign);
+        }
         sqlMacros.sqlMultiUpdate(reqKeys, reqValues, 'pathCase', ['id'], [data.id]);
         json.caseID = data.id;
         reqKeys = reqKeys.slice(-1);
@@ -379,6 +394,8 @@ router_case.post('/insert', function(req, res) {
         }
         let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
     }
+    // console.log(reqKeys);
+    // console.log(reqValues);
     let newCase = sqlMacros.sqlQuery('*', 'pathCase', reqKeys, reqValues, 'AND');
     if (newCase.length > 0) {
         json.caseID = newCase[0].id;
@@ -575,7 +592,7 @@ router_case.get('/openReport', function(req, res) {
             for (const key in caseData) {
                 if (Object.hasOwnProperty.call(caseData, key)) {
                     const element = caseData[key];
-                    if ([null, ''].includes(element) &&  !["unsatisfiedReason",'isMenopause'].includes(key)) {
+                    if ([null, ''].includes(element) && !["unsatisfiedReason", 'isMenopause'].includes(key)) {
                         caseData[key] = '无';
                     }
                 }
@@ -599,7 +616,8 @@ router_case.get('/openReport', function(req, res) {
                     if (![null, undefined].includes(document.getElementById("lastMenses"))) {
                         if (caseData.isMenopause === "是") {
 
-                        } document.getElementById("lastMenses").innerHTML += caseData.lastMenses; 
+                        }
+                        document.getElementById("lastMenses").innerHTML += caseData.lastMenses;
                     }
                 }
             } else {
@@ -648,6 +666,18 @@ router_case.get('/openReport', function(req, res) {
             }
             if (![null, undefined].includes(document.getElementById("imgCheck"))) {
                 document.getElementById("imgCheck").innerHTML += caseData.imgCheck; // 影像学检查
+            }
+            if (![null, undefined].includes(document.getElementById("clinicalDataFigure")) &&
+                ![null, undefined, '', 'null'].includes(caseData.clinicalDataFigure)) {
+                document.getElementById("clinicalDataFigure").setAttribute('src',  '../../upload' + caseData.clinicalDataFigure);
+                document.getElementById("clinicalDataFigure").setAttribute('style', "display:block;");
+                document.getElementById("imgCheck").innerHTML = "临床资料:";
+            }
+            if (![null, undefined].includes(document.getElementById("imgCheckFigure")) &&
+                ![null, undefined, '', 'null'].includes(caseData.imgCheckFigure)) {
+                document.getElementById("imgCheckFigure").setAttribute('src',  '../../upload' + caseData.imgCheckFigure);
+                document.getElementById("imgCheckFigure").setAttribute('style', "display:block;");
+                document.getElementById("imgCheck").innerHTML = "影像学检查:";
             }
 
             if (caseData.caseType === "常规病例") {
@@ -753,6 +783,43 @@ router_case.get('/openReport', function(req, res) {
             }
         }
     }, 200);
+});
+
+var multiparty = require("multiparty") // 解析form-data上传
+/*** @note 上传签名
+ * @api {post} /api/user/uploadSign 上传签名
+ * @apiName uploadSign
+ * @apiGroup 病例管理
+ * @apiParam {Object} data           数据对象
+ * @apiParam {String} data.id        唯一标识
+ * @apiParam {String} data.field     更新的键
+ * @apiParam {String} data.value     更新的键值
+ * @apiParamExample 
+ * {}
+ * @apiUse CommonResponse
+ */
+router_case.post('/uploadFigure', function(req, res) {
+    let caseID = req.headers.id;
+    let fileName = '';
+    let from_data = new multiparty.Form()
+    from_data.parse(req);
+    from_data.on("part", async part => {
+        if (part.filename) {
+            let uploadDir = `upload/figure/`; // 指定文件存储目录
+            fileName = `case${caseID}_${req.headers.type}` + '.jpg'; // part.filename.slice(part.filename.lastIndexOf('.'));
+            let fullPath = path.join(process.cwd(), uploadDir, fileName);
+            sqlMacros.sqlMultiUpdate([req.headers.type], ['/figure/' + fileName], 'pathCase', 'id', caseID); // * 存在数据库的路径,去掉upload,方便前端加载
+            const writeStream = fs.createWriteStream(fullPath); // 保存文件
+            part.pipe(writeStream);
+        }
+
+        var json = {
+            code: 200,
+            msg: '成功',
+            url: '/figure/' + fileName // * 前端的路径从upload开始算
+        };
+        res.send(json);
+    })
 });
 
 module.exports = {

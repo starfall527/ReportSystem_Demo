@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-29 16:00:19
+ * @LastEditTime 2022-08-08 09:29:57
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -290,7 +290,7 @@ router_user.get('/logout', function(req, res) {
  * @apiGroup 步骤管理
  * @apiParam {Object} data                  数据对象
  * @apiParamExample 
- * 
+ * {}
  * @apiUse CommonResponse
  */
 router_user.post('/insert', function(req, res) {
@@ -317,7 +317,7 @@ router_user.post('/insert', function(req, res) {
  * @apiGroup 步骤管理
  * @apiParam {Object} data                  数据对象
  * @apiParamExample 
- * 
+ * {}
  * @apiUse CommonResponse
  */
 router_user.post('/role/insert', function(req, res) {
@@ -414,6 +414,7 @@ router_user.post('/role/batchDel', function(req, res) {
  * @apiParam {String} data.field     更新的键
  * @apiParam {String} data.value     更新的键值
  * @apiParamExample 
+ * {}
  * @apiUse CommonResponse
  */
 router_user.post('/update', function(req, res) {
@@ -442,7 +443,7 @@ var path = require('path')
  * @apiParam {String} data.field     更新的键
  * @apiParam {String} data.value     更新的键值
  * @apiParamExample 
- * 
+ * {}
  * @apiUse CommonResponse
  */
 router_user.post('/uploadSign', function(req, res) {
@@ -474,7 +475,6 @@ router_user.post('/uploadSign', function(req, res) {
     })
 });
 
-
 /*** @note 更改密码
  * @api {post} /api/user/setPassword 更改密码
  * @apiName UpdateStep
@@ -484,6 +484,7 @@ router_user.post('/uploadSign', function(req, res) {
  * @apiParam {String} data.field     更新的键
  * @apiParam {String} data.value     更新的键值
  * @apiParamExample 
+ * {}
  * @apiUse CommonResponse
  */
 router_user.post('/setPassword', function(req, res) {
