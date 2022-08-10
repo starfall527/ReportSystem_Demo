@@ -62,7 +62,7 @@ function getFileList(path, filesList, isRecursive, postfix, NATtraverse) {
             getFileList(path + "/" + file, filesList, NATtraverse);
         } else {
             if (postfix !== "") {
-                if (file.includes(postfix)) {
+                if (file.includes(postfix) && !file.includes(".stub")) {
                     filesList.push({
                         path: path + "/" + file,
                         fileName: file,
@@ -433,6 +433,11 @@ router_slideCenter.get('/table', function(req, res) {
     if (data.path !== '') {
         tableData = getFileList(data.path, [], false, '.tron', NATtraverse)
     };
+    if (!['', null, undefined, 'null'].includes(data.queryFileName)) {
+        tableData = tableData.filter(function(element) {
+            return element.fileName.includes(data.queryFileName);
+        })
+    }
     let pageData = sqlMacros.getPageData(tableData, req.query.page, req.query.limit);
     var json = {
         code: 200,

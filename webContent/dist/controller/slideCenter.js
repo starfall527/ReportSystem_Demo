@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-03-17 09:25:58
- * @LastEditTime 2022-07-21 16:09:14
+ * @LastEditTime 2022-08-10 10:38:15
  * @FilePath \ReportSystem_Demo\webContent\dist\controller\slideCenter.js
  */
 
@@ -18,7 +18,7 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function(exports) {
     var path = '';
     var caseID = '';
 
-    table.render({
+    var slideTable = table.render({
         elem: '#slide-table-list',
         url: 'api/slideCenter/table', //使用后端数据
         height: 600,
@@ -127,10 +127,12 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function(exports) {
         isJump: false, //是否允许点击节点时弹出新窗口跳转
 
         click: function(obj) {
-            var data = obj.data; //获取当前点击的节点数据      
+            var data = obj.data; //获取当前点击的节点数据   
+            path = obj.data.field;
             layui.table.reload('slide-table-list', {
                 where: {
-                    path: obj.data.field
+                    path: obj.data.field,
+                    userName: layui.data('layuiAdmin').userName
                 },
             });
         }
@@ -238,5 +240,19 @@ layui.define(['tree', 'util', 'table', 'laytpl'], function(exports) {
             }
         }
     }
+
+    $('#searchSlide').on('click', function() {
+        let queryFileName = $('#queryFileName').val();
+        console.log(queryFileName)
+        if (![null, '', undefined, 'null'].includes(queryFileName)) {
+            layui.table.reload('slide-table-list', {
+                where: {
+                    path: path,
+                    userName: layui.data('layuiAdmin').userName,
+                    queryFileName: queryFileName,
+                }
+            })
+        }
+    });
     exports('slideCenter', {});
 });

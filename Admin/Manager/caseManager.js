@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-08 15:19:50
+ * @LastEditTime 2022-08-09 15:21:47
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -421,7 +421,7 @@ router_case.post('/startConsultation', function(req, res) {
         let incompleteData = [];
         caseData.forEach(caseElement => {
             flag = true;
-            ["pathologyNum", "patName", "expert", "slideUrl"].forEach(element => {
+            ["pathologyNum", "patName", "expert", "slideUrl", "caseType"].forEach(element => {
                 if ([null, undefined, "", 'null'].includes(caseElement[element])) {
                     flag = false;
                     incompleteData.push(caseElement);
@@ -440,7 +440,7 @@ router_case.post('/startConsultation', function(req, res) {
             });
         } else { res.send({ code: 500, msg: '有病例信息未完善,请检查数据完整性' }); }
     } else {
-        ["pathologyNum", "patName", "expert", "slideUrl"].forEach(element => {
+        ["pathologyNum", "patName", "expert", "slideUrl", "caseType"].forEach(element => {
             if (caseData[element] === "" || caseData[element] === undefined || caseData[element] === null) {
                 flag = false;
             }

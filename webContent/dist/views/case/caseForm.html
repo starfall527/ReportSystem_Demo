@@ -266,17 +266,23 @@
 
                             <div class="layui-col-md8">
                                 <div class="layui-card">
-                                    <div class="layui-card-header">
-                                        <div class="layui-row">
+                                    <div class="layui-card-header" style="margin-bottom:10px;height:55px">
+                                        <div class="layui-row" style="padding-top:5px">
                                             <div class="layui-col-md9">
                                                 <div class="layui-label">切片列表</div>
                                             </div>
-                                            <!-- <div class="layui-col-md3">
-                                                <div class="layui-btn-container slide-table-list-btn" style="margin-top: 10px;margin-left: 10px;">
+                                            <div class="layui-col-md3">
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="queryFileName" id="queryFileName" placeholder="请输入切片名" autocomplete="off" class="layui-input">
+                                                </div>
+                                                <div class="layui-input-inline">
+                                                    <button class="layui-btn" type="button" id="searchSlide" lay-filter="searchSlide">搜索</button>
+                                                </div>
+                                                <!-- <div class="layui-btn-container slide-table-list-btn" style="margin-top: 10px;margin-left: 10px;">
                                                     <button class="layui-btn layui-btn" type="button" lay-submit id="openSlide" lay-filter="openSlide">打开选中切片</button>
                                                     <button class="layui-btn layui-btn" type="button" lay-submit id="chooseSlide" lay-filter="chooseSlide">选择切片</button>
-                                                </div>
-                                            </div> -->
+                                                </div> -->
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="layui-card-body" style="margin-top: 10px;">
@@ -606,7 +612,6 @@
         laydate.render({
             elem: '#lastMenses'
         });
-
         $('#chooseSlide').on('click', function() {
             var checkStatus = table.checkStatus('slide-table-list'),
                 checkData = checkStatus.data; // 要改成复选框
