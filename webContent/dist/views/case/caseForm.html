@@ -603,7 +603,29 @@
         });
 
         laydate.render({
-            elem: '#birthDate'
+            elem: '#birthDate',
+            done: function(value, date, endDate) {
+                var nowDate = new Date(); //当前日期
+                var nowYear = nowDate.getFullYear();
+                var nowMonth = nowDate.getMonth() + 1; //实际月份
+                var birthYear = date.year;
+                var birthMonth = date.month;
+                var age = parseInt(nowYear) - parseInt(birthYear);
+                if (age < 0) { //如果出生年龄大于当前时间的话
+                    age = 0;
+                } else {
+                    if (nowMonth > birthMonth) { //若当前月份大于出生月份
+                        age = age + 1;
+                    } else if (nowMonth == birthMonth) { //如果当前月份==出生月份
+                        var birthDate = date.date;
+                        var nowDate = nowDate.getDate();
+                        if (nowDate > birthDate) {
+                            age = age + 1;
+                        }
+                    }
+                }
+                $("#age").val(age); // 自动设置年龄
+            }
         });
         laydate.render({
             elem: '#inspectionDate',

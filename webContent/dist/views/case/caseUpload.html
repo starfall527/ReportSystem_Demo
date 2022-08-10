@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-09 17:02:29
+ * @LastEditTime: 2022-08-10 15:02:38
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -151,24 +151,29 @@
 
             if (layEvent === '') { //查看
             } else if (layEvent === 'del') { //删除
-                layer.confirm('将删除数据,确定？', function(index) {
-                    obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
-                    admin.req({
-                        url: 'api/case/delete',
-                        type: 'get',
-                        contentType: 'application/json;charset=UTF-8',
-                        data: data,
-                        success: function(res) {
-                            layer.msg('删除成功')
-                        },
-                        done: function(res) {}
+                if (data.doctor == layui.data('layuiAdmin').userName) {
+                    layer.confirm('将删除病例,确定？', function(index) {
+                        obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
+                        admin.req({
+                            url: 'api/case/delete',
+                            type: 'get',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: data,
+                            success: function(res) {
+                                layer.msg('删除成功')
+                            },
+                            done: function(res) {}
+                        });
+                        layer.close(index);
+                        //向服务端发送删除指令
                     });
-                    layer.close(index);
-                    //向服务端发送删除指令
-                });
+                } else { layer.msg('不能删除属于其它医生的病例') }
+
             } else if (layEvent === 'edit') { //编辑
                 if (['等待诊断', '待发起会诊'].includes(data.status)) {
-                    top.location.href = `./#/case/caseForm/caseID=${data.id}`;
+                    if (data.doctor == layui.data('layuiAdmin').userName) {
+                        top.location.href = `./#/case/caseForm/caseID=${data.id}`;
+                    } else { layer.msg('不能编辑属于其它医生的病例') }
                 } else {
                     layer.msg('该病例已诊断，不可编辑')
                 }

@@ -1,8 +1,8 @@
 /***
  * @Author cwx
- * @Description 
+ * @Description slideCenter在线版
  * @Date 2022-07-20 11:49:11
- * @LastEditTime 2022-08-02 14:07:32
+ * @LastEditTime 2022-08-10 14:39:25
  * @FilePath \ReportSystem_Demo\Admin\slideCenter\slideCenterCloud.js
  */
 
@@ -47,7 +47,6 @@ async function sendHttpsRequest(url, options) {
         console.error(err);
     })
 }
-
 
 async function sendHttpsPostRequest(url, options, postData) {
     return new Promise((resolve, reject) => {

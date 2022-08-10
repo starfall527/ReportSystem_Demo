@@ -1,6 +1,6 @@
 // /***
 //  * @Author cwx
-//  * @Description slideCenter的API
+//  * @Description slideCenter离线版
 //  * @Date 2022-03-16 17:58:33
 //  * @LastEditTime 2022-03-23 14:11:51
 //  * @FilePath \IHC_layuiAdmin_Demo\Admin\slideCenter\slideCenter.js
