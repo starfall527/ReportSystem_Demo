@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-08-10 11:06:22
- * @LastEditTime: 2022-08-10 16:56:57
+ * @LastEditTime: 2022-08-11 10:38:52
  * @FilePath: \ReportSystem_Demo\document\files.md
 -->
 <!--
@@ -20,7 +20,7 @@
 .\webContent\config.js          layuiAdmin设置\三方组件引入
 
 .\Admin\Manager                 业务代码
-.\Admin\slideCenter             slideCenter相关代码
+.\Admin\Manager\slideCenter     slideCenter相关代码
 .\Admin\database                better-sqlite3数据库相关
 
 .\document\接口文档\index.html  apidoc接口文档

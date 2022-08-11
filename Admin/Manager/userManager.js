@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-08 09:29:57
+ * @LastEditTime 2022-08-11 10:07:32
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -14,40 +14,45 @@ const config = require('../config.js');
 const md5 = require('md5');
 const cv = require('opencv4nodejs');
 
-// todo 每个用户都能设置自己的slideCenter对应ip地址,因为sc和程序不一定运行在同一台机上
-
-/***
- * @description: USER表定义
- * @field {*}   id              唯一标识    
- * @field {*}   role            身份
- * @field {*}   userName        用户姓名
- * @field {*}   name            登录名
- * @field {*}   phone           手机
- * @field {*}   password        密码
- * @field {*}   info            信息
- * @field {*}   examStatus      审核状态
- * @field {*}   authorization   权限
- * @field {*}   date            时间戳
+/*** @note apidoc定义user表数据
+ * @apiDefine UserSqlData
+ * @apiSuccess {Object{...}} data           对象数组
+ * @apiSuccess {Number} data.id             唯一标识
+ * @apiSuccess {String} data.role           身份
+ * @apiSuccess {String} data.userName       用户姓名
+ * @apiSuccess {String} data.organization   组织名
+ * @apiSuccess {String} data.name           登录名
+ * @apiSuccess {String} data.phone          手机
+ * @apiSuccess {String} data.password       密码
+ * @apiSuccess {String} data.sign           签名路径
+ * @apiSuccess {String} data.info           信息
+ * @apiSuccess {String} data.subspecialty   亚专科
+ * @apiSuccess {String} data.authorization  权限
+ * @apiSuccess {String} data.reportTitle    报告标题
+ * @apiSuccess {String} data.slideCenterIP  slideCenterIP
+ * @apiSuccess {String} data.NATtraverse    内网穿透host
+ * @apiSuccess {String} data.isExamined     审核状态
+ * @apiSuccess {String} data.date           时间戳
  */
-const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
-     id INTEGER not null PRIMARY KEY AUTOINCREMENT ,
-     role VARCHAR(255) NOT NULL ,
-     userName VARCHAR(255) NOT NULL unique ,
-     organization VARCHAR(255) ,
-     name VARCHAR(255) ,
-     phone VARCHAR(255) ,
-     password VARCHAR(255) ,
-     sign VARCHAR(255) ,
-     info VARCHAR(255) ,
-     subspecialty VARCHAR(255) , 
-     authorization VARCHAR(255) ,
-     reportTitle VARCHAR(255) ,
-     slideCenterIP VARCHAR(255) ,
-     NATtraverse VARCHAR(255) ,
-     isExamined INTEGER ,
-     date timestamp NOT NULL default (datetime('now','localtime'))
-     )`);
-
+const createUserTable = sqlMacros.sqlExecute(
+    "CREATE TABLE IF NOT EXISTS USER(" +
+    "id INTEGER not null PRIMARY KEY AUTOINCREMENT ," + // id 唯一标识
+    "role VARCHAR(255) NOT NULL ," + // 身份
+    "userName VARCHAR(255) NOT NULL unique," + // 用户姓名
+    "organization VARCHAR(255)," + // 组织名
+    "name VARCHAR(255)," + // 登录名
+    "phone VARCHAR(255)," + // 手机
+    "password VARCHAR(255)," + // 密码
+    "sign VARCHAR(255)," + // 签名路径
+    "info VARCHAR(255)," + // 信息
+    "subspecialty VARCHAR(255)," + // 亚专科
+    "authorization VARCHAR(255)," + // 权限
+    "reportTitle VARCHAR(255)," + // 报告标题
+    "slideCenterIP VARCHAR(255)," + // slideCenterIP
+    "NATtraverse VARCHAR(255)," + // 内网穿透host
+    "isExamined VARCHAR(255)," + // 审核状态
+    "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
+);
 // sqlMacros.sqlAlter('USER', 'reportTitle', 'VARCHAR(255)', ''); //新增字段
 
 /***
@@ -75,7 +80,20 @@ function initUser() {
     }
 }
 initUser();
-// @note 用户列表
+
+/*** @note 查询所有用户列表
+ * @api {get} /api/user/getUserTable 查询所有用户列表
+ * @apiVersion 0.0.1
+ * @apiName getUserTable
+ * @apiGroup 用户管理
+ * @apiUse CommonResponse
+ * @apiUse UserSqlData
+ * @apiSuccess {Number} count   返回数据个数
+ * @apiSuccessExample Success-Response:
+ *   HTTP/1.1 200 OK
+    {
+    }
+ */
 router_user.get('/userTable', function(req, res) {
     let result = sqlMacros.sqlSelect('*', 'USER');
     let pageData = sqlMacros.getPageData(result, req.query.page, req.query.limit);
@@ -96,7 +114,19 @@ router_user.get('/userTable', function(req, res) {
     res.send(json);
 });
 
-// @note 专家列表
+/*** @note 查询所有专家列表
+ * @api {get} /api/user/expertTable 查询所有专家列表
+ * @apiVersion 0.0.1
+ * @apiName expertTable
+ * @apiGroup 用户管理
+ * @apiUse CommonResponse
+ * @apiUse UserSqlData
+ * @apiSuccess {Number} count   返回数据个数
+ * @apiSuccessExample Success-Response:
+ *   HTTP/1.1 200 OK
+    {
+    }
+ */
 router_user.get('/expertTable', function(req, res) {
     let result;
     // if ([null, undefined].includes(req.query.queryData)) {
@@ -158,7 +188,19 @@ router_user.get('/roleTable', function(req, res) {
     res.send(json);
 });
 
-// @note 查询专家
+/*** @note 条件查询专家列表 暂时弃用
+ * @api {get} /api/user/queryExpert 条件查询专家列表
+ * @apiVersion 0.0.1
+ * @apiName queryExpert
+ * @apiGroup 用户管理
+ * @apiUse CommonResponse
+ * @apiUse UserSqlData
+ * @apiSuccess {Number} count   返回数据个数
+ * @apiSuccessExample Success-Response:
+ *   HTTP/1.1 200 OK
+    {
+    }
+ */
 router_user.post('/queryExpert', function(req, res) {
     let data = req.body;
     var reqKeys = Object.keys(data).splice(2, Object.keys(data).length - 1);
@@ -194,7 +236,35 @@ router_user.post('/query', function(req, res) {
     res.send(json);
 });
 
-// @note 登录接口  
+/*** @note 登录接口
+ * @api {get} /api/user/login 登录接口
+ * @apiVersion 0.0.1
+ * @apiName login
+ * @apiGroup 用户管理
+ * @apiParam {String} userName 用户名
+ * @apiParam {String} password 密码
+ * 
+ * @apiUse CommonResponse
+ * @apiSuccessExample Success-Response:
+ *   HTTP/1.1 200 OK
+    {
+        "code": 200,
+        "msg": "登录成功",
+        "data": { "userID": 1, "userName": "工程师1", "access_token": "8dda2da20cba25291b4c83990d144e49" }
+    }    
+ * @apiSuccessExample 401-Response:
+ *   HTTP/1.1 401 unauthorized
+    {
+        code: 401,
+        msg: '密码错误'
+    }    
+ * @apiSuccessExample 500-Response:
+ *   HTTP/1.1 500 Error
+    {
+        code: 500,
+        msg: '未找到用户'
+    }
+ */
 router_user.get('/login', function(req, res) {
     let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', req.query.userName);
     let menu = config.readConfigFile('./webContent/json/menu.json');
@@ -209,18 +279,8 @@ router_user.get('/login', function(req, res) {
         let role = sqlMacros.sqlSelect('*', 'ROLE', true, 'role', user[0].role);
         if (user[0].role === "专家端") {
             menu = config.readConfigFile('./webContent/json/menu-expert.json');
-            // menu.data.forEach(element => {
-            //     if (element.title === "病例管理") {
-            //         element.jump = "case/caseExpert";
-            //     }
-            // });
         } else if (user[0].role === "上传端") {
             menu = config.readConfigFile('./webContent/json/menu-upload.json');
-            // menu.data.forEach(element => {
-            //     if (element.title === "病例管理") {
-            //         element.jump = "case/caseUpload";
-            //     }
-            // });
         } else if (user[0].role === "管理员") {
             menu = config.readConfigFile('./webContent/json/menu-admin.json');
         }
@@ -256,7 +316,33 @@ router_user.get('/login', function(req, res) {
     // * 根据登录者的role,更改menu.json的数据,加载对应的界面 后续考虑结合权限管理封装函数,准备好几份menu.json,读取后直接覆盖即可
 });
 
-// session接口
+/*** @note session接口
+ * @api {get} /api/user/getSessionData session接口
+ * @apiVersion 0.0.1
+ * @apiName getSessionData
+ * @apiGroup 用户管理
+ * @apiUse CommonResponse
+ * @apiSuccess {Object} data        数据对象
+ * @apiSuccess {String} data.userName    用户名
+ * @apiSuccessExample Success-Response:
+ *   HTTP/1.1 200 OK
+    {
+        "code": 200,
+        "msg": "",
+        "data": {
+            "userName": "专家1"
+        }
+    }
+ * @apiSuccessExample Fail-Response:
+ *   HTTP/1.1 200 OK
+    {
+        "code": 200,
+        "msg": "登录已过期",
+        "data": {
+            "userName": "专家1"
+        }
+    }
+ */
 router_user.get('/getSessionData', function(req, res) {
     let userName = '';
     let flag = false;
@@ -278,9 +364,26 @@ router_user.get('/getSessionData', function(req, res) {
     res.send(json);
 });
 
-// 登出接口
+/*** @note 登出接口
+ * @api {get} /api/user/logout 登出接口
+ * @apiVersion 0.0.1
+ * @apiName logout
+ * @apiGroup 用户管理
+ * @apiUse CommonResponse
+ * @apiSuccessExample Success-Response:
+ *   HTTP/1.1 200 OK
+    {
+        "code": 200,
+        "msg": "",
+    }
+ */
 router_user.get('/logout', function(req, res) {
-    sqlMacros.sqlMultiUpdate(['isLoggedIn'], ['false'], 'USER', 'name', '')
+    sqlMacros.sqlMultiUpdate(['isLoggedIn'], ['false'], 'USER', 'name', '');
+    let json = {
+        "code": 200,
+        "msg": "",
+    }
+    res.send(json);
 });
 
 
@@ -313,7 +416,7 @@ router_user.post('/insert', function(req, res) {
 
 /*** @note 新增角色
  * @api {post} /api/user/role/insert 新增角色
- * @apiName InsertUser
+ * @apiName InsertRole
  * @apiGroup 步骤管理
  * @apiParam {Object} data                  数据对象
  * @apiParamExample 
@@ -413,8 +516,6 @@ router_user.post('/role/batchDel', function(req, res) {
  * @apiParam {String} data.id        唯一标识
  * @apiParam {String} data.field     更新的键
  * @apiParam {String} data.value     更新的键值
- * @apiParamExample 
- * {}
  * @apiUse CommonResponse
  */
 router_user.post('/update', function(req, res) {
@@ -438,12 +539,7 @@ var path = require('path')
  * @api {post} /api/user/uploadSign 上传签名
  * @apiName uploadSign
  * @apiGroup 用户管理
- * @apiParam {Object} data           数据对象
- * @apiParam {String} data.id        唯一标识
- * @apiParam {String} data.field     更新的键
- * @apiParam {String} data.value     更新的键值
- * @apiParamExample 
- * {}
+ * @apiParam {String} userid    用户名
  * @apiUse CommonResponse
  */
 router_user.post('/uploadSign', function(req, res) {
@@ -465,7 +561,6 @@ router_user.post('/uploadSign', function(req, res) {
                 cv.imwrite(fullPath, result);
             }, 100);
         }
-
         var json = {
             code: 200,
             msg: '成功',
@@ -477,14 +572,12 @@ router_user.post('/uploadSign', function(req, res) {
 
 /*** @note 更改密码
  * @api {post} /api/user/setPassword 更改密码
- * @apiName UpdateStep
+ * @apiName setPassword
  * @apiGroup 用户管理 
- * @apiParam {Object} data           数据对象
- * @apiParam {String} data.id        唯一标识
- * @apiParam {String} data.field     更新的键
- * @apiParam {String} data.value     更新的键值
- * @apiParamExample 
- * {}
+ * @apiParam {Object} data                  数据对象
+ * @apiParam {String} data.userID           用户ID
+ * @apiParam {String} data.oldPassword      旧密码
+ * @apiParam {String} data.password         新密码
  * @apiUse CommonResponse
  */
 router_user.post('/setPassword', function(req, res) {

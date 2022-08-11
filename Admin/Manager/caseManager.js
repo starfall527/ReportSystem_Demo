@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-09 15:21:47
+ * @LastEditTime 2022-08-11 10:24:02
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -20,32 +20,69 @@ const config = require('../config');
  * @apiSuccess {String} msg              消息
  */
 
-/*** @note sql表定义
- * @description: pathCase表定义
- * @field {*}   id              唯一标识
- * @field {*}   status          病例状态
- * @field {*}   pathologyNum    病理号
- * @field {*}   patName         病人姓名
- * @field {*}   gender          病人性别
- * @field {*}   age             病人年龄
- * @field {*}   birthDate       出生日期
- * @field {*}   IDNum           身份证号
- * @field {*}   patTel          病人电话
- * @field {*}   familyTel       家属电话
- * @field {*}   subspecialty    专科 
- * @field {*}   inspectionDate  送检时间
- * @field {*}   unit            送检单位
- * @field {*}   department      送检科室
- * @field {*}   hosName         医院名
- * @field {*}   doctor          医生名
- * @field {*}   doctorTel       医生电话
- * @field {*}   samplePart      取样部位
- * @field {*}   expert          会诊专家
- * @field {*}   note            备注
- * @field {*}   uploadDate      上传时间
- * @field {*}   diagnoseDate    诊断时间
- * @field {*}   confirmDate     确认诊断时间
- * @field {*}   date            时间戳(建表时间)
+/*** @note apidoc定义pathCase表数据
+ * @apiDefine caseSqlData
+ * @apiSuccess {Object{...}} data               对象数组
+ * @apiSuccess {Number} data.id                 唯一标识
+ * @apiSuccess {String} data.status             病例状态
+ * @apiSuccess {String} data.caseType           病例类型
+ * @apiSuccess {String} data.pathologyNum       病理号
+ * @apiSuccess {String} data.reportTitle        报告标题
+ * @apiSuccess {String} data.consultationNum    会诊号
+ * @apiSuccess {String} data.patName            病人姓名
+ * @apiSuccess {String} data.patientInfo        病人信息
+ * @apiSuccess {String} data.gender             性别
+ * @apiSuccess {String} data.age                年龄
+ * @apiSuccess {String} data.nation             病人民族
+ * @apiSuccess {String} data.birthDate          出生日期
+ * @apiSuccess {String} data.IDNum              身份证号
+ * @apiSuccess {String} data.patTel             病人电话
+ * @apiSuccess {String} data.familyTel          家属电话
+ * 
+ * 
+ * @apiSuccess {String} data.subspecialty       亚专科
+ * @apiSuccess {String} data.inspectionDate     送检时间
+ * @apiSuccess {String} data.unit               送检单位
+ * @apiSuccess {String} data.department         送检科室
+ * @apiSuccess {String} data.hosName            医院名
+ * @apiSuccess {String} data.doctor             医生名
+ * @apiSuccess {String} data.doctorTel          医生电话
+ * @apiSuccess {String} data.expert             会诊专家
+ * 
+ * @apiSuccess {String} data.isGynecology       是否妇科
+ * @apiSuccess {String} data.lastMenses         末次月经
+ * @apiSuccess {String} data.isMenopause        是否绝经
+ * 
+ * @apiSuccess {String} data.samplePart         取样部位
+ * @apiSuccess {String} data.clinicalData       临床资料
+ * @apiSuccess {String} data.clinicalDataFigure 临床资料附图
+ * @apiSuccess {String} data.imgCheck           影像学检查
+ * @apiSuccess {String} data.imgCheckFigure     影像学检查附图
+ * @apiSuccess {String} data.history            病史
+ * @apiSuccess {String} data.general            大体所见
+ * @apiSuccess {String} data.originDiagnosis    原诊断意见
+ * @apiSuccess {String} data.diagnosis          诊断意见
+ * 
+ * @apiSuccess {String} data.isSatisfied        标本是否满意
+ * @apiSuccess {String} data.component          细胞成分
+ * @apiSuccess {String} data.unsatisfiedReason  不满意理由
+ * @apiSuccess {String} data.inflammation       炎症
+ * @apiSuccess {String} data.reactChange        反应性改变
+ * @apiSuccess {String} data.squamousCell       鳞状上皮细胞分析
+ * @apiSuccess {String} data.glandularCell      腺上皮细胞分析
+ * @apiSuccess {String} data.otherAnalysis      其它分析
+ * 
+ * @apiSuccess {String} data.note               备注
+ * @apiSuccess {String} data.slideUrl           切片url json 对象数组
+ * @apiSuccess {String} data.annotation         报告用图
+ * @apiSuccess {String} data.reportPath         报告路径
+ * @apiSuccess {String} data.signPath           签名图路径
+ * 
+ * @apiSuccess {String} data.freezeOrderDate    冰冻预约时间
+ * @apiSuccess {String} data.uploadDate         上传时间
+ * @apiSuccess {String} data.diagnoseDate       诊断时间
+ * @apiSuccess {String} data.confirmDate        确认诊断时间 
+ * @apiSuccess {String} data.date               时间戳
  */
 const createCaseTable = sqlMacros.sqlExecute(
     "CREATE TABLE IF NOT EXISTS pathCase(" +
@@ -65,7 +102,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "IDNum VARCHAR(255)," + // 身份证号
     "patTel VARCHAR(255) ," + // 病人电话
     "familyTel VARCHAR(255) ," + // 家属电话
-    "subspecialty VARCHAR(255)," + // 专科
+    "subspecialty VARCHAR(255)," + // 亚专科
     "inspectionDate timestamp," + // 送检时间
     "unit VARCHAR(255)," + // 送检单位
     "department VARCHAR(255)," + // 送检科室
@@ -99,7 +136,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "otherAnalysis VARCHAR(255)," + // 其它分析
 
     "note VARCHAR(255)," + // 备注
-    "slideUrl TEXT," + // 切片url json数组
+    "slideUrl TEXT," + // 切片url json 对象数组
     "annotation TEXT," + // 报告用图
     "reportPath TEXT," + // 报告路径
     "signPath TEXT," + // 签名图路径
@@ -113,10 +150,14 @@ const createCaseTable = sqlMacros.sqlExecute(
 // sqlMacros.sqlAlter('pathCase', 'clinicalDataFigure', 'VARCHAR(255)', ''); //新增字段
 // sqlMacros.sqlAlter('pathCase', 'imgCheckFigure', 'VARCHAR(255)', ''); //新增字段
 
-/***
- * @description:@note 查询病例
- * @param {*} res
- * @return {*}
+/*** @note 查询病例
+ * @api {get} /api/case/table 查询病例
+ * @apiVersion 0.0.1
+ * @apiName table
+ * @apiGroup 病例管理
+ * @apiUse caseSqlData
+ * @apiUse CommonResponse
+ * @apiSuccess {Number} count   返回数据个数
  */
 router_case.get('/table', function(req, res) {
     let userName = req.query.userName;
@@ -162,10 +203,13 @@ router_case.get('/table', function(req, res) {
     res.send(json);
 });
 
-/***
- * @description:@note 查询病例筛选值
- * @param {*} res
- * @return {*}
+/*** @note 查询病例筛选值
+ * @api {get} /api/case/table 查询病例筛选值
+ * @apiVersion 0.0.1
+ * @apiName table
+ * @apiGroup 病例管理
+ * @apiUse CommonResponse
+ * @apiSuccess {Number} count   返回数据个数
  */
 router_case.post('/table', function(req, res) {
     // 处理soul-table数据 返回各个字段所有可能出现的值
@@ -669,13 +713,13 @@ router_case.get('/openReport', function(req, res) {
             }
             if (![null, undefined].includes(document.getElementById("clinicalDataFigure")) &&
                 ![null, undefined, '', 'null'].includes(caseData.clinicalDataFigure)) {
-                document.getElementById("clinicalDataFigure").setAttribute('src',  '../../upload' + caseData.clinicalDataFigure);
+                document.getElementById("clinicalDataFigure").setAttribute('src', '../../upload' + caseData.clinicalDataFigure);
                 document.getElementById("clinicalDataFigure").setAttribute('style', "display:block;");
                 document.getElementById("imgCheck").innerHTML = "临床资料:";
             }
             if (![null, undefined].includes(document.getElementById("imgCheckFigure")) &&
                 ![null, undefined, '', 'null'].includes(caseData.imgCheckFigure)) {
-                document.getElementById("imgCheckFigure").setAttribute('src',  '../../upload' + caseData.imgCheckFigure);
+                document.getElementById("imgCheckFigure").setAttribute('src', '../../upload' + caseData.imgCheckFigure);
                 document.getElementById("imgCheckFigure").setAttribute('style', "display:block;");
                 document.getElementById("imgCheck").innerHTML = "影像学检查:";
             }

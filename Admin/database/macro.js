@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-02 15:26:11
+ * @LastEditTime 2022-08-11 08:57:09
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -72,7 +72,7 @@ function sqlQuery(key1, tableName, keys2, keys2value, type) {
         queryArrayString = "",
         queryArray = [];
     for (let i = keys2value.length - 1; i >= 0; i--) {
-        if (keys2value[i] == '' || keys2value[i] == undefined) {
+        if (['',undefined].includes(keys2value[i])) {
             keys2value.splice(i, 1);
             keys2.splice(i, 1);
         } // 检查keys2value是否有空值,如有则删除该条件
