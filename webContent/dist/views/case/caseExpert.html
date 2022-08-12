@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-05 14:42:25
+ * @LastEditTime: 2022-08-12 10:10:12
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -17,9 +17,10 @@
         <div class="layui-card">
             <div class="layui-card-header">病例列表（专家端）</div>
             <div class="layui-card-body">
-                <!-- <div class="layui-btn-container case-table-btn">
-                    <button class="layui-btn layui-btn-sm" data-type="exportCase">导出病例</button>
-                </div> -->
+                <div class="layui-btn-container case-table-btn">
+                    <!-- <button class="layui-btn layui-btn-sm" data-type="exportCase">导出病例</button> -->
+                    <button class="layui-btn" data-type="clearFilter">清除筛选条件</button>
+                </div>
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
                 <script type="text/html" id="table-toolbar" lay-filter="table-toolbar">
                     <a class="layui-btn layui-btn-xs" lay-event="diagnose">诊断</a>
@@ -167,6 +168,18 @@
                 } else { layer.msg('暂无报告') }
             }
         });
+
+
+ // 按钮监听
+ $('.case-table-btn .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        var active = {
+            clearFilter: function() {
+                soulTable.clearFilter('case-table');
+            }
+        }
 
     });
 </script>

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-10 15:02:38
+ * @LastEditTime: 2022-08-12 10:01:50
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -20,6 +20,7 @@
                 <div class="layui-btn-container case-table-btn">
                     <button class="layui-btn" data-type="newCase">新建病例</button>
                     <button class="layui-btn" data-type="startConsultation">发起会诊</button>
+                    <button class="layui-btn" data-type="clearFilter">清除筛选条件</button>
                 </div>
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
 
@@ -250,6 +251,9 @@
                     })
                 }
             },
+            clearFilter: function() {
+                soulTable.clearFilter('case-table');
+            }
         }
     });
 </script>

@@ -1046,71 +1046,11 @@
             "type": "Object",
             "optional": false,
             "field": "data",
-            "description": "<p>数据对象,具体字段由表单决定</p>"
+            "description": "<p>数据对象,具体字段参考列表</p>"
           }
         ]
       }
     },
-    "version": "0.0.0",
-    "filename": "Admin/Manager/caseManager.js",
-    "groupTitle": "病例管理",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Number",
-            "optional": false,
-            "field": "code",
-            "description": "<p>状态码</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "msg",
-            "description": "<p>消息</p>"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "post",
-    "url": "/api/case/chooseExpert",
-    "title": "选择专家",
-    "name": "chooseExpert",
-    "group": "病例管理",
-    "version": "0.0.0",
-    "filename": "Admin/Manager/caseManager.js",
-    "groupTitle": "病例管理",
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Number",
-            "optional": false,
-            "field": "code",
-            "description": "<p>状态码</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "msg",
-            "description": "<p>消息</p>"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "post",
-    "url": "/api/case/chooseExpert",
-    "title": "选择切片",
-    "name": "chooseExpert",
-    "group": "病例管理",
     "version": "0.0.0",
     "filename": "Admin/Manager/caseManager.js",
     "groupTitle": "病例管理",

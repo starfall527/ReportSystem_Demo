@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-11 10:24:02
+ * @LastEditTime 2022-08-12 14:44:26
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -395,7 +395,7 @@ router_case.get('/delete', function(req, res) {
  * @api {post} /api/case/insert 新增病例数据
  * @apiName InsertCase
  * @apiGroup 病例管理
- * @apiParam {Object} data                  数据对象,具体字段由表单决定
+ * @apiParam {Object} data                  数据对象,具体字段参考列表
  * @apiUse CommonResponse
  */
 router_case.post('/insert', function(req, res) {
@@ -460,7 +460,6 @@ router_case.post('/insert', function(req, res) {
 router_case.post('/startConsultation', function(req, res) {
     let caseData = req.body.data;
     let flag = true;
-
     if (caseData.length > 0) {
         let incompleteData = [];
         caseData.forEach(caseElement => {
@@ -499,57 +498,57 @@ router_case.post('/startConsultation', function(req, res) {
     }
 });
 
-/*** @note  选择专家
- * @api {post} /api/case/chooseExpert 选择专家
- * @apiName chooseExpert
- * @apiGroup 病例管理
- * @apiUse CommonResponse
- */
-router_case.post('/chooseExpert', function(req, res) {
-    let data = req.body.data;
-    let caseID = req.body.caseID;
-    let expertName = '';
-    data.forEach(element => { expertName += element.name + '/'; });
-    if (expertName !== '') {
-        expertName = expertName.slice(0, expertName.length - 1);
-    }
-    let result = sqlMacros.sqlMultiUpdate(['expert'], [expertName], 'pathCase', 'id', caseID);
-    res.send({ code: 200, msg: '成功' });
-});
+// /*** @note  选择专家
+//  * @api {post} /api/case/chooseExpert 选择专家 暂时没用
+//  * @apiName chooseExpert
+//  * @apiGroup 病例管理
+//  * @apiUse CommonResponse
+//  */
+// router_case.post('/chooseExpert', function(req, res) {
+//     let data = req.body.data;
+//     let caseID = req.body.caseID;
+//     let expertName = '';
+//     data.forEach(element => { expertName += element.name + '/'; });
+//     if (expertName !== '') {
+//         expertName = expertName.slice(0, expertName.length - 1);
+//     }
+//     let result = sqlMacros.sqlMultiUpdate(['expert'], [expertName], 'pathCase', 'id', caseID);
+//     res.send({ code: 200, msg: '成功' });
+// });
 
 
-/*** @note  选择切片
- * @api {post} /api/case/chooseExpert 选择切片
- * @apiName chooseExpert
- * @apiGroup 病例管理
- * @apiUse CommonResponse
- */
-router_case.post('/chooseSlide', function(req, res) {
-    let data = req.body.data;
-    let caseID = req.body.caseID;
-    let slides = [];
-    let result = sqlMacros.sqlMultiUpdate(['slideUrl'], [data.slideUrl], 'pathCase', 'id', caseID);
-    res.send({ code: 200, msg: '成功' });
-});
+// /*** @note  选择切片
+//  * @api {post} /api/case/chooseSlide 选择切片 暂时没用
+//  * @apiName chooseSlide
+//  * @apiGroup 病例管理
+//  * @apiUse CommonResponse
+//  */
+// router_case.post('/chooseSlide', function(req, res) {
+//     let data = req.body.data;
+//     let caseID = req.body.caseID;
+//     let slides = [];
+//     let result = sqlMacros.sqlMultiUpdate(['slideUrl'], [data.slideUrl], 'pathCase', 'id', caseID);
+//     res.send({ code: 200, msg: '成功' });
+// });
 
-/*** @note  选择报告用图
- * @api {post} /api/case/chooseExpert 选择报告用图
- * @apiName chooseExpert
- * @apiGroup 病例管理
- * @apiUse CommonResponse
- */
-router_case.post('/chooseAnnotation', function(req, res) {
-    let data = req.body.data;
-    let annotation = [];
-    data.forEach(element => {
-        annotation.push(element);
-    });
-    sqlMacros.sqlMultiUpdate(['annotation'], [JSON.stringify(annotation)], 'pathCase', 'id', req.body.caseID);
-    res.send({
-        code: 200,
-        msg: '成功'
-    });
-});
+// /*** @note  选择报告用图
+//  * @api {post} /api/case/chooseAnnotation 选择报告用图 暂时没用
+//  * @apiName chooseExpert
+//  * @apiGroup 病例管理
+//  * @apiUse CommonResponse
+//  */
+// router_case.post('/chooseAnnotation', function(req, res) {
+//     let data = req.body.data;
+//     let annotation = [];
+//     data.forEach(element => {
+//         annotation.push(element);
+//     });
+//     sqlMacros.sqlMultiUpdate(['annotation'], [JSON.stringify(annotation)], 'pathCase', 'id', req.body.caseID);
+//     res.send({
+//         code: 200,
+//         msg: '成功'
+//     });
+// });
 
 // @note 更新病例数据
 router_case.post('/update', function(req, res) {
@@ -664,7 +663,7 @@ router_case.get('/openReport', function(req, res) {
                         document.getElementById("lastMenses").innerHTML += caseData.lastMenses;
                     }
                 }
-            } else {
+            } else if (caseData.caseType === "TBS病例") {
                 document.getElementById("isMenopause").setAttribute("style", "display:none;");
                 document.getElementById("lastMenses").setAttribute("style", "display:none;");
             }
@@ -715,13 +714,13 @@ router_case.get('/openReport', function(req, res) {
                 ![null, undefined, '', 'null'].includes(caseData.clinicalDataFigure)) {
                 document.getElementById("clinicalDataFigure").setAttribute('src', '../../upload' + caseData.clinicalDataFigure);
                 document.getElementById("clinicalDataFigure").setAttribute('style', "display:block;");
-                document.getElementById("imgCheck").innerHTML = "临床资料:";
+                // document.getElementById("clinicalData").innerHTML = "临床资料:";
             }
             if (![null, undefined].includes(document.getElementById("imgCheckFigure")) &&
                 ![null, undefined, '', 'null'].includes(caseData.imgCheckFigure)) {
                 document.getElementById("imgCheckFigure").setAttribute('src', '../../upload' + caseData.imgCheckFigure);
                 document.getElementById("imgCheckFigure").setAttribute('style', "display:block;");
-                document.getElementById("imgCheck").innerHTML = "影像学检查:";
+                // document.getElementById("imgCheck").innerHTML = "影像学检查:";
             }
 
             if (caseData.caseType === "常规病例") {
