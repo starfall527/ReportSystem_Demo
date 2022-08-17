@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-11 08:57:09
+ * @LastEditTime 2022-08-17 09:48:30
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -13,6 +13,18 @@ const logger = require('log4js').getLogger('database');
 
 // todo 设计一个数据库升级的方法,使得版本更新时,可以在不丢失数据的情况下更新表的结构(sqlAlter内有查询当前数据库结构的逻辑)
 // 思路:使用一个对象,记录数据库的结构,每次更新时,比对数据库结构,如果不一致,则使用ALTER功能更新数据库结构
+
+/** @note 执行原生sql查询
+ * @description: 执行原生sql查询
+ * @param {*} sql 
+ */
+function normalSqlQuery(sql) {
+    let data = db.prepare(sql).all();
+    if (data === undefined) {
+        return []; // 保护,至少返回一个空数组,后续判断使用data.length判别
+    }
+    return data;
+}
 
 /***
  * @description: 统计表中符合条件的数据的总数
@@ -72,7 +84,7 @@ function sqlQuery(key1, tableName, keys2, keys2value, type) {
         queryArrayString = "",
         queryArray = [];
     for (let i = keys2value.length - 1; i >= 0; i--) {
-        if (['',undefined].includes(keys2value[i])) {
+        if (['', undefined].includes(keys2value[i])) {
             keys2value.splice(i, 1);
             keys2.splice(i, 1);
         } // 检查keys2value是否有空值,如有则删除该条件
@@ -99,7 +111,7 @@ function sqlQuery(key1, tableName, keys2, keys2value, type) {
             }
             queryArrayString = `(${queryArrayString}) `;
             queryArray.push(queryArrayString);
-            queryArrayString="";
+            queryArrayString = "";
             keys2value.splice(i, 1);
             keys2.splice(i, 1); //弹出当前key2和key2value,在队尾添加拆分后的key2/key2value(无需检查)   
         } // 检查key2value是否包含数组 PS:判断条件是object,Array属于Object,或许可能需要精准识别Array
@@ -423,6 +435,7 @@ function uniqueArray(arr) { // 去除重复项
 // #endregion
 
 module.exports = {
+    normalSqlQuery,
     sqlExecute,
     sqlSelect,
     sqlQuery,

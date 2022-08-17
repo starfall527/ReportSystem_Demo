@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-12 14:44:26
+ * @LastEditTime 2022-08-17 09:47:28
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -779,11 +779,8 @@ router_case.get('/openReport', function(req, res) {
             }
             return error;
         }, caseData).then(error => {
-            // console.log(error);
+            console.log(error);
         });
-        // await page.waitForFunction('window.renderdone', {
-        //     polling: 120
-        // });
 
         function imagesHaveLoaded() { return Array.from(document.images).every((i) => i.complete); }
         await page.waitForFunction(imagesHaveLoaded); // 等待图片加载完成
@@ -829,9 +826,9 @@ router_case.get('/openReport', function(req, res) {
 });
 
 var multiparty = require("multiparty") // 解析form-data上传
-/*** @note 上传签名
- * @api {post} /api/user/uploadSign 上传签名
- * @apiName uploadSign
+/*** @note 上传附图
+ * @api {post} /api/user/uploadFigure 上传附图
+ * @apiName uploadFigure
  * @apiGroup 病例管理
  * @apiParam {Object} data           数据对象
  * @apiParam {String} data.id        唯一标识
@@ -849,13 +846,13 @@ router_case.post('/uploadFigure', function(req, res) {
     from_data.on("part", async part => {
         if (part.filename) {
             let uploadDir = `upload/figure/`; // 指定文件存储目录
-            fileName = `case${caseID}_${req.headers.type}` + '.jpg'; // part.filename.slice(part.filename.lastIndexOf('.'));
+            fileName = `case${caseID}_${req.headers.type}` + '.jpg'; // * 统一格式为jpg 跟随上传文件格式则替换为part.filename.slice(part.filename.lastIndexOf('.'));
             let fullPath = path.join(process.cwd(), uploadDir, fileName);
-            sqlMacros.sqlMultiUpdate([req.headers.type], ['/figure/' + fileName], 'pathCase', 'id', caseID); // * 存在数据库的路径,去掉upload,方便前端加载
+            // sqlMacros.sqlMultiUpdate([req.headers.type], ['/figure/' + fileName], 'pathCase', 'id', caseID); // * 存在数据库的路径,去掉upload,方便前端加载
+            // * 路径在前端保存了,按下“保存”按钮后再写入数据库
             const writeStream = fs.createWriteStream(fullPath); // 保存文件
             part.pipe(writeStream);
         }
-
         var json = {
             code: 200,
             msg: '成功',
@@ -863,6 +860,32 @@ router_case.post('/uploadFigure', function(req, res) {
         };
         res.send(json);
     })
+});
+
+
+/*** @note 取消附图
+ * @api {post} /api/user/cancelFigure 取消附图
+ * @apiName cancelFigure
+ * @apiGroup 病例管理
+ * @apiParam {Object} data           数据对象
+ * @apiParam {String} data.id        病例ID
+ * @apiParam {String} data.type      附图类型
+ * @apiUse CommonResponse
+ */
+router_case.get('/cancelFigure', function(req, res) {
+    let caseID = req.query.id;
+    let fileName = `case${caseID}_${req.query.type}` + '.jpg'; // * 统一格式为jpg 跟随上传文件格式则替换为part.filename.slice(part.filename.lastIndexOf('.'));
+    let uploadDir = `upload/figure/`; // 指定文件存储目录
+    let fullPath = path.join(process.cwd(), uploadDir, fileName);
+    if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath); // * 删除相关pdf文件
+    }
+    sqlMacros.sqlMultiUpdate([req.query.type], [''], 'pathCase', 'id', caseID); // * 存在数据库的路径,去掉upload,方便前端加载
+    var json = {
+        code: 200,
+        msg: '成功'
+    };
+    res.send(json);
 });
 
 module.exports = {

@@ -145,12 +145,12 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">送检时间</label>
+                                    <!-- <div class="layui-inline">
+                                        <label class="layui-form-label">发起会诊时间</label>
                                         <div class="layui-input-inline">
                                             <input type="text" name="inspectionDate" id="inspectionDate" lay-verify="" placeholder="" class="layui-input">
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="layui-inline">
                                         <label class="layui-form-label">送检单位</label>
                                         <div class="layui-input-block" style="width: 320px;">
@@ -180,6 +180,7 @@
                                                     <i class="layui-icon">&#xe67c;</i>上传图片
                                                 </button>
                                                 <button class="layui-btn layui-btn-primary" lay-submit type="button" layadmin-event="clinicalDataFigure" id="clinicalDataFigure">查看附图</button>
+                                                <button class="layui-btn layui-btn-primary" lay-submit type="button" layadmin-event="cancelClinicalDataFigure" id="cancelClinicalDataFigure">取消附图</button>
                                             </div>
                                         </div>
                                     </div>
@@ -197,6 +198,7 @@
                                                     <i class="layui-icon">&#xe67c;</i>上传图片
                                                 </button>
                                                 <button class="layui-btn layui-btn-primary" lay-submit type="button" layadmin-event="imgCheckFigure" id="imgCheckFigure">查看附图</button>
+                                                <button class="layui-btn layui-btn-primary" lay-submit type="button" layadmin-event="cancelImgCheckFigure" id="cancelImgCheckFigure">取消附图</button>
                                             </div>
                                         </div>
                                     </div>
@@ -430,8 +432,15 @@
                         $('#note').val(caseData.note);
                         $('#originDiagnosis').val(caseData.originDiagnosis);
                         $('#general').val(caseData.general);
-                        $('#clinicalDataFigure').val(caseData.clinicalDataFigure);
-                        $('#imgCheckFigure').val(caseData.imgCheckFigure);
+
+                        if (![null, undefined, '', 'null'].includes(caseData.clinicalDataFigure)) {
+                            let randomUrl = caseData.clinicalDataFigure += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                            document.getElementById("clinicalDataFigure").setAttribute('value', randomUrl);
+                        }
+                        if (![null, undefined, '', 'null'].includes(caseData.imgCheckFigure)) {
+                            randomUrl = caseData.imgCheckFigure += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                            document.getElementById("imgCheckFigure").setAttribute('value', randomUrl);
+                        }
 
                         if (caseData.caseType === '常规病例') {
                             $('#general').attr('style', 'display:block');
@@ -471,9 +480,13 @@
                             this.headers.type = "clinicalDataFigure";
                         },
                         done: function(res) {
-                            if (200 == res.code) { layer.msg('上传成功') } else { layer.msg('上传失败') }
-                            let randomUrl = res.url += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
-                            document.getElementById("clinicalDataFigure").setAttribute('value', randomUrl);
+                            if (200 == res.code) {
+                                layer.msg('上传成功');
+                                let randomUrl = res.url += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                                document.getElementById("clinicalDataFigure").setAttribute('value', randomUrl);
+                                caseData.clinicalDataFigure = randomUrl;
+                                console.log($('#clinicalDataFigure').val());
+                            } else { layer.msg('上传失败') }
                         },
                         error: function(err) { console.log(err); }
                     });
@@ -490,9 +503,15 @@
                             this.headers.type = "imgCheckFigure";
                         },
                         done: function(res) {
-                            if (200 == res.code) { layer.msg('上传签名成功') } else { layer.msg('上传签名失败') }
-                            let randomUrl = res.url += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
-                            document.getElementById("imgCheckFigure").setAttribute('value', randomUrl);
+                            if (200 == res.code) {
+                                layer.msg('上传成功');
+                                let randomUrl = res.url += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                                document.getElementById("imgCheckFigure").setAttribute('value', randomUrl);
+                                caseData.imgCheckFigure = randomUrl;
+
+                                console.log($('#imgCheckFigure').val());
+                            } else { layer.msg('上传失败') }
+
                         },
                         error: function(err) { console.log(err); }
                     });
@@ -502,36 +521,62 @@
                         if (![null, undefined, '', 'null'].includes(i)) {
                             layer.photos({
                                 photos: {
-                                    title: "查看临床资料附图",
-                                    data: [{
-                                        src: i
-                                    }]
+                                    title: "临床资料附图",
+                                    data: [{ src: i }]
                                 },
                                 shade: .01,
                                 closeBtn: 1,
                                 anim: 5
                             })
-                        } else {
-                            layer.msg("暂无影像学检查附图");
-                        }
+                        } else { layer.msg("暂无临床资料附图"); }
                     };
                     admin.events.imgCheckFigure = function(t) {
                         var i = document.getElementById("imgCheckFigure").getAttribute('value');
                         if (![null, undefined, '', 'null'].includes(i)) {
                             layer.photos({
                                 photos: {
-                                    title: "查看影像学检查附图",
-                                    data: [{
-                                        src: i
-                                    }]
+                                    title: "影像学检查附图",
+                                    data: [{ src: i }]
                                 },
                                 shade: .01,
                                 closeBtn: 1,
                                 anim: 5
                             })
-                        } else {
-                            layer.msg("暂无影像学检查附图");
-                        }
+                        } else { layer.msg("暂无影像学检查附图"); }
+                    };
+
+                    admin.events.cancelClinicalDataFigure = function(t) {
+                        admin.req({
+                            url: 'api/case/cancelFigure',
+                            type: 'get',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: {
+                                id: caseData.id,
+                                type: "clinicalDataFigure"
+                            },
+                            success: function(res) {
+                                document.getElementById("clinicalDataFigure").setAttribute('value', '');
+                                caseData.clinicalDataFigure = '';
+                                layer.msg("已取消临床资料附图");
+                            }
+                        })
+                    };
+
+                    admin.events.cancelImgCheckFigure = function(t) {
+                        admin.req({
+                            url: 'api/case/cancelFigure',
+                            type: 'get',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: {
+                                id: caseData.id,
+                                type: "imgCheckFigure"
+                            },
+                            success: function(res) {
+                                document.getElementById("imgCheckFigure").setAttribute('value', '');
+                                caseData.imgCheckFigure = '';
+                                layer.msg("已取消影像学检查附图");
+                            }
+                        })
                     };
                 }
             });
