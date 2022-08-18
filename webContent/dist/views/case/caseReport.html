@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-16 13:47:15
+ * @LastEditTime: 2022-08-18 11:18:56
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -43,6 +43,14 @@
                         </div>
                     </div>
                     <div class="layui-row layui-col-space15" style="margin-left: 20px;">
+                        <div class="layui-col-md4">
+                            <div class="layui-label" id="isMenopause">是否绝经:</div>
+                        </div>
+                        <div class="layui-col-md4">
+                            <div class="layui-label" id="lastMenses">末次月经:</div>
+                        </div>
+                    </div>
+                    <div class="layui-row layui-col-space15" style="margin-left: 20px;">
                         <div class="layui-col-md6">
                             <div class="layui-label" id="uploadDate">发起会诊时间:</div>
                         </div>
@@ -77,6 +85,10 @@
                     <fieldset class="layui-elem-field" style="margin-top:20px;">
                         <legend>备注</legend>
                         <div class="layui-field-box" id="note">无</div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field" style="margin-top:20px;">
+                        <legend>原诊断意见</legend>
+                        <div class="layui-field-box" id="originDiagnosis">无</div>
                     </fieldset>
                     <fieldset class="layui-elem-field" style="margin-top:20px;">
                         <legend>附件</legend>
@@ -228,7 +240,7 @@
                         <div>
                             <img src="" id="sign" style="height:60px;margin-top:10px;margin-bottom:10px;margin-left:10px;">
                         </div>
-                        <div class="layui-row layui-col-space15">
+                        <!-- <div class="layui-row layui-col-space15">
                             <div class="layui-panel" style=" background-color: #e2e0e0; 
                                 margin-top:10px;margin-bottom:20px">
                                 <div class="layui-row layui-col-space15">
@@ -238,9 +250,9 @@
                                     <div class="layui-col-md4">
                                         <div class="layui-label" id="report-doctor">送检医生:</div>
                                     </div>
-                                    <!-- <div class="layui-col-md4">
+                                    <div class="layui-col-md4">
                                         <div class="layui-label" id="report-doctorTel">送检医生电话:</div>
-                                    </div> -->
+                                    </div>
                                 </div>
                                 <div class="layui-row layui-col-space15">
                                     <div class="layui-col-md4">
@@ -254,7 +266,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="layui-form-item">
                             <div class="layui-row layui-col-space15">
                                 <div class="layui-col-md8"></div>
@@ -388,8 +400,11 @@
                     for (const key in caseData) {
                         if (Object.hasOwnProperty.call(caseData, key)) {
                             const element = caseData[key];
-                            if ([null, undefined].includes(element)) {
-                                caseData[key] = '';
+                            if ([null, undefined, '', 'null'].includes(element)) {
+                                caseData[key] = '无';
+                                if (['clinicalData', 'imgCheck'].includes(key)) {
+                                    caseData[key] = '';
+                                }
                             }
                         }
                     }
@@ -404,14 +419,17 @@
                     document.getElementById("imgCheck").innerHTML = caseData.imgCheck;
                     document.getElementById("unit").innerHTML += caseData.unit;
                     document.getElementById("samplePart").innerHTML = caseData.samplePart;
+                    document.getElementById("history").innerHTML = caseData.history;
+                    document.getElementById("note").innerHTML = caseData.note;
+                    document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis;
 
-                    document.getElementById("report-unit").innerHTML += caseData.unit;
-                    document.getElementById("report-doctor").innerHTML += caseData.doctor;
-                    // document.getElementById("report-doctorTel").innerHTML += caseData.doctorTel;
-                    document.getElementById("report-pathologyNum").innerHTML += caseData.pathologyNum;
-                    document.getElementById("report-patName").innerHTML += caseData.patName;
-                    document.getElementById("report-uploadDate").innerHTML += caseData.date;
-                    document.getElementById("expert-label").innerHTML += layui.data('layuiAdmin').userName;
+                    // document.getElementById("report-unit").innerHTML += caseData.unit;
+                    // document.getElementById("report-doctor").innerHTML += caseData.doctor;
+                    // // document.getElementById("report-doctorTel").innerHTML += caseData.doctorTel;
+                    // document.getElementById("report-pathologyNum").innerHTML += caseData.pathologyNum;
+                    // document.getElementById("report-patName").innerHTML += caseData.patName;
+                    // document.getElementById("report-uploadDate").innerHTML += caseData.date;
+                    // document.getElementById("expert-label").innerHTML += layui.data('layuiAdmin').userName;
                     document.getElementById("sign").setAttribute('src', caseData.signPath);
 
                     if (![null, undefined, '', 'null'].includes(caseData.clinicalDataFigure)) {
@@ -423,6 +441,15 @@
                         document.getElementById("imgCheckFigure").setAttribute('src', caseData.imgCheckFigure);
                     } else {
                         document.getElementById("imgCheckFigure").setAttribute('style', 'display:none');
+                    }
+                    if (caseData.caseType === 'TBS病例' && caseData.isGynecology === '妇科') {
+                        $('#isMenopause').attr('style', 'display:block');
+                        $('#lastMenses').attr('style', 'display:block');
+                        document.getElementById("isMenopause").innerHTML += caseData.isMenopause;
+                        document.getElementById("lastMenses").innerHTML += caseData.lastMenses;
+                    } else {
+                        $('#isMenopause').attr('style', 'display:none');
+                        $('#lastMenses').attr('style', 'display:none');
                     }
 
                     slideUrl = JSON.parse(caseData.slideUrl);
@@ -543,7 +570,9 @@
                 delete data.field.layTableCheckbox;
                 data.field.unsatisfiedReason = reasonSelect.getValue('valueStr');
                 data.field.component = componentSelect.getValue('valueStr');
-                if ([null, 'null', '', undefined].includes(data.field.component) && caseStatus !== "专家退回" && data.field.caseType === "TBS") {
+                console.log(data.field)
+                if ([null, 'null', '', undefined].includes(data.field.component) && caseStatus !== "专家退回" &&
+                    isSatisfied === "满意" && caseData.caseType === "TBS病例") {
                     layer.msg("请选择细胞成分");
                     return false;
                 }
@@ -629,6 +658,7 @@
         var active = {
             returnReport: function() {
                 caseStatus = '专家退回';
+                data.field.status = caseStatus;
             }
         }
     });

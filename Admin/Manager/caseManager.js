@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-17 09:47:28
+ * @LastEditTime 2022-08-18 11:19:37
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -277,7 +277,7 @@ router_case.get('/expertTable', function(req, res) {
     } else { cases = sqlMacros.sqlSelect('*', 'pathCase') }
 
     cases.forEach(element => {
-        if (element.expert !== null && ['等待诊断', '诊断完成'].includes(element.status)) {
+        if (element.expert !== null && ['等待诊断', '诊断完成','专家退回'].includes(element.status)) {
             let experts = element.expert.split('/');
             experts.forEach(expertsElement => {
                 if (expertsElement === userName) {
@@ -318,7 +318,7 @@ router_case.post('/expertTable', function(req, res) {
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
 
     cases.forEach(element => {
-        if (element.expert !== null && ['等待诊断', '诊断完成'].includes(element.status)) {
+        if (element.expert !== null && ['等待诊断', '诊断完成','专家退回'].includes(element.status)) {
             let experts = element.expert.split('/');
             experts.forEach(expertsElement => {
                 if (expertsElement === userName) {
@@ -635,7 +635,7 @@ router_case.get('/openReport', function(req, res) {
             for (const key in caseData) {
                 if (Object.hasOwnProperty.call(caseData, key)) {
                     const element = caseData[key];
-                    if ([null, ''].includes(element) && !["unsatisfiedReason", 'isMenopause'].includes(key)) {
+                    if ([null, ''].includes(element) && !["unsatisfiedReason", 'isMenopause','clinicalData','imgCheck'].includes(key)) {
                         caseData[key] = '无';
                     }
                 }
@@ -688,6 +688,10 @@ router_case.get('/openReport', function(req, res) {
                 document.getElementById("doctorLabel").innerHTML += caseData.doctor; // 医生
                 error.push("doctorLabel");
             }
+            if (![null, undefined].includes(document.getElementById("hosNameLabel"))) {
+                document.getElementById("hosNameLabel").innerHTML += caseData.hosName; // 医生
+                error.push("hosNameLabel");
+            }
             if (![null, undefined].includes(document.getElementById("samplePartLabel"))) {
                 document.getElementById("samplePartLabel").innerHTML += caseData.samplePart; // 取样位置
                 error.push("samplePartLabel");
@@ -696,9 +700,9 @@ router_case.get('/openReport', function(req, res) {
                 document.getElementById("unitLabel").innerHTML += caseData.unit; // 送检单位
                 error.push("unitLabel");
             }
-            if (![null, undefined].includes(document.getElementById("inspectionDateLabel"))) {
-                document.getElementById("inspectionDateLabel").innerHTML += caseData.inspectionDate; // 送检日期
-                error.push("inspectionDateLabel");
+            if (![null, undefined].includes(document.getElementById("uploadDateLabel"))) {
+                document.getElementById("uploadDateLabel").innerHTML += caseData.uploadDate; // 发起会诊时间
+                error.push("uploadDateLabel");
             }
             if (![null, undefined].includes(document.getElementById("history"))) {
                 document.getElementById("history").innerHTML += caseData.history; // 病史
@@ -724,9 +728,6 @@ router_case.get('/openReport', function(req, res) {
             }
 
             if (caseData.caseType === "常规病例") {
-                if (![null, undefined].includes(document.getElementById("originDiagnosis"))) {
-                    document.getElementById("originDiagnosis").innerHTML += caseData.originDiagnosis; // 原诊断意见
-                }
                 if (![null, undefined].includes(document.getElementById("general"))) {
                     document.getElementById("general").innerHTML += caseData.general; // 大体所见
                 }
@@ -758,6 +759,13 @@ router_case.get('/openReport', function(req, res) {
                 }
             }
 
+            if (![null, undefined].includes(document.getElementById("note"))) {
+                document.getElementById("note").innerHTML += caseData.note; // 原诊断意见
+            }
+            if (![null, undefined].includes(document.getElementById("originDiagnosis"))) {
+                document.getElementById("originDiagnosis").innerHTML += caseData.originDiagnosis; // 原诊断意见
+            }
+
             if (annotationUrl.length > 0) {
                 for (let i = 0; i < 3; i++) {
                     if (![null, undefined].includes(document.getElementById(`annotation${i}`))) {
@@ -779,8 +787,9 @@ router_case.get('/openReport', function(req, res) {
             }
             return error;
         }, caseData).then(error => {
-            console.log(error);
+            // console.log(error); // * 调试用,检测未定义dom
         });
+        // ! 目前pdf只能生成一页 需要滚动截图 或是研究page.pdf的参数
 
         function imagesHaveLoaded() { return Array.from(document.images).every((i) => i.complete); }
         await page.waitForFunction(imagesHaveLoaded); // 等待图片加载完成
@@ -794,6 +803,7 @@ router_case.get('/openReport', function(req, res) {
             path: process.cwd() + '/upload/' + reportPath,
             format: "A4",
             printBackground: true,
+            fullPage: true,
             "-webkit-print-color-adjust": "exact",
         }).then(() => {
             sqlMacros.sqlMultiUpdate(['reportPath'], [reportPath], 'pathCase', 'id', caseData.id);
@@ -823,6 +833,31 @@ router_case.get('/openReport', function(req, res) {
             }
         }
     }, 200);
+
+    async function autoScroll(page) {
+        await page.evaluate(async () => {
+            await new Promise((resolve, reject) => {
+                // 页面的当前高度
+                let totalHeight = 0;
+                // 每次向下滚动的距离
+                let distance = 100;
+                // 通过setInterval循环执行
+                let timer = setInterval(() => {
+                    let scrollHeight = document.body.scrollHeight;
+
+                    // 执行滚动操作
+                    window.scrollBy(0, distance);
+
+                    // 如果滚动的距离大于当前元素高度则停止执行
+                    totalHeight += distance;
+                    if (totalHeight >= scrollHeight) {
+                        clearInterval(timer);
+                        resolve();
+                    }
+                }, 100);
+            });
+        }); // 完成懒加载后可以完整截图或者爬取数据等操作
+    }
 });
 
 var multiparty = require("multiparty") // 解析form-data上传
