@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-16 10:57:53
+ * @LastEditTime: 2022-08-18 15:32:38
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -133,10 +133,16 @@
                             $(this).text() = 'TBS病例'
                         }
                         if (b === '等待诊断') {
-                            $(this).css('background-color', '#33CCFF');
+                            $(this).css('background-color', '#00CCCC');
                         }
                         if (b === '诊断完成') {
-                            $(this).css('background-color', '#00FF66');
+                            $(this).css('background-color', '#00CC66');
+                        }
+                        if (b === '专家重诊') {
+                            $(this).css('background-color', '#00FF99');
+                        }
+                        if (b === '专家退回') {
+                            $(this).css('background-color', '#FF9933');
                         }
                     })
                 });
@@ -181,7 +187,7 @@
             } else if (layEvent === 'star') { //收藏
                 //do something
             } else if (layEvent === 'openReport') { // 查看报告
-                if (![null, '', undefined].includes(data.reportPath)) {
+                if (![null, '', undefined, 'null'].includes(data.reportPath)) {
                     admin.popup({
                         title: '查看报告',
                         area: ['100%', '100%'], // 为防止窗口变形,设置弹窗宽度至少为400px

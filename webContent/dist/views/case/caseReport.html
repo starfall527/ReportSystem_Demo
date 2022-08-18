@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-18 11:18:56
+ * @LastEditTime: 2022-08-18 15:56:35
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -565,14 +565,16 @@
                 layer.msg("请选择标注图");
                 return false;
             } else {
+                if (caseStatus === "诊断完成") {
+                    caseStatus = "专家重诊"
+                }
                 data.field.status = caseStatus;
                 delete data.field.select;
                 delete data.field.layTableCheckbox;
                 data.field.unsatisfiedReason = reasonSelect.getValue('valueStr');
                 data.field.component = componentSelect.getValue('valueStr');
-                console.log(data.field)
                 if ([null, 'null', '', undefined].includes(data.field.component) && caseStatus !== "专家退回" &&
-                    isSatisfied === "满意" && caseData.caseType === "TBS病例") {
+                    data.field.isSatisfied === "满意" && caseData.caseType === "TBS病例") {
                     layer.msg("请选择细胞成分");
                     return false;
                 }
@@ -588,7 +590,9 @@
                 ['unsatisfiedReason', 'component', 'reactChange', 'pathogen', 'otherAnalysis', 'annotation'].forEach(element => {
                     caseData[element] = data.field[element]; // 更新页面数据到caseData中
                 });
-
+                if (caseStatus === "专家退回") {
+                    data.field.reportPath = ''; // 退回时,清空报告路径 后台需要删除报告
+                }
                 admin.req({
                     url: 'api/case/update',
                     type: 'POST',
@@ -600,7 +604,7 @@
                     success: function(res) {
                         if (caseStatus === "专家退回") {
                             layer.msg("退回成功,将返回列表");
-                        } else if (caseStatus === "诊断完成") {
+                        } else if (["诊断完成", "专家重诊"].includes(caseStatus)) {
                             if (![null, undefined].includes(res.data)) {
                                 res.data.userName = layui.data('layuiAdmin').userName; // 数据包含userName,用于检查用户自定义标题
                                 admin.req({
@@ -618,7 +622,7 @@
                                 layer.alert('提交失败');
                             }
                         }
-                        if (caseStatus !== "诊断完成") {
+                        if (!["诊断完成", "专家重诊"].includes(caseStatus)) {
                             setTimeout(() => {
                                 window.location.href = `./#/case/caseExpert`;
                                 table.reload('case-table');

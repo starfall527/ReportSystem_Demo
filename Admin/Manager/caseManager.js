@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-18 11:19:37
+ * @LastEditTime 2022-08-18 15:10:34
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -277,7 +277,7 @@ router_case.get('/expertTable', function(req, res) {
     } else { cases = sqlMacros.sqlSelect('*', 'pathCase') }
 
     cases.forEach(element => {
-        if (element.expert !== null && ['等待诊断', '诊断完成','专家退回'].includes(element.status)) {
+        if (element.expert !== null && ['等待诊断', '诊断完成','专家退回','专家重诊'].includes(element.status)) {
             let experts = element.expert.split('/');
             experts.forEach(expertsElement => {
                 if (expertsElement === userName) {
@@ -318,7 +318,7 @@ router_case.post('/expertTable', function(req, res) {
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
 
     cases.forEach(element => {
-        if (element.expert !== null && ['等待诊断', '诊断完成','专家退回'].includes(element.status)) {
+        if (element.expert !== null && ['等待诊断', '诊断完成','专家退回','专家重诊'].includes(element.status)) {
             let experts = element.expert.split('/');
             experts.forEach(expertsElement => {
                 if (expertsElement === userName) {

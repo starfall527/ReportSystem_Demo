@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-12 10:10:12
+ * @LastEditTime: 2022-08-18 15:31:45
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -125,6 +125,12 @@
                         if (b === '诊断完成') {
                             $(this).css('background-color', '#00CC66');
                         }
+                        if (b === '专家重诊') {
+                            $(this).css('background-color', '#00FF99');
+                        }
+                        if (b === '专家退回') {
+                            $(this).css('background-color', '#FF9933');
+                        }
                     })
                 });
             }
@@ -143,10 +149,8 @@
                     '常规病例': 'Normal',
                     'TBS病例': 'TBS',
                 };
-                if (data.status === '诊断完成') {
-                    // layer.msg('诊断已完成,请勿重复诊断');                     // 是否需要限制重复诊断？
-                    // 添加确认弹窗？
-                    top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${caseTypeDisplay[data.caseType]}`;
+                if (data.status === '专家重诊') {
+                    layer.msg('无法再次重诊病例'); // 限制重复诊断
                 } else {
                     top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${caseTypeDisplay[data.caseType]}`;
                 }
@@ -170,8 +174,8 @@
         });
 
 
- // 按钮监听
- $('.case-table-btn .layui-btn').on('click', function() {
+        // 按钮监听
+        $('.case-table-btn .layui-btn').on('click', function() {
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
