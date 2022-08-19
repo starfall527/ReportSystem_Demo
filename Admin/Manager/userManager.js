@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-25 09:51:54
+ * @LastEditTime 2022-08-19 11:20:58
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -14,20 +14,25 @@ const config = require('../config.js');
 const md5 = require('md5');
 const cv = require('opencv4nodejs');
 
-// todo 每个用户都能设置自己的slideCenter对应ip地址,因为sc和程序不一定运行在同一台机上
-
-/***
- * @description: USER表定义
- * @field {*}   id              唯一标识    
- * @field {*}   role            身份
- * @field {*}   userName        用户姓名
- * @field {*}   name            登录名
- * @field {*}   phone           手机
- * @field {*}   password        密码
- * @field {*}   info            信息
- * @field {*}   examStatus      审核状态
- * @field {*}   authorization   权限
- * @field {*}   date            时间戳
+/*** @note apidoc定义user表数据
+ * @apiDefine UserSqlData
+ * @apiSuccess {Object{...}} data           对象数组
+ * @apiSuccess {Number} data.id             唯一标识
+ * @apiSuccess {String} data.role           身份
+ * @apiSuccess {String} data.userName       用户姓名
+ * @apiSuccess {String} data.organization   组织名
+ * @apiSuccess {String} data.name           登录名
+ * @apiSuccess {String} data.phone          手机
+ * @apiSuccess {String} data.password       密码
+ * @apiSuccess {String} data.sign           签名路径
+ * @apiSuccess {String} data.info           信息
+ * @apiSuccess {String} data.subspecialty   亚专科
+ * @apiSuccess {String} data.authorization  权限
+ * @apiSuccess {String} data.reportTitle    报告标题
+ * @apiSuccess {String} data.slideCenterIP  slideCenterIP
+ * @apiSuccess {String} data.NATtraverse    内网穿透host
+ * @apiSuccess {String} data.isExamined     审核状态
+ * @apiSuccess {String} data.date           时间戳
  */
 const createUserTable = sqlMacros.sqlExecute(`CREATE TABLE IF NOT EXISTS USER(
      id INTEGER not null PRIMARY KEY AUTOINCREMENT ,
@@ -198,7 +203,35 @@ router_user.post('/query', function(req, res) {
     res.send(json);
 });
 
-// @note 登录接口  
+/*** @note 登录接口
+ * @api {get} /api/user/login 登录接口
+ * @apiVersion 0.0.1
+ * @apiName login
+ * @apiGroup 用户管理
+ * @apiParam {String} userName 用户名
+ * @apiParam {String} password 密码
+ * 
+ * @apiUse CommonResponse
+ * @apiSuccessExample Success-Response:
+ *   HTTP/1.1 200 OK
+    {
+        "code": 200,
+        "msg": "登录成功",
+        "data": { "userID": 1, "userName": "工程师1", "access_token": "8dda2da20cba25291b4c83990d144e49" }
+    }    
+ * @apiSuccessExample 401-Response:
+ *   HTTP/1.1 401 unauthorized
+    {
+        code: 401,
+        msg: '密码错误'
+    }    
+ * @apiSuccessExample 500-Response:
+ *   HTTP/1.1 500 Error
+    {
+        code: 500,
+        msg: '未找到用户'
+    }
+ */ 
 router_user.get('/login', function(req, res) {
     let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', req.query.userName);
     let menu = config.readConfigFile('./webContent/json/menu.json');
@@ -291,10 +324,13 @@ router_user.get('/logout', function(req, res) {
 /*** @note 新增用户 
  * @api {post} /api/user/insert 新增用户
  * @apiName InsertUser
- * @apiGroup 步骤管理
+ * @apiGroup 用户管理
  * @apiParam {Object} data                  数据对象
- * @apiParamExample 
- * 
+ * @apiParam {Object} data.userName         用户名
+ * @apiParam {Object} data.password         密码
+ * @apiParam {Object} data.phone            手机
+ * @apiParam {Object} data.organization     组织
+ * @apiParam {Object} data.role             角色
  * @apiUse CommonResponse
  */
 router_user.post('/insert', function(req, res) {
@@ -320,7 +356,7 @@ router_user.post('/insert', function(req, res) {
  * @apiName InsertUser
  * @apiGroup 步骤管理
  * @apiParam {Object} data                  数据对象
- * @apiParamExample 
+ * @apiParam {String} limits[i]             权限 on/off
  * 
  * @apiUse CommonResponse
  */
@@ -417,7 +453,6 @@ router_user.post('/role/batchDel', function(req, res) {
  * @apiParam {String} data.id        唯一标识
  * @apiParam {String} data.field     更新的键
  * @apiParam {String} data.value     更新的键值
- * @apiParamExample 
  * @apiUse CommonResponse
  */
 router_user.post('/update', function(req, res) {
@@ -445,8 +480,6 @@ var path = require('path')
  * @apiParam {String} data.id        唯一标识
  * @apiParam {String} data.field     更新的键
  * @apiParam {String} data.value     更新的键值
- * @apiParamExample 
- * 
  * @apiUse CommonResponse
  */
 router_user.post('/uploadSign', function(req, res) {
@@ -487,7 +520,6 @@ router_user.post('/uploadSign', function(req, res) {
  * @apiParam {String} data.id        唯一标识
  * @apiParam {String} data.field     更新的键
  * @apiParam {String} data.value     更新的键值
- * @apiParamExample 
  * @apiUse CommonResponse
  */
 router_user.post('/setPassword', function(req, res) {

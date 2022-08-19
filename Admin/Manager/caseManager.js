@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-07-26 14:17:30
+ * @LastEditTime 2022-08-19 11:22:12
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -13,6 +13,12 @@ const logger = require('log4js').getLogger();
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
+
+/*** @note apidoc定义常规回复
+ * @apiDefine CommonResponse
+ * @apiSuccess {Number} code             状态码
+ * @apiSuccess {String} msg              消息
+ */
 
 /*** @note sql表定义
  * @description: pathCase表定义
