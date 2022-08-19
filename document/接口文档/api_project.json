@@ -1,4 +1,4 @@
-define({
+{
   "name": "金域切片管理系统",
   "description": "接口文档",
   "title": "接口文档",
@@ -8,8 +8,8 @@ define({
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2022-08-19T03:22:16.327Z",
+    "time": "2022-08-19T03:32:09.892Z",
     "url": "https://apidocjs.com",
     "version": "0.26.0"
   }
-});
+}

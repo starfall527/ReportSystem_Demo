@@ -17,7 +17,7 @@
         "packageWin": "electron-packager ./ electron --win --arch=x64 --icon=electron.ico --out=./dist --asar --app-version=1.0.0 --electron-version=16.0.5",
         "pkgWin": "pkg -t win app.js",
         "pkg": "pkg package.json --public",
-        "apidoc": "apidoc -i ./Admin/ -o ./document/",
+        "apidoc": "apidoc -i ./Admin/ -o ./document/接口文档",
         "pm2start": "pm2 start pm2setting.json",
         "pm2stop": "pm2 stop pm2setting.json",
         "pm2list": "pm2 list",
