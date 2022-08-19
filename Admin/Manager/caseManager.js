@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-18 15:10:34
+ * @LastEditTime 2022-08-18 16:40:29
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -204,12 +204,17 @@ router_case.get('/table', function(req, res) {
 });
 
 /*** @note 查询病例筛选值
- * @api {get} /api/case/table 查询病例筛选值
+ * @api {post} /api/case/table 查询病例筛选值
  * @apiVersion 0.0.1
- * @apiName table
+ * @apiName tableFilter
  * @apiGroup 病例管理
+ * 
+ * @apiParam {Object} data 数据对象
+ * @apiParam {String{...}} data.status       病例状态
+ * @apiParam {String{...}} data.caseType     病例类型
+ * @apiParam {String{...}} data.subspecialty 亚专科
+ * @apiParam {String{...}} data.expert       专家
  * @apiUse CommonResponse
- * @apiSuccess {Number} count   返回数据个数
  */
 router_case.post('/table', function(req, res) {
     // 处理soul-table数据 返回各个字段所有可能出现的值
@@ -256,10 +261,14 @@ router_case.post('/table', function(req, res) {
     res.send(data);
 });
 
-/***
- * @description:@note 专家端查询病例
- * @param {*} res
- * @return {*}
+/*** @note 专家端查询病例
+ * @api {get} /api/case/expertTable 专家端查询病例
+ * @apiVersion 0.0.1
+ * @apiName expertTable
+ * @apiGroup 病例管理
+ * @apiUse caseSqlData
+ * @apiUse CommonResponse
+ * @apiSuccess {Number} count   返回数据个数
  */
 router_case.get('/expertTable', function(req, res) {
     let userName = req.query.userName;
@@ -297,10 +306,19 @@ router_case.get('/expertTable', function(req, res) {
     res.send(json);
 });
 
-/***
- * @description:@note 查询病例
- * @param {*} res
- * @return {*}
+/*** @note 专家端查询病例筛选值
+ * @api {post} /api/case/expertTable 专家端查询病例筛选值
+ * @apiVersion 0.0.1
+ * @apiName expertTableFilter
+ * @apiGroup 病例管理
+ * 
+ * @apiParam {Object} data 数据对象
+ * @apiParam {String{...}} data.status       病例状态
+ * @apiParam {String{...}} data.caseType     病例类型
+ * @apiParam {String{...}} data.subspecialty 亚专科
+ * @apiParam {String{...}} data.hosName      医院
+ * @apiParam {String{...}} data.doctor       医生
+ * @apiUse CommonResponse
  */
 router_case.post('/expertTable', function(req, res) {
     // 处理soul-table数据 返回各个字段所有可能出现的值

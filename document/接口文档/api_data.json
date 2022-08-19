@@ -1077,10 +1077,37 @@
   },
   {
     "type": "post",
-    "url": "/api/case/chooseExpert",
-    "title": "选择报告用图",
-    "name": "chooseExpert",
+    "url": "/api/user/cancelFigure",
+    "title": "取消附图",
+    "name": "cancelFigure",
     "group": "病例管理",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>数据对象</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.id",
+            "description": "<p>病例ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.type",
+            "description": "<p>附图类型</p>"
+          }
+        ]
+      }
+    },
     "version": "0.0.0",
     "filename": "Admin/Manager/caseManager.js",
     "groupTitle": "病例管理",
@@ -1679,12 +1706,57 @@
     "groupTitle": "病例管理"
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "/api/case/table",
     "title": "查询病例筛选值",
     "version": "0.0.1",
-    "name": "table",
+    "name": "tableFilter",
     "group": "病例管理",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>数据对象</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "...",
+            "optional": false,
+            "field": "data.status",
+            "description": "<p>病例状态</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "...",
+            "optional": false,
+            "field": "data.caseType",
+            "description": "<p>病例类型</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "...",
+            "optional": false,
+            "field": "data.subspecialty",
+            "description": "<p>亚专科</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "size": "...",
+            "optional": false,
+            "field": "data.expert",
+            "description": "<p>专家</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Success 200": [
@@ -1717,9 +1789,9 @@
   },
   {
     "type": "post",
-    "url": "/api/user/uploadSign",
-    "title": "上传签名",
-    "name": "uploadSign",
+    "url": "/api/user/uploadFigure",
+    "title": "上传附图",
+    "name": "uploadFigure",
     "group": "病例管理",
     "parameter": {
       "fields": {
