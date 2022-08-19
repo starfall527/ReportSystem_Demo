@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-18 16:40:29
+ * @LastEditTime 2022-08-19 17:04:00
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -168,8 +168,10 @@ router_case.get('/table', function(req, res) {
         let filterValues = [];
         let filter = JSON.parse(req.query.filterSos);
         filter.forEach(element => {
-            filterKeys.push(element.field);
-            filterValues.push(element.values);
+            if (element.values.length > 0) { // * 防止element.values为[]时被加到filterValues
+                filterKeys.push(element.field);
+                filterValues.push(element.values);
+            }
         });
         cases = sqlMacros.sqlQuery('*', 'pathCase', filterKeys, filterValues, 'AND');
     } else { cases = sqlMacros.sqlSelect('*', 'pathCase') }
@@ -286,7 +288,7 @@ router_case.get('/expertTable', function(req, res) {
     } else { cases = sqlMacros.sqlSelect('*', 'pathCase') }
 
     cases.forEach(element => {
-        if (element.expert !== null && ['等待诊断', '诊断完成','专家退回','专家重诊'].includes(element.status)) {
+        if (element.expert !== null && ['等待诊断', '诊断完成', '专家退回', '专家重诊'].includes(element.status)) {
             let experts = element.expert.split('/');
             experts.forEach(expertsElement => {
                 if (expertsElement === userName) {
@@ -336,7 +338,7 @@ router_case.post('/expertTable', function(req, res) {
     let cases = sqlMacros.sqlSelect('*', 'pathCase');
 
     cases.forEach(element => {
-        if (element.expert !== null && ['等待诊断', '诊断完成','专家退回','专家重诊'].includes(element.status)) {
+        if (element.expert !== null && ['等待诊断', '诊断完成', '专家退回', '专家重诊'].includes(element.status)) {
             let experts = element.expert.split('/');
             experts.forEach(expertsElement => {
                 if (expertsElement === userName) {
@@ -653,7 +655,7 @@ router_case.get('/openReport', function(req, res) {
             for (const key in caseData) {
                 if (Object.hasOwnProperty.call(caseData, key)) {
                     const element = caseData[key];
-                    if ([null, ''].includes(element) && !["unsatisfiedReason", 'isMenopause','clinicalData','imgCheck'].includes(key)) {
+                    if ([null, ''].includes(element) && !["unsatisfiedReason", 'isMenopause', 'clinicalData', 'imgCheck'].includes(key)) {
                         caseData[key] = '无';
                     }
                 }

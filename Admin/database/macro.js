@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-17 09:48:30
+ * @LastEditTime 2022-08-19 16:54:46
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -148,12 +148,16 @@ function sqlQuery(key1, tableName, keys2, keys2value, type) {
             }
         }
     }
-    // logger.info(sqlString);
-    let data = db.prepare(sqlString).all();
-    if (data === undefined) {
-        return []; // 保护,至少返回一个空数组,后续判断使用data.length判别
+    try {
+        let data = db.prepare(sqlString).all();
+        if (data === undefined) {
+            return []; // 保护,至少返回一个空数组,后续判断使用data.length判别
+        }
+        return data;
+    } catch (error) {
+        logger.error(sqlString);
+        logger.error(error);
     }
-    return data;
 }
 
 

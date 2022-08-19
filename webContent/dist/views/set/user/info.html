@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 修改当前用户信息
  * @Date: 2022-03-23 09:50:21
- * @LastEditTime: 2022-07-29 16:02:39
+ * @LastEditTime: 2022-08-19 16:01:31
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\set\user\info.html
 -->
 
@@ -28,7 +28,7 @@
                             <div class="layui-input-inline" style="width:240px">
                                 <input type="text" name="userName" id="userName" value="" class="layui-input" disabled>
                             </div>
-                            <div class="layui-form-mid layui-word-aux">用户名不可修改</div> 
+                            <div class="layui-form-mid layui-word-aux">用户名不可修改</div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">签名图</label>
@@ -51,7 +51,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">内网穿透</label>
                             <div class="layui-input-inline" style="width:240px">
-                                <input type="text" name="NATtraverse" id="NATtraverse" placeholder="" value="" lay-verify="" autocomplete="off" class="layui-input">
+                                <input type="text" name="NATtraverse" id="NATtraverse" value="" lay-verify="" autocomplete="off" class="layui-input">
                             </div>
                             <div class="layui-form-mid layui-word-aux">请填写slideCenter服务器的内网穿透地址,如不需要内网穿透,则无需填写</div>
                         </div>
@@ -180,6 +180,28 @@
                         });
                     }
                     subspecialtySelect.setValue(xmSelectData);
+
+                    // @note 表格提交
+                    form.on('submit(setInfo)', function(data) {
+                        delete data.field.select;
+                        delete data.field.sign;
+                        delete data.field.file;
+                        delete data.field.select;
+                        data.field.id = layui.data('layuiAdmin').userID;
+                        data.field.subspecialty = subspecialtySelect.getValue('valueStr');
+                        // data.field.diagnoseDate = new Date().Format("yyyy-MM-dd hh:mm:ss"); // 编辑时间
+                        admin.req({
+                            url: 'api/user/update',
+                            type: 'POST',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: JSON.stringify({
+                                data: data.field
+                            }),
+                            success: function(res) {
+                                layer.msg('修改成功')
+                            },
+                        })
+                    });
                 } else {
                     layer.alert('查询不到用户数据!', {
                         icon: 5,
@@ -237,28 +259,6 @@
                 { name: '骨髓病理', value: '骨髓病理' },
                 { name: '其它', value: '其它' },
             ]
-        });
-
-        // @note 表格提交
-        form.on('submit(setInfo)', function(data) {
-            delete data.field.select;
-            delete data.field.sign;
-            delete data.field.file;
-            delete data.field.select;
-            data.field.id = layui.data('layuiAdmin').userID;
-            data.field.subspecialty = subspecialtySelect.getValue('valueStr');
-            // data.field.diagnoseDate = new Date().Format("yyyy-MM-dd hh:mm:ss"); // 编辑时间
-            admin.req({
-                url: 'api/user/update',
-                type: 'POST',
-                contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify({
-                    data: data.field
-                }),
-                success: function(res) {
-                    layer.msg('修改成功')
-                },
-            })
         });
 
         $('#reset').click(function() { // 重新填写
