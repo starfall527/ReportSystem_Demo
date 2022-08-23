@@ -74,7 +74,8 @@ function getFileList(path, filesList, isRecursive, postfix, NATtraverse) {
                 filesList.push({
                     path: path + "/" + file,
                     fileName: file,
-                    thumbnailUrl: getThumbnailUrl(path + "/" + file, '', '', NATtraverse)
+                    thumbnailUrl: getThumbnailUrl(path + "/" + file, '', '', NATtraverse),
+                    labelUrl: getLabelUrl(path + "/" + file, '', '', NATtraverse),
                 });
             }
         }
@@ -546,6 +547,7 @@ router_slideCenter.get('/openSlide', function(req, res) {
                 msg: '成功',
                 data: apiRes,
                 path: data.path,
+                folder: data.path.slice(0, data.path.lastIndexOf('/')),
                 thumbnail: thumbnail,
                 label: label,
                 fileName: data.fileName,

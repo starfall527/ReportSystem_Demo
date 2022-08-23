@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 数据库操作
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-19 16:54:46
+ * @LastEditTime 2022-08-22 16:17:07
  * @FilePath \ReportSystem_Demo\Admin\database\macro.js
  * @reference https://github.com/JoshuaWise/better-sqlite3 
  * @PS 后台数据暂时不做排序(即使要做估计也只需要针对时间排序,表格内置sort只对当前分页有效),优先级较低
@@ -19,11 +19,16 @@ const logger = require('log4js').getLogger('database');
  * @param {*} sql 
  */
 function normalSqlQuery(sql) {
-    let data = db.prepare(sql).all();
-    if (data === undefined) {
-        return []; // 保护,至少返回一个空数组,后续判断使用data.length判别
+    try {
+        let data = db.prepare(sql).all();
+        if (data === undefined) {
+            return []; // 保护,至少返回一个空数组,后续判断使用data.length判别
+        }
+        return data;
+    } catch (error) {
+        logger.error(sql);
+        logger.error(error);
     }
-    return data;
 }
 
 /***
@@ -60,11 +65,16 @@ function sqlSelect(key1, tableName, where, key2, key2value) {
     } else {
         sqlString = `SELECT ${key1} FROM ${tableName} `
     }
-    let data = db.prepare(sqlString).all();
-    if (data === undefined) {
-        return []; // 保护,至少返回一个空数组,后续判断使用data.length判别
+    try {
+        let data = db.prepare(sqlString).all();
+        if (data === undefined) {
+            return []; // 保护,至少返回一个空数组,后续判断使用data.length判别
+        }
+        return data;
+    } catch (error) {
+        logger.error(sqlString);
+        logger.error(error);
     }
-    return data;
 }
 
 /*** 
@@ -190,7 +200,6 @@ function sqlUpdate(key1, key1value, tableName, key2, key2value) {
  * @return {*}  更新结果
  */
 function sqlMultiUpdate(keys1, keys1value, tableName, keys2, keys2value, type) {
-    // todo 入参改成object拆分成key1/key1value,key2/key2value
     let checkArray = [keys1, keys1value];
     if (['AND', 'OR'].includes(type)) {
         checkArray.push(keys2, keys2value);
@@ -229,9 +238,16 @@ function sqlMultiUpdate(keys1, keys1value, tableName, keys2, keys2value, type) {
     } else {
         sqlString += `${keys2} = '${keys2value}' `;
     }
-
-    // logger.warn(sqlString);
-    return db.prepare(sqlString).run();
+    try {
+        let data = db.prepare(sqlString).run();
+        if (data === undefined) {
+            return []; // 保护,至少返回一个空数组,后续判断使用data.length判别
+        }
+        return data;
+    } catch (error) {
+        logger.error(sqlString);
+        logger.error(error);
+    }
 }
 
 /*** @note 删除数据
@@ -402,8 +418,6 @@ function sqlAlter(table, property, type, additions) {
 function sqlDropTable(table) {
     return db.exec(`DROP TABLE ${table}`);
 }
-
-
 
 // #region @note 数组操作
 function intersectionSet(arrA, arrB) { // * 交集

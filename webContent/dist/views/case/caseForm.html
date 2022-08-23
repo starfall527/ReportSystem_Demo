@@ -21,7 +21,7 @@
                                 <div class="layui-form-item">
                                     <div class="layui-inline">
                                         <label class="layui-form-label">病例类型</label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-block" style="width:161px">
                                             <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
                                                 <option value="TBS病例">TBS病例</option>
                                                 <option value="常规病例">常规病例</option>
@@ -71,7 +71,7 @@
                                     </div>
                                     <div class="layui-inline">
                                         <label class="layui-form-label">性别</label>
-                                        <div class="layui-input-block">
+                                        <div class="layui-input-block" style="width:161px">
                                             <select name="gender" id="gender" lay-filter="gender">
                                                 <option value="未知"></option>
                                                 <option value="男">男</option>
@@ -87,7 +87,7 @@
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
-                                    <div class="layui-inline">
+                                    <!-- <div class="layui-inline">
                                         <label class="layui-form-label">民族</label>
                                         <div class="layui-input-block">
                                             <input type="text" name="nation" id="nation" lay-verify="" class="layui-input">
@@ -98,7 +98,7 @@
                                         <div class="layui-input-inline">
                                             <input type="text" name="birthDate" id="birthDate" lay-verify="" placeholder="" class="layui-input">
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="layui-inline">
                                         <label class="layui-form-label">医生名</label>
                                         <div class="layui-input-block">
@@ -122,7 +122,7 @@
                                     </div>
                                     <div class="layui-inline">
                                         <label class="layui-form-label">亚专科</label>
-                                        <div class="layui-input-inline">
+                                        <div class="layui-input-inline" style="width:161px">
                                             <select name="subspecialty" id="subspecialty" lay-verify="required">
                                                 <option value="未知">请选择</option>
                                                 <option value="神经病理">神经病理</option>
@@ -151,12 +151,12 @@
                                             <input type="text" name="inspectionDate" id="inspectionDate" lay-verify="" placeholder="" class="layui-input">
                                         </div>
                                     </div> -->
-                                    <!-- <div class="layui-inline">
+                                    <div class="layui-inline">
                                         <label class="layui-form-label">送检单位</label>
                                         <div class="layui-input-block" style="width: 320px;">
                                             <input type="text" name="unit" id="unit" lay-verify="" class="layui-input">
                                         </div>
-                                    </div> -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -452,16 +452,17 @@
                             $('#general').attr('style', 'display:none');
                             $('#generalLabel').attr('style', 'display:none');
 
-                            $('#isGynecologyBlock').attr('style', 'display:block');
+                            $('#isGynecologyBlock').attr('style', 'width:161px;display:block;');
                             $('#isGynecologyLabel').attr('style', 'display:block');
                             if (caseData.isGynecology === "妇科") {
-                                $('#isMenopauseBlock').attr('style', 'display:block');
+                                $('#isMenopauseBlock').attr('style', 'width:161px;display:block');
                                 $('#isMenopauseLabel').attr('style', 'display:block');
                                 $('#lastMenses').attr('style', 'display:block');
                                 $('#lastMensesLabel').attr('style', 'display:block');
                             }
                             $('#isGynecology').val(caseData.isGynecology);
                             $('#isMenopause').val(caseData.isMenopause);
+                            console.log(caseData.lastMenses)
                             $('#lastMenses').val(caseData.lastMenses);
                         }
                         form.render("select"); //刷新select选择框渲染
@@ -591,7 +592,7 @@
             if (data.value === '常规病例') {
                 $('#general').attr('style', 'display:block');
                 $('#generalLabel').attr('style', 'display:block');
-                $('#isGynecologyBlock').attr('style', 'display:none');
+                $('#isGynecologyBlock').attr('style', 'display:none;');
                 $('#isGynecologyLabel').attr('style', 'display:none');
 
                 $('#isMenopauseLabel').attr('style', 'display:none');
@@ -601,7 +602,7 @@
             } else if (data.value === 'TBS病例') {
                 $('#general').attr('style', 'display:none');
                 $('#generalLabel').attr('style', 'display:none');
-                $('#isGynecologyBlock').attr('style', 'display:block');
+                $('#isGynecologyBlock').attr('style', 'display:block;width:161px;');
                 $('#isGynecologyLabel').attr('style', 'display:block');
             }
         })
@@ -610,7 +611,7 @@
         form.on('select(isGynecology)', function(data) {
             if (data.value === '妇科') {
                 $('#isMenopauseLabel').attr('style', 'display:block');
-                $('#isMenopauseBlock').attr('style', 'display:block');
+                $('#isMenopauseBlock').attr('style', 'display:block;width:161px;');
                 $('#lastMenses').attr('style', 'display:block');
                 $('#lastMensesLabel').attr('style', 'display:block');
             } else if (data.value === '非妇科') {
@@ -684,7 +685,8 @@
                                 path: res.path,
                                 fileName: res.fileName,
                                 slideUrl: res.data,
-                                thumbnail: res.thumbnail
+                                thumbnail: res.thumbnail,                                
+                                label: res.label
                             });
                         },
                         done: function(res) {}
@@ -800,6 +802,11 @@
             step.next('#stepForm');
             form.render('table');
 
+            if (![null, undefined, '', 'null'].includes(caseData.slideUrl)) {
+                // console.log(caseData.slideUrl.folder)
+                // todo 展开文件树,选中切片
+            }
+
             let tableHeight = $(document).height() - $('#slide-table-list').offset().top - $('#step-btn').height() - 20;
             let offset = $('#slide-table-list').offset().top - $('#directory-card').offset().top + $('#step-btn').height() + 10;
             document.getElementById('directory-card').setAttribute('style', `height: ${tableHeight + offset}px`);
@@ -839,7 +846,9 @@
                                 path: res.path,
                                 fileName: res.fileName,
                                 slideUrl: res.data,
-                                thumbnail: res.thumbnail
+                                thumbnail: res.thumbnail,
+                                label: res.label,
+                                folder: res.folder
                             });
                         },
                         done: function(res) {}

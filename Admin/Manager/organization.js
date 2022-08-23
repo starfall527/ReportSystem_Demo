@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 组织管理
  * @Date 2022-06-24 18:30:19
- * @LastEditTime 2022-08-05 12:05:33
+ * @LastEditTime 2022-08-23 14:16:27
  * @FilePath \ReportSystem_Demo\Admin\Manager\organization.js
  */
 const express = require("express");
@@ -26,14 +26,24 @@ const createOrganizationTable = sqlMacros.sqlExecute(
     "reportTitle VARCHAR(255) ," + // 报告标题
     "describe VARCHAR(255)," + // 描述
     "note VARCHAR(255)," + // 备注
-    "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
+    "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 创建时间
 );
 // sqlMacros.sqlAlter('ORGANIZATION', 'describe', 'VARCHAR(255)', ''); //新增字段
+// todo 组织标题功能未完善
 
-/***
- * @description:@note 查询病例
- * @param {*} res
- * @return {*}
+/*** @note  查询组织
+ * @api {get} /api/organization/table 查询组织
+ * @apiName deleteOrganization
+ * @apiGroup 组织管理
+ * @apiParam {Object} data                  数据对象
+ * @apiParam {String} data.name             组织名
+ * @apiParam {String} data.status           组织状态
+ * @apiParam {String} data.reportTitle      报告标题
+ * @apiParam {String} data.describe         描述
+ * @apiParam {String} data.note             备注
+ * @apiParam {String} data.date             创建时间
+ * @apiParam {Number} count                 数据量
+ * @apiUse CommonResponse
  */
 router_organization.get('/table', function(req, res) {
     let result = sqlMacros.sqlSelect("*", 'ORGANIZATION');
@@ -52,8 +62,10 @@ router_organization.get('/table', function(req, res) {
 /*** @note  新增组织
  * @api {post} /api/organization/insert 新增组织
  * @apiName InsertOrganization
- * @apiGroup 玻片管理
- * @apiParam {Object} data                  数据对象,具体字段由表单决定
+ * @apiGroup 组织管理
+ * @apiParam {Object} data                  数据对象
+ * @apiParam {String} data.name                  组织名
+ * @apiParam {String} data.describe              描述
  * @apiUse CommonResponse
  */
 router_organization.post('/insert', function(req, res) {
@@ -82,13 +94,13 @@ router_organization.post('/insert', function(req, res) {
     res.send(json);
 });
 
-
-
 /*** @note  删除组织
- * @description: 删除
- * @param {*} delete
- * @param {*} res
- * @return {*}
+ * @api {get} /api/organization/delete 删除组织
+ * @apiName deleteOrganization
+ * @apiGroup 组织管理
+ * @apiParam {Object} data                  数据对象
+ * @apiParam {String} data.id               组织ID
+ * @apiUse CommonResponse
  */
 router_organization.get('/delete', function(req, res) {
     let data = req.query;

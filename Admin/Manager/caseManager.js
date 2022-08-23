@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-19 17:04:00
+ * @LastEditTime 2022-08-23 14:56:16
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -62,6 +62,7 @@ const config = require('../config');
  * @apiSuccess {String} data.general            大体所见
  * @apiSuccess {String} data.originDiagnosis    原诊断意见
  * @apiSuccess {String} data.diagnosis          诊断意见
+ * @apiSuccess {String} data.suggestion         补充意见
  * 
  * @apiSuccess {String} data.isSatisfied        标本是否满意
  * @apiSuccess {String} data.component          细胞成分
@@ -124,6 +125,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "general VARCHAR(255)," + // 大体所见
     "originDiagnosis VARCHAR(255)," + // 原诊断意见
     "diagnosis VARCHAR(255)," + // 诊断意见
+    "suggestion VARCHAR(255)," + // 补充意见
 
     "isSatisfied VARCHAR(255)," + // 标本是否满意
     "component VARCHAR(255)," + // 细胞成分 
@@ -148,7 +150,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
 );
 // sqlMacros.sqlAlter('pathCase', 'clinicalDataFigure', 'VARCHAR(255)', ''); //新增字段
-// sqlMacros.sqlAlter('pathCase', 'imgCheckFigure', 'VARCHAR(255)', ''); //新增字段
+sqlMacros.sqlAlter('pathCase', 'suggestion', 'VARCHAR(255)', ''); //新增字段
 
 /*** @note 查询病例
  * @api {get} /api/case/table 查询病例
@@ -281,8 +283,10 @@ router_case.get('/expertTable', function(req, res) {
         let filterValues = [];
         let filter = JSON.parse(req.query.filterSos);
         filter.forEach(element => {
-            filterKeys.push(element.field);
-            filterValues.push(element.values);
+            if (element.values.length > 0) { // * 防止element.values为[]时被加到filterValues
+                filterKeys.push(element.field);
+                filterValues.push(element.values);
+            }
         });
         cases = sqlMacros.sqlQuery('*', 'pathCase', filterKeys, filterValues, 'AND');
     } else { cases = sqlMacros.sqlSelect('*', 'pathCase') }
@@ -396,7 +400,7 @@ router_case.post('/query', function(req, res) {
  * @api {get} /api/case/delete 删除病例
  * @apiName deleteCase
  * @apiGroup 病例管理
- * @apiParam {Object} data                  数据对象,具体字段由表单决定
+ * @apiParam {Object} data                  数据对象
  * @apiParam {Object} data.id               病例id
  * @apiUse CommonResponse
  */
@@ -655,16 +659,18 @@ router_case.get('/openReport', function(req, res) {
             for (const key in caseData) {
                 if (Object.hasOwnProperty.call(caseData, key)) {
                     const element = caseData[key];
-                    if ([null, ''].includes(element) && !["unsatisfiedReason", 'isMenopause', 'clinicalData', 'imgCheck'].includes(key)) {
+                    if ([null, ''].includes(element) && !["unsatisfiedReason", 'isMenopause', 'clinicalData',
+                            'imgCheck', 'clinicalDataFigure', 'imgCheckFigure'
+                        ].includes(key)) {
                         caseData[key] = '无';
                     }
                 }
             }
             let error = [];
-            if (![null, undefined].includes(document.getElementById("reportTitle")) &&
+            if (![null, undefined, ''].includes(document.getElementById("reportTitle")) &&
                 ![null, undefined, '无'].includes(caseData.reportTitle)) {
                 document.getElementById("reportTitle").innerHTML = caseData.reportTitle;
-                if (![null, undefined].includes(document.getElementById("subtitle"))) {
+                if (![null, undefined, ''].includes(document.getElementById("subtitle"))) {
                     if (![null, undefined, '', 'null', '无'].includes(caseData.subtitle)) {
                         document.getElementById("subtitle").innerHTML = caseData.subtitle;
                     } else {
@@ -674,12 +680,10 @@ router_case.get('/openReport', function(req, res) {
                 error.push("reportTitle");
             }
             if (caseData.caseType === "TBS病例" && caseData.isGynecology === "妇科") {
-                if (![null, undefined].includes(document.getElementById("isMenopause"))) {
+                if (![null, undefined, ''].includes(document.getElementById("isMenopause"))) {
                     document.getElementById("isMenopause").innerHTML += caseData.isMenopause;
-                    if (![null, undefined].includes(document.getElementById("lastMenses"))) {
-                        if (caseData.isMenopause === "是") {
-
-                        }
+                    if (![null, undefined, ''].includes(document.getElementById("lastMenses"))) {
+                        if (caseData.isMenopause === "是") {}
                         document.getElementById("lastMenses").innerHTML += caseData.lastMenses;
                     }
                 }
@@ -688,59 +692,65 @@ router_case.get('/openReport', function(req, res) {
                 document.getElementById("lastMenses").setAttribute("style", "display:none;");
             }
 
-            if (![null, undefined].includes(document.getElementById("pathologyNumLabel"))) {
+            if (![null, undefined, ''].includes(document.getElementById("pathologyNumLabel"))) {
                 document.getElementById("pathologyNumLabel").innerHTML += caseData.pathologyNum;
                 error.push("pathologyNumLabel");
             }
-            if (![null, undefined].includes(document.getElementById("patNameLabel"))) {
+            if (![null, undefined, ''].includes(document.getElementById("patNameLabel"))) {
                 document.getElementById("patNameLabel").innerHTML += caseData.patName; // 病人姓名
                 error.push("patNameLabel");
             }
-            if (![null, undefined].includes(document.getElementById("genderLabel"))) {
+            if (![null, undefined, ''].includes(document.getElementById("genderLabel"))) {
                 document.getElementById("genderLabel").innerHTML += caseData.gender; // 性别
                 error.push("genderLabel");
             }
-            if (![null, undefined].includes(document.getElementById("ageLabel"))) {
+            if (![null, undefined, ''].includes(document.getElementById("ageLabel"))) {
                 document.getElementById("ageLabel").innerHTML += caseData.age; // 年龄
                 error.push("ageLabel");
             }
-            if (![null, undefined].includes(document.getElementById("doctorLabel"))) {
+            if (![null, undefined, ''].includes(document.getElementById("doctorLabel"))) {
                 document.getElementById("doctorLabel").innerHTML += caseData.doctor; // 医生
                 error.push("doctorLabel");
             }
-            if (![null, undefined].includes(document.getElementById("hosNameLabel"))) {
+            if (![null, undefined, ''].includes(document.getElementById("hosNameLabel"))) {
                 document.getElementById("hosNameLabel").innerHTML += caseData.hosName; // 医生
                 error.push("hosNameLabel");
             }
-            if (![null, undefined].includes(document.getElementById("samplePartLabel"))) {
+            if (![null, undefined, ''].includes(document.getElementById("samplePartLabel"))) {
                 document.getElementById("samplePartLabel").innerHTML += caseData.samplePart; // 取样位置
                 error.push("samplePartLabel");
             }
-            if (![null, undefined].includes(document.getElementById("unitLabel"))) {
+            if (![null, undefined, ''].includes(document.getElementById("unitLabel"))) {
                 document.getElementById("unitLabel").innerHTML += caseData.unit; // 送检单位
                 error.push("unitLabel");
             }
-            if (![null, undefined].includes(document.getElementById("uploadDateLabel"))) {
+            if (![null, undefined, ''].includes(document.getElementById("uploadDateLabel"))) {
                 document.getElementById("uploadDateLabel").innerHTML += caseData.uploadDate; // 发起会诊时间
                 error.push("uploadDateLabel");
             }
-            if (![null, undefined].includes(document.getElementById("history"))) {
+            if (![null, undefined, ''].includes(document.getElementById("history"))) {
                 document.getElementById("history").innerHTML += caseData.history; // 病史
                 error.push("history");
             }
-            if (![null, undefined].includes(document.getElementById("clinicalData"))) {
-                document.getElementById("clinicalData").innerHTML += caseData.clinicalData; // 临床资料
+            if (![null, undefined, ''].includes(document.getElementById("clinicalData"))) {
+                document.getElementById("clinicalData").innerHTML += caseData.clinicalData; // 临床资料                
+                if (['无', '', null, undefined].includes(caseData.clinicalData) && ![null, undefined, '', 'null'].includes(caseData.clinicalDataFigure)) {
+                    document.getElementById("clinicalData").setAttribute('style', "display:none;");
+                }
             }
-            if (![null, undefined].includes(document.getElementById("imgCheck"))) {
+            if (![null, undefined, ''].includes(document.getElementById("imgCheck"))) {
                 document.getElementById("imgCheck").innerHTML += caseData.imgCheck; // 影像学检查
+                if (['无', '', null, undefined].includes(caseData.imgCheck) && ![null, undefined, '', 'null'].includes(caseData.imgCheckFigure)) {
+                    document.getElementById("imgCheck").setAttribute('style', "display:none;");
+                }
             }
-            if (![null, undefined].includes(document.getElementById("clinicalDataFigure")) &&
+            if (![null, undefined, ''].includes(document.getElementById("clinicalDataFigure")) &&
                 ![null, undefined, '', 'null'].includes(caseData.clinicalDataFigure)) {
                 document.getElementById("clinicalDataFigure").setAttribute('src', '../../upload' + caseData.clinicalDataFigure);
                 document.getElementById("clinicalDataFigure").setAttribute('style', "display:block;");
                 // document.getElementById("clinicalData").innerHTML = "临床资料:";
             }
-            if (![null, undefined].includes(document.getElementById("imgCheckFigure")) &&
+            if (![null, undefined, ''].includes(document.getElementById("imgCheckFigure")) &&
                 ![null, undefined, '', 'null'].includes(caseData.imgCheckFigure)) {
                 document.getElementById("imgCheckFigure").setAttribute('src', '../../upload' + caseData.imgCheckFigure);
                 document.getElementById("imgCheckFigure").setAttribute('style', "display:block;");
@@ -748,61 +758,64 @@ router_case.get('/openReport', function(req, res) {
             }
 
             if (caseData.caseType === "常规病例") {
-                if (![null, undefined].includes(document.getElementById("general"))) {
+                if (![null, undefined, ''].includes(document.getElementById("general"))) {
                     document.getElementById("general").innerHTML += caseData.general; // 大体所见
                 }
             } else if (caseData.caseType === "TBS病例") {
-                if (![null, undefined].includes(document.getElementById("sampleQuality"))) {
+                if (![null, undefined, ''].includes(document.getElementById("sampleQuality"))) {
                     document.getElementById("sampleQuality").innerHTML +=
                         `${caseData.isSatisfied};${caseData.unsatisfiedReason}`; // 标本质量
                 }
-                if (![null, undefined].includes(document.getElementById("component"))) {
+                if (![null, undefined, ''].includes(document.getElementById("component"))) {
                     document.getElementById("component").innerHTML += caseData.component; // 细胞成分
                 }
-                if (![null, undefined].includes(document.getElementById("inflammation"))) {
+                if (![null, undefined, ''].includes(document.getElementById("inflammation"))) {
                     document.getElementById("inflammation").innerHTML += caseData.inflammation; // 炎症
                 }
-                if (![null, undefined].includes(document.getElementById("reactChange"))) {
+                if (![null, undefined, ''].includes(document.getElementById("reactChange"))) {
                     document.getElementById("reactChange").innerHTML += caseData.reactChange; // 反应性改变
                 }
-                if (![null, undefined].includes(document.getElementById("pathogen"))) {
+                if (![null, undefined, ''].includes(document.getElementById("pathogen"))) {
                     document.getElementById("pathogen").innerHTML += caseData.pathogen; // 病原体
                 }
-                if (![null, undefined].includes(document.getElementById("squamousCell"))) {
+                if (![null, undefined, ''].includes(document.getElementById("squamousCell"))) {
                     document.getElementById("squamousCell").innerHTML += caseData.squamousCell; // 鳞状上皮细胞分析
                 }
-                if (![null, undefined].includes(document.getElementById("glandularCell"))) {
+                if (![null, undefined, ''].includes(document.getElementById("glandularCell"))) {
                     document.getElementById("glandularCell").innerHTML += caseData.glandularCell; // 腺上皮细胞分析
                 }
-                if (![null, undefined].includes(document.getElementById("otherAnalysis"))) {
+                if (![null, undefined, ''].includes(document.getElementById("otherAnalysis"))) {
                     document.getElementById("otherAnalysis").innerHTML += caseData.otherAnalysis; // 其它分析
                 }
             }
 
-            if (![null, undefined].includes(document.getElementById("note"))) {
+            if (![null, undefined, ''].includes(document.getElementById("note"))) {
                 document.getElementById("note").innerHTML += caseData.note; // 原诊断意见
             }
-            if (![null, undefined].includes(document.getElementById("originDiagnosis"))) {
+            if (![null, undefined, ''].includes(document.getElementById("originDiagnosis"))) {
                 document.getElementById("originDiagnosis").innerHTML += caseData.originDiagnosis; // 原诊断意见
             }
 
             if (annotationUrl.length > 0) {
                 for (let i = 0; i < 3; i++) {
-                    if (![null, undefined].includes(document.getElementById(`annotation${i}`))) {
+                    if (![null, undefined, ''].includes(document.getElementById(`annotation${i}`))) {
                         if (i < annotationUrl.length) { // 上限3个标注图
                             document.getElementById(`annotation${i}`).setAttribute('src', annotationUrl[i].annotationUrl); // 标注图   
                         } else { document.getElementById(`annotation${i}`).setAttribute('style', "display:none;"); } // 标注图 
                     }
                 }
             }
-            if (![null, undefined].includes(document.getElementById("diagnosis"))) {
-                document.getElementById("diagnosis").innerHTML += caseData.diagnosis; // 其它分析
+            if (![null, undefined, ''].includes(document.getElementById("diagnosis"))) {
+                document.getElementById("diagnosis").innerHTML += caseData.diagnosis; // 诊断意见
             }
-            if (![null, undefined].includes(document.getElementById("signImg"))) {
+            if (![null, undefined, ''].includes(document.getElementById("suggestion"))) {
+                document.getElementById("suggestion").innerHTML += caseData.suggestion; // 补充意见
+            }
+            if (![null, undefined, ''].includes(document.getElementById("signImg"))) {
                 document.getElementById("signImg").setAttribute('src',
                     '../../upload' + caseData.signPath + '?' + Math.floor(Math.random() * 100 + 1)); // 电子签名 这里路径是图片相对于模板的路径
             }
-            if (![null, undefined].includes(document.getElementById("diagnoseDate"))) {
+            if (![null, undefined, ''].includes(document.getElementById("diagnoseDate"))) {
                 document.getElementById("diagnoseDate").innerHTML += caseData.diagnoseDate; // 诊断日期
             }
             return error;

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-18 16:15:42
+ * @LastEditTime: 2022-08-23 17:21:30
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -25,6 +25,7 @@
                 <script type="text/html" id="table-toolbar" lay-filter="table-toolbar">
                     <a class="layui-btn layui-btn-xs" lay-event="diagnose" id="diagnose">诊断</a>
                     <!-- <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a> -->
+                    <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
                     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport">查看报告</a>
                 </script>
             </div>
@@ -97,7 +98,7 @@
                     width: 210
                 }, {
                     title: "操作",
-                    width: 180,
+                    width: 240,
                     align: "center",
                     fixed: "right",
                     toolbar: "#table-toolbar"
@@ -154,6 +155,19 @@
                 } else {
                     top.location.href = `./#/case/caseReport/caseID=${data.id}/caseType=${caseTypeDisplay[data.caseType]}`;
                 }
+            } else if (layEvent === 'slideList') { // 查看切片列表
+                admin.popup({
+                    title: '查看切片',
+                    id: 'popup',
+                    area: ['60%', '60%'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                    success: function(layero, index) {
+                        view(this.id).render(
+                            'case/slideTable', {
+                                caseData: data
+                            }).done(function() {})
+                    }
+                })
+                //do something
             } else if (layEvent === 'openReport') { // 查看报告
                 console.log(data)
                 if (![null, '', undefined, 'null'].includes(data.reportPath)) {

@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-19 16:03:34
+ * @LastEditTime 2022-08-23 14:10:07
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -390,7 +390,7 @@ router_user.get('/logout', function(req, res) {
 /*** @note 新增用户 
  * @api {post} /api/user/insert 新增用户
  * @apiName InsertUser
- * @apiGroup 步骤管理
+ * @apiGroup 用户管理
  * @apiParam {Object} data                  数据对象
  * @apiParamExample 
  * {}
@@ -414,15 +414,15 @@ router_user.post('/insert', function(req, res) {
 });
 
 
-/*** @note 新增角色
- * @api {post} /api/user/role/insert 新增角色
- * @apiName InsertRole
- * @apiGroup 步骤管理
- * @apiParam {Object} data                  数据对象
- * @apiParamExample 
- * {}
- * @apiUse CommonResponse
- */
+// /*** @note 新增角色
+//  * @api {post} /api/user/role/insert 新增角色 暂时禁用,使用规定好的角色即可
+//  * @apiName InsertRole
+//  * @apiGroup 用户管理
+//  * @apiParam {Object} data                  数据对象
+//  * @apiParamExample 
+//  * {}
+//  * @apiUse CommonResponse
+//  */
 router_user.post('/role/insert', function(req, res) {
     let data = req.body.data;
     let authorization = {
@@ -451,9 +451,9 @@ router_user.post('/role/insert', function(req, res) {
 });
 
 /*** @note 批量删除用户
- * @api {post} /api/user/delete 删除用户
- * @apiName DeleteStep
- * @apiGroup 步骤管理
+ * @api {post} /api/user/batchDel 批量删除用户
+ * @apiName BatchDeleteUser
+ * @apiGroup 用户管理
  * @apiParam {ObjectArray} data             数据对象
  * @apiParam {String} data.id               唯一标识
  * @apiParam {String} data.experimentID     实验ID
@@ -474,10 +474,13 @@ router_user.post('/batchDel', function(req, res) {
 
 
 /*** @note 删除用户
- * @description: 删除用户
- * @param {*} delete
- * @param {*} res
- * @return {*}
+ * @api {post} /api/user/delete 删除用户
+ * @apiName DeleteUser
+ * @apiGroup 用户管理
+ * @apiParam {Object} data                  数据对象
+ * @apiParam {String} data.id               唯一标识
+ * @apiParam {String} data.experimentID     实验ID
+ * @apiUse CommonResponse
  */
 router_user.get('/delete', function(req, res) {
     let data = req.query;
@@ -489,11 +492,11 @@ router_user.get('/delete', function(req, res) {
     res.send(json);
 });
 
-/*** @note 删除角色
- * @api {post} /api/user/role/delete 删除角色
- * @apiName DeleteStep
- * @apiGroup 步骤管理
- */
+// /*** @note 删除角色
+//  * @api {post} /api/user/role/delete 删除角色
+//  * @apiName DeleteStep
+//  * @apiGroup 用户管理
+//  */
 router_user.post('/role/batchDel', function(req, res) {
     let data = req.body.data;
     for (let i = 0; i < data.length; i++) {
