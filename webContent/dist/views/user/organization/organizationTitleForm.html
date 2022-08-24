@@ -1,0 +1,54 @@
+<!--
+ * @Author: cwx
+ * @Description: 
+ * @Date: 2022-07-18 09:39:29
+ * @LastEditTime: 2022-07-18 09:50:02
+ * @FilePath: \ReportSystem_Demo\webContent\dist\views\user\organization\organizationTitleForm.html
+-->
+<div class="layui-form" style="padding: 20px 0 0 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">病例类型</label>
+        <div class="layui-input-inline">
+            <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
+                <option value="常规病例">常规病例</option>
+                <option value="TBS病例">TBS病例</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">报告标题</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="reportTitle" id="reportTitle" value="{{ d.params.reportTitle || '' }}" lay-verify="title" placeholder="" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">副标题</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="subtitle" id="subtitle" value="{{ d.params.subtitle || '' }}" lay-verify="title" placeholder="" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+            <input type="button" lay-submit lay-filter="reportTitleForm-submit" value="设置标题" class="layui-btn">
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form', 'upload'], function() {
+        var $ = layui.$,
+            form = layui.form,
+            upload = layui.upload;
+
+
+        form.verify({
+            title: [/^[\S]{0,12}$/, "标题字数需小于12，且不能出现空格"],
+        })
+
+    })
+</script>
