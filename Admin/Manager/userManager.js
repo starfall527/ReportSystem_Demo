@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-19 11:20:58
+ * @LastEditTime 2022-08-24 10:17:49
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -12,7 +12,6 @@ const router_user = express.Router();
 const logger = require('log4js').getLogger('user');
 const config = require('../config.js');
 const md5 = require('md5');
-const cv = require('opencv4nodejs');
 
 /*** @note apidoc定义user表数据
  * @apiDefine UserSqlData
@@ -472,46 +471,6 @@ var multiparty = require("multiparty") // 解析form-data上传
 var fs = require('fs')
 var path = require('path')
 
-/*** @note 上传签名
- * @api {post} /api/user/uploadSign 上传签名
- * @apiName uploadSign
- * @apiGroup 用户管理
- * @apiParam {Object} data           数据对象
- * @apiParam {String} data.id        唯一标识
- * @apiParam {String} data.field     更新的键
- * @apiParam {String} data.value     更新的键值
- * @apiUse CommonResponse
- */
-router_user.post('/uploadSign', function(req, res) {
-    let userID = req.headers.userid;
-    let fileName = '';
-    let from_data = new multiparty.Form()
-    from_data.parse(req);
-    from_data.on("part", async part => {
-        if (part.filename) {
-            let uploadDir = 'upload/sign'; // 指定文件存储目录
-            fileName = `${userID}_sign` + part.filename.slice(part.filename.lastIndexOf('.'));
-            let fullPath = path.join(process.cwd(), uploadDir, fileName);
-            sqlMacros.sqlMultiUpdate(['sign'], ['/sign/' + fileName], 'USER', 'id', userID); // * 存在数据库的路径,去掉upload,方便前端加载
-            const writeStream = fs.createWriteStream(fullPath); // 保存文件
-            part.pipe(writeStream);
-            setTimeout(() => {
-                let mat = cv.imread(fullPath);
-                let result = Otsu(mat, fullPath);
-                cv.imwrite(fullPath, result);
-            }, 100);
-        }
-
-        var json = {
-            code: 200,
-            msg: '成功',
-            url: '/sign/' + fileName // * 前端的路径从upload开始算
-        };
-        res.send(json);
-    })
-});
-
-
 /*** @note 更改密码
  * @api {post} /api/user/setPassword 更改密码
  * @apiName UpdateStep
@@ -541,13 +500,6 @@ router_user.post('/setPassword', function(req, res) {
         res.send(json);
     }
 });
-
-function Otsu(img) {
-    let gray = img.cvtColor(cv.COLOR_BGR2GRAY);
-    let thresh_output = gray.threshold(cv.THRESH_OTSU, 255, cv.THRESH_BINARY + cv.THRESH_OTSU);
-    // cv.imshow('thresh_output', thresh_output);
-    return thresh_output;
-}
 
 module.exports = {
     router_user
