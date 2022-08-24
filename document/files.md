@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 关键文档说明
  * @Date: 2021-12-08 10:17:56
- * @LastEditTime: 2022-08-24 14:18:15
+ * @LastEditTime: 2022-08-24 17:42:44
  * @FilePath: \ReportSystem_Demo\document\files.md
 -->
 
@@ -47,6 +47,26 @@
 #### 项目使用
     1.node app.js 启动服务
     2.打开浏览器,输入127.0.0.1:9000进入界面
+
+#### 开发环境配置
+    1.安装nodejs 12.22.9
+    2.npm install -i (opencv4nodejs可能安装失败,见下文注意事项)
+    3.node app.js运行软件
+
+    opencv4nodejs安装注意事项
+    1.本地安装opencv4.1.0 x64 路径与package.json中opencv4nodejs的路径相同
+    2.安装 windows-build-tools
+    
+    npm install --global --production windows-build-tools@4.0.0
+
+    如果这一步出问题请参考
+    https://blog.csdn.net/weixin_48391379/article/details/117187522?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.no_search_link
+
+    3.安装opencv4nodejs
+    npm install --save opencv4nodejs
+    这一步如果出问题请参考 https://blog.csdn.net/Apple_Coco/article/details/109426608
+
+
 
 ##### bat文件设置开机启动
 https://wenku.baidu.com/view/5efd48dacbd376eeaeaad1f34693daef5ef713be.html
