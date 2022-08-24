@@ -1,0 +1,276 @@
+<!--
+ * @Author: cwx
+ * @Description: slideCenter
+ * @Date: 2021-10-21 17:41:07
+ * @LastEditTime: 2022-08-23 17:21:01
+ * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
+-->
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a lay-href="./case/caseUpload"><cite>病例管理</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-card">
+            <div class="layui-card-header">病例列表（上传端）</div>
+            <div class="layui-card-body">
+                <div class="layui-btn-container case-table-btn">
+                    <button class="layui-btn" data-type="newCase">新建病例</button>
+                    <button class="layui-btn" data-type="startConsultation">发起会诊</button>
+                    <button class="layui-btn" data-type="clearFilter">清除筛选条件</button>
+                </div>
+                <table class="layui-show" id="case-table" lay-filter="case-table"></table>
+
+                <script type="text/html" id="table-toolbar" lay-filter="table-toolbar">
+                    <!-- <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="chooseExpert">选择专家</a>
+                    <a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="chooseSlide">选择切片</a> -->
+                <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="openReport">查看报告</a>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="../../../dist/lib/extend/soulTable/soulTable.css" media="all">
+<script>
+    layui.use(['admin', 'form', 'laydate', 'table', 'view', 'soulTable'], function() {
+        var $ = layui.$,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            table = layui.table,
+            view = layui.view,
+            setter = layui.setter,
+            form = layui.form,
+            soulTable = layui.soulTable;
+
+        table.render({
+            elem: '#case-table',
+            url: 'api/case/table', //使用后端数据
+            height: $(document).height() - $('#case-table').offset().top - 30, // 'full-240',
+            response: { statusCode: 200 },
+            where: { userName: layui.data('layuiAdmin').userName, },
+            filter: {
+                items: ['data'],
+                bottom: false
+            },
+            cols: [
+                [{
+                        field: 'checkbox',
+                        type: 'checkbox',
+                        fixed: 'left',
+                    },
+                    {
+                        field: 'pathologyNum',
+                        title: '病理号',
+                        minWidth: 80
+                    }, {
+                        field: 'caseType',
+                        title: '病例类型',
+                        minWidth: 120,
+                        filter: true
+                    }, {
+                        field: 'status',
+                        title: '状态',
+                        minWidth: 120,
+                        filter: true
+                    }, {
+                        field: 'patName',
+                        title: '病人姓名',
+                        minWidth: 120
+                    }, {
+                        field: 'doctor',
+                        title: '医生名',
+                        minWidth: 120
+                    }, {
+                        field: 'hosName',
+                        title: '医院名',
+                        minWidth: 120
+                    }, {
+                        field: 'subspecialty',
+                        title: '亚专科',
+                        minWidth: 120,
+                        filter: true
+                    }, {
+                        field: 'expert',
+                        title: '指派专家',
+                        minWidth: 120,
+                        filter: true
+                    }, {
+                        field: 'date',
+                        title: '上传时间',
+                        minWidth: 120,
+                        width: 240
+                    }, {
+                        title: "操作",
+                        width: 300,
+                        align: "center",
+                        fixed: "right",
+                        toolbar: "#table-toolbar"
+                    }
+                ]
+            ],
+            page: true,
+            limit: 20,
+            done: function(res) {
+                soulTable.render(this);
+                var that = this.elem.next();
+                res.data.forEach(function(item, index) {
+                    var tr = that.find('[data-index="' + index + '"]').children();
+                    tr.each(function() {
+                        var b = $(this).text();
+                        $(this).css('color', '#000000');
+                        if (b === 'Normal') {
+                            $(this).text() = '常规病例'
+                        }
+                        if (b === 'TBS') {
+                            $(this).text() = 'TBS病例'
+                        }
+                        if (b === '等待诊断') {
+                            $(this).css('background-color', '#00CCCC');
+                        }
+                        if (b === '诊断完成') {
+                            $(this).css('background-color', '#00CC66');
+                        }
+                        if (b === '专家重诊') {
+                            $(this).css('background-color', '#00FF99');
+                        }
+                        if (b === '专家退回') {
+                            $(this).css('background-color', '#FF9933');
+                        }
+                    })
+                });
+            }
+        });
+
+        //工具条事件
+        table.on('tool(case-table)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if (layEvent === '') { //查看
+            } else if (layEvent === 'del') { //删除
+                if (data.doctor == layui.data('layuiAdmin').userName) {
+                    layer.confirm('将删除病例,确定？', function(index) {
+                        obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
+                        admin.req({
+                            url: 'api/case/delete',
+                            type: 'get',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: data,
+                            success: function(res) {
+                                layer.msg('删除成功')
+                            },
+                            done: function(res) {}
+                        });
+                        layer.close(index);
+                        //向服务端发送删除指令
+                    });
+                } else { layer.msg('不能删除属于其它医生的病例') }
+
+            } else if (layEvent === 'edit') { // 编辑
+                if (['等待诊断', '待发起会诊'].includes(data.status)) {
+                    if (data.doctor == layui.data('layuiAdmin').userName) {
+                        top.location.href = `./#/case/caseForm/caseID=${data.id}`;
+                    } else { layer.msg('不能编辑属于其它医生的病例') }
+                } else {
+                    layer.msg('该病例已诊断，不可编辑')
+                }
+            } else if (layEvent === 'slideList') { // 查看切片列表
+                admin.popup({
+                    title: '查看切片',
+                    id: 'popup',
+                    area: ['60%', '60%'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                    success: function(layero, index) {
+                        view(this.id).render(
+                            'case/slideTable', {
+                                caseData: data
+                            }).done(function() {})
+                    }
+                })
+                //do something
+            } else if (layEvent === 'openReport') { // 查看报告
+                if (![null, '', undefined, 'null'].includes(data.reportPath)) {
+                    admin.popup({
+                        title: '查看报告',
+                        area: ['100%', '100%'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                        id: 'popup',
+                        success: function(layero, index) {
+                            view(this.id).render(
+                                'case/report', {
+                                    reportPath: data.reportPath
+                                }).done(function() {})
+                        }
+                    })
+                } else { layer.msg('暂无报告') }
+            }
+        });
+
+        // 按钮监听
+        $('.case-table-btn .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        var active = {
+            newCase: function() {
+                admin.req({
+                    url: 'api/case/insert',
+                    type: 'POST',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({
+                        data: {
+                            expert: "未指定",
+                            hosName: layui.data('layuiAdmin').organization,
+                            doctor: layui.data('layuiAdmin').userName,
+                        }
+                    }),
+                    success: function(res) {
+                        setTimeout(() => {
+                            top.location.href = `./#/case/caseForm/caseID=${res.caseID}`;
+                        }, 100);
+                    },
+                    done: function(res) {}
+                })
+            },
+            startConsultation: function() {
+                var checkStatus = table.checkStatus('case-table'),
+                    checkData = checkStatus.data;
+                if (checkData === undefined) {
+                    return layer.msg('请选择病例');
+                } else {
+                    for (var i = checkData.length - 1; i >= 0; i--) {
+                        if (checkData[i].status !== '待发起会诊') {
+                            checkData.splice(i, 1);
+                        }
+                    }
+                    admin.req({
+                        url: 'api/case/startConsultation',
+                        type: 'POST',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: JSON.stringify({
+                            data: checkData
+                        }),
+                        success: function(res) {
+                            if (res.code == 200) {
+                                layer.msg('已发起会诊');
+                            }
+                            layui.table.reload('case-table');
+                        },
+                        done: function(res) {}
+                    })
+                }
+            },
+            clearFilter: function() {
+                soulTable.clearFilter('case-table');
+            }
+        }
+    });
+</script>

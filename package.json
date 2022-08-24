@@ -88,5 +88,5 @@
         "description": "接口文档",
         "title": "接口文档"
     },
-    "chromePath":"./chrome-win/chrome"
+    "chromePath": "./chrome-win/chrome"
 }

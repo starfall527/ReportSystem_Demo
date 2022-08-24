@@ -1,0 +1,202 @@
+<title>用户管理</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>用户</cite></a>
+        <a><cite>用户管理</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">ID</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="id" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <!-- <div class="layui-inline">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="email" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div> -->
+                <!-- <div class="layui-inline">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <select name="sex">
+                            <option value="0">不限</option>
+                            <option value="1">男</option>
+                            <option value="2">女</option>
+                        </select>
+                    </div>
+                </div> -->
+                <div class="layui-inline">
+                    <button class="layui-btn layuiadmin-btn-useradmin" lay-submit lay-filter="LAY-user-front-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-useradmin" data-type="batchdel">删除</button>
+                <button class="layui-btn layuiadmin-btn-useradmin" data-type="add">添加</button>
+            </div>
+
+            <table id="LAY-user-manage" lay-filter="LAY-user-manage"></table>
+            <script type="text/html" id="imgTpl">
+                <img style="display: inline-block; width: 50%; height: 100%;text-align: center" src={{ d.avatar }}>
+            </script>
+            <script type="text/html" id="signTpl">
+                <img style="display:inline-block; width:150px; height:60px;" src={{ d.sign }}>
+            </script>
+            <script type="text/html" id="table-userList">
+                <a class="layui-btn layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="uploadSign">上传签名</a>
+            </script>
+            <button type="button" class="layui-btn layui-btn-sm" id="uploadSignBtn" value="上传签名" style="display: none"></button>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .laytable-cell-checkbox {
+        height: auto;
+    }
+
+    .layui-table-cell {
+        text-align: center;
+        height: auto;
+        white-space: normal;
+    }
+
+    .layui-table img {
+        max-width: 200px
+    }
+</style>
+
+<script>
+    layui.use('useradmin', layui.factory('useradmin')).use(['admin', 'useradmin', 'table', 'upload'], function() {
+        var $ = layui.$,
+            setter = layui.setter,
+            admin = layui.admin,
+            view = layui.view,
+            table = layui.table,
+            form = layui.form,
+            upload = layui.upload;
+
+        //监听搜索
+        form.on('submit(LAY-user-front-search)', function(data) {
+            var field = data.field;
+
+            //执行重载
+            table.reload('LAY-user-manage', {
+                where: field
+            });
+        });
+
+        //事件
+        var active = {
+            batchdel: function() {
+                var checkStatus = table.checkStatus('LAY-user-manage'),
+                    checkData = checkStatus.data; //得到选中的数据
+                if (checkData.length === 0) {
+                    return layer.msg('请选择数据');
+                }
+                layer.confirm('确定删除吗？', function(index) {
+                    admin.req({ // 批量删除用户
+                        url: 'api/user/batchDel',
+                        type: 'POST',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: JSON.stringify({
+                            data: checkData
+                        }),
+                        success: function(res) {
+                            form.render();
+                            table.reload('LAY-user-manage');
+                            layer.msg('已删除');
+                        }
+                    })
+                });
+            },
+            add: function() {
+                admin.popup({
+                    title: '添加用户',
+                    area: ['450px', '500px'],
+                    id: 'LAY-popup-user-add',
+                    success: function(layero, index) {
+                        view(this.id).render('user/user/userForm').done(function() {
+                            form.render(null, 'layuiadmin-form-useradmin');
+                            admin.req({ // 查询角色下拉框
+                                url: 'api/user/roleTable',
+                                type: 'GET',
+                                contentType: 'application/json;charset=UTF-8',
+                                success: function(res) {
+                                    var role = res.data;
+                                    role.forEach(element => {
+                                        $('#role-select').append(new Option(element.role, element.role));
+                                    })
+                                    form.render();
+                                }
+                            });
+                            admin.req({ // 查询角色下拉框
+                                url: 'api/organization/table',
+                                type: 'GET',
+                                contentType: 'application/json;charset=UTF-8',
+                                success: function(res) {
+                                    var organization = res.data;
+                                    organization.forEach(element => {
+                                        $('#organization-select').append(new Option(element.name, element.name));
+                                    })
+                                    form.render();
+                                }
+                            });
+
+                            //监听提交
+                            form.on('submit(LAY-user-front-submit)', function(
+                                data) {
+                                var field = data.field; //获取提交的字段
+                                admin.req({
+                                    url: 'api/user/insert',
+                                    type: 'POST',
+                                    contentType: 'application/json;charset=UTF-8',
+                                    data: JSON.stringify({
+                                        data: field
+                                    }),
+                                    success: function(res) {
+                                        layer.msg('新增成功');
+                                    },
+                                    done: function(res) {
+                                        layui.table.reload(
+                                            'LAY-user-manage'
+                                        ); //重载表格
+                                        layer.close(index);
+                                    }
+                                })
+                                layui.table.reload(
+                                    'LAY-user-manage'); //重载表格
+                                layer.close(index); //执行关闭 
+                            });
+                        });
+                    }
+                });
+            }
+        };
+
+        $('.layui-btn.layuiadmin-btn-useradmin').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>

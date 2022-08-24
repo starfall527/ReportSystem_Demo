@@ -1,0 +1,79 @@
+<!--
+ * @Author: cwx
+ * @Description: slideCenter
+ * @Date: 2021-10-21 17:41:07
+ * @LastEditTime: 2022-08-09 18:28:28
+ * @FilePath: \ReportSystem_Demo\webContent\dist\views\slideCenter\slideCenter.html
+-->
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;" id="title">
+    <legend>切片管理</legend>
+</fieldset>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md3">
+            <div class="layui-card" style="margin-bottom: 50px;">
+                <div class="layui-card-header">存储目录</div>
+                <div class="layui-card-body">
+                    <div id="tree"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md9">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <div class="layui-col-md7">
+                        切片列表</div>
+                    <div class="layui-col-md5">
+                        <div class="layui-input-inline">
+                            <input type="text" name="name" placeholder="请输入切片名称" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="search">搜索</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-card-body">
+                    <div class="layui-btn-container slide-table-list-btn">
+                        <button class="layui-btn layui-btn-sm" data-type="openSlide" id="openSlide">打开选中切片</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getUrlQrcode" id="getUrlQrcode">生成二维码</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getUrl" id="getUrl">查询切片url</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getAnnotationImgs" id="getAnnotationImgs">查询切片标注</button>
+                    </div>
+                </div>
+                <table class="layui-show" id="slide-table-list" lay-filter="slide-table-list"></table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/html" id="thumbnailTpl">
+    <img style="display:inline-block; width:80px; height:80px;" src={{ d.thumbnailUrl }}>
+</script>
+<script type="text/html" id="labelTpl">
+    <img style="display:inline-block; width:80px; height:80px;" src={{ d.labelUrl }}>
+</script>
+
+<meta name="referrer" content="no-referrer">
+<style type="text/css">
+    .laytable-cell-checkbox {
+        height: auto;
+    }
+
+    .layui-table-cell {
+        text-align: center;
+        height: auto;
+        white-space: normal;
+    }
+
+    .layui-table img {
+        max-width: 200px
+    }
+</style>
+<script>
+    layui.use('slideCenter', layui.factory('slideCenter'));
+</script>

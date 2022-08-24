@@ -2,5 +2,10 @@ node_modules/
 upload/figure
 upload/report
 upload/sign
-dist/
+
+dist/upload/figure
+dist/upload/report
+dist/upload/sign
+
+dist/node.exe
 chrome-win/

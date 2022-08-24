@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-23 14:10:07
+ * @LastEditTime 2022-08-24 16:01:30
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -303,7 +303,8 @@ router_user.get('/login', function(req, res) {
                         userName: user[0].userName,
                         access_token: md5(`${user[0].id}${user[0].userName}${Date.now()}`),
                         role: user[0].role,
-                        organization: user[0].organization
+                        organization: user[0].organization,
+                        NATtraverse: user[0].NATtraverse
                     }
                 };
                 global.session.push(json.data); // * 暂存在全局变量 待优化

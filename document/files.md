@@ -1,19 +1,36 @@
 <!--
  * @Author: cwx
- * @Description: 
- * @Date: 2022-08-10 11:06:22
- * @LastEditTime: 2022-08-11 10:38:52
- * @FilePath: \ReportSystem_Demo\document\files.md
--->
-<!--
- * @Author: cwx
  * @Description: 关键文档说明
  * @Date: 2021-12-08 10:17:56
- * @LastEditTime: 2022-08-10 11:25:23
+ * @LastEditTime: 2022-08-24 14:18:15
  * @FilePath: \ReportSystem_Demo\document\files.md
 -->
 
 # 目录结构
+
+ | 路径                                         | 用途                     |
+ | -------------------------------------------- | ------------------------ |
+ | .\webContent\dist\controller                 | 前端脚本                 |
+ | .\webContent\dist\views                      | html文件                 |
+ | .\webContent\dist\views\case\caseUpload.html | 病例管理 上传端          |
+ | .\webContent\dist\views\case\caseExpert.html | 病例管理 专家端          |
+ | .\webContent\dist\views\case\caseForm.html   | 病例管理 新建病例        |
+ | .\webContent\dist\views\case\caseReport.html | 病例管理 诊断病例        |
+ | .\webContent\dist\views\case\slideTable.html | 病例管理 查看切片        |
+ | .\webContent\dist\views\user\user\list.html  | 用户管理 用户列表        |
+ | .\webContent\json\menu.json                  | 菜单栏编辑               |
+ | .\Admin\Manager                              | 业务代码                 |
+ | .\Admin\Manager\caseManager.js               | 病例管理后端             |
+ | .\Admin\Manager\userManager.js               | 用户管理后端             |
+ | .\Admin\Manager\organization.js              | 组织管理后端             |
+ | .\Admin\slideCenter\slideCenter.js           | slideCenter离线版后端    |
+ | .\Admin\database                             | better-sqlite3数据库相关 |
+ | .\Admin\serial                               | 串口通信相关             |
+ | .\Admin\setting.js                           | 系统设置                 |
+ | .\app.js                                     | 应用启动文件             |
+ | .\chrome-win                                 | chrome依赖               |
+ | .\chrome-win                                 | chrome依赖               |
+ 
 .\webContent\dist\controller    前端脚本
 .\webContent\dist\views         html文件
 .\webContent\json\menu.json     菜单栏编辑
@@ -26,6 +43,10 @@
 .\document\接口文档\index.html  apidoc接口文档
 .\upload                        上传相关的文件夹,包括电子签名\报告模板\报告附图\报告文件
 .\protect_process.bat           守护进程,部署的时候可以设置开机启动
+
+#### 项目使用
+    1.node app.js 启动服务
+    2.打开浏览器,输入127.0.0.1:9000进入界面
 
 ##### bat文件设置开机启动
 https://wenku.baidu.com/view/5efd48dacbd376eeaeaad1f34693daef5ef713be.html

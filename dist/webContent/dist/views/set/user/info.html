@@ -1,0 +1,308 @@
+<!--
+ * @Author: cwx
+ * @Description: 修改当前用户信息
+ * @Date: 2022-03-23 09:50:21
+ * @LastEditTime: 2022-08-19 16:01:31
+ * @FilePath: \ReportSystem_Demo\webContent\dist\views\set\user\info.html
+-->
+
+<title>设置我的资料</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>设置</cite></a>
+        <a><cite>我的资料</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8" id="info-column">
+            <div class="layui-card">
+                <div class="layui-card-header">设置我的资料</div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form" lay-filter="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户名</label>
+                            <div class="layui-input-inline" style="width:240px">
+                                <input type="text" name="userName" id="userName" value="" class="layui-input" disabled>
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">用户名不可修改</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">签名图</label>
+                            <div class="layui-input-inline">
+                                <input name="sign" lay-verify="" id="LAY_signSrc" placeholder="图片地址" value="" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline layui-btn-container" style="width: auto;">
+                                <button type="button" class="layui-btn layui-btn-primary" id="LAY_signUpload">
+                                    <i class="layui-icon">&#xe67c;</i>上传图片
+                                </button>
+                                <button class="layui-btn layui-btn-primary" layadmin-event="preview" id="preview">查看图片</button>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机</label>
+                            <div class="layui-input-inline" style="width:240px">
+                                <input type="text" name="phone" id="phone" value="" lay-verify="phone" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">内网穿透</label>
+                            <div class="layui-input-inline" style="width:240px">
+                                <input type="text" name="NATtraverse" id="NATtraverse" value="" lay-verify="" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">请填写slideCenter服务器的内网穿透地址,如不需要内网穿透,则无需填写</div>
+                        </div>
+                        <!-- <div class="layui-form-item">
+                            <label class="layui-form-label">报告标题</label>
+                            <button class="layui-btn layui-btn-primary" layadmin-event="setReportTitle" id="setReportTitle">设置报告标题</button>
+                        </div> -->
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">擅长亚专科</label>
+                            <div class="layui-input-inline">
+                                <div id="subspecialty-select" name="subspecialty" class="xm-select-demo" style="width: 350px;"></div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">简介</label>
+                            <div class="layui-input-block">
+                                <textarea name="info" id="info" placeholder="" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="setInfo">确认修改</button>
+                                <button type="reset" class="layui-btn layui-btn-primary" id="reset">重新填写</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="layui-col-md4" id="reportTitle-column">
+            <div class="layui-card">
+                <div class="layui-card-header">设置报告标题</div>
+                <div class="layui-card-body" pad15>
+                    <div class="layui-form" style="padding: 20px 0 0 0;">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">病例类型</label>
+                            <div class="layui-input-inline">
+                                <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
+                                    <option value="常规病例">常规病例</option>
+                                    <option value="TBS病例">TBS病例</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">报告标题</label>
+                            <div class="layui-input-inline">
+                                <script type="text/html" template>
+                                    <input type="text" name="reportTitle" id="reportTitle" value="{{ d.params.reportTitle || '' }}" lay-verify="title" placeholder="" autocomplete="off" class="layui-input">
+                                </script>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">副标题</label>
+                            <div class="layui-input-inline">
+                                <script type="text/html" template>
+                                    <input type="text" name="subtitle" id="subtitle" value="{{ d.params.subtitle || '' }}" lay-verify="title" placeholder="" autocomplete="off" class="layui-input">
+                                </script>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"></label>
+                            <div class="layui-input-inline">
+                                <input type="button" lay-submit lay-filter="reportTitleForm-submit" value="设置标题" class="layui-btn">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.define(['admin', 'form', 'laydate', 'table', 'laytpl', 'xmSelect'], function() {
+        var $ = layui.$,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer,
+            table = layui.table,
+            form = layui.form,
+            setter = layui.setter,
+            view = layui.view,
+            xmSelect = layui.xmSelect;
+
+        var reportTitleObj = { '常规病例': '', 'TBS病例': '' };
+        document.getElementById("LAY_signSrc").setAttribute('style', "display: none");
+        if (layui.data('layuiAdmin').role == '上传端') {
+            document.getElementById("info-column").setAttribute('class', 'layui-col-md12');
+            document.getElementById("reportTitle-column").setAttribute('style', "display: none");
+        }
+
+        var userData;
+        admin.req({
+            url: 'api/user/query',
+            type: 'POST',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                page: 1,
+                limit: 1,
+                id: layui.data('layuiAdmin').userID
+            }),
+            success: function(res) {
+                if (res.data.length > 0) {
+                    userData = res.data[0];
+                    let randomUrl = userData.sign += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                    document.getElementById("preview").setAttribute('value', randomUrl);
+                    $('#userName').val(layui.data('layuiAdmin').userName);
+                    $('#NATtraverse').val(userData.NATtraverse);
+                    $('#phone').val(userData.phone);
+                    $('#info').val(userData.info);
+                    if (![null, 'null', '', 'undefined', {}].includes(userData.reportTitle)) {
+                        console.log(userData.reportTitle)
+                        reportTitleObj = JSON.parse(userData.reportTitle);
+                        $('#reportTitle').val(reportTitleObj['常规病例'].reportTitle);
+                        $('#subtitle').val(reportTitleObj['常规病例'].subtitle);
+                    }
+                    let xmSelectData = [];
+                    if (![null, 'null', undefined].includes(userData.subspecialty)) {
+                        userData.subspecialty.split(',').forEach(element => {
+                            xmSelectData.push({
+                                name: element,
+                                value: element
+                            });
+                        });
+                    }
+                    subspecialtySelect.setValue(xmSelectData);
+
+                    // @note 表格提交
+                    form.on('submit(setInfo)', function(data) {
+                        delete data.field.select;
+                        delete data.field.sign;
+                        delete data.field.file;
+                        delete data.field.select;
+                        data.field.id = layui.data('layuiAdmin').userID;
+                        data.field.subspecialty = subspecialtySelect.getValue('valueStr');
+                        // data.field.diagnoseDate = new Date().Format("yyyy-MM-dd hh:mm:ss"); // 编辑时间
+                        admin.req({
+                            url: 'api/user/update',
+                            type: 'POST',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: JSON.stringify({
+                                data: data.field
+                            }),
+                            success: function(res) {
+                                layer.msg('修改成功')
+                            },
+                        })
+                    });
+                } else {
+                    layer.alert('查询不到用户数据!', {
+                        icon: 5,
+                        title: '警告'
+                    });
+                }
+            },
+        });
+
+        $('#setReportTitle').click(function() {
+            admin.popup({
+                title: '设置报告标题',
+                // area: ['800px', '600px'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                id: 'popup-setReportTitle',
+                success: function(layero, index) {
+                    view(this.id).render('set/user/reportTitleForm', {}).done(function() {
+                        $('#caseType').click(function() {
+                            // $('#reportTitle').val();
+                            // $('#reportTitle').val('');
+                            // $('#subtitle').val('');
+                            // todo caseType 改变时 读取原设置
+                        })
+                        //监听提交
+                        form.on('submit(reportTitleForm-submit)', function(data) {
+                            var field = data.field; //获取提交的字段    
+                            reportTitle[`${data.field.caseType}`] = {
+                                reportTitle: data.field.reportTitle,
+                                subtitle: data.field.subtitle
+                            };
+                            layer.close(index); //执行关闭 
+                        });
+                    })
+                }
+            })
+        })
+
+        var subspecialtySelect = xmSelect.render({ // 细胞成分
+            el: '#subspecialty-select',
+            data: [
+                { name: '神经病理', value: '神经病理' },
+                { name: '淋巴病理', value: '淋巴病理' },
+                { name: '妇科病理', value: '妇科病理' },
+                { name: '消化病理', value: '消化病理' },
+                { name: '软组织病理', value: '软组织病理' },
+                { name: '分子病理', value: '分子病理' },
+                { name: '乳腺病理', value: '乳腺病理' },
+                { name: '内分泌病理', value: '内分泌病理' },
+                { name: '皮肤病理', value: '皮肤病理' },
+                { name: '细胞病理', value: '细胞病理' },
+                { name: '泌尿生殖病理', value: '泌尿生殖病理' },
+                { name: '头颈部病理', value: '头颈部病理' },
+                { name: '肺与纵隔病理', value: '肺与纵隔病理' },
+                { name: '骨与关节病理', value: '骨与关节病理' },
+                { name: '肾病病理', value: '肾病病理' },
+                { name: '骨髓病理', value: '骨髓病理' },
+                { name: '其它', value: '其它' },
+            ]
+        });
+
+        $('#reset').click(function() { // 重新填写
+            subspecialtySelect.setValue([]);
+            $('#phone').val('');
+            $('#NATtraverse').val('');
+            $('#info').val('');
+            form.render();
+        })
+
+        // @note 设置报告标题
+        form.on('submit(reportTitleForm-submit)', function(data) {
+            reportTitleObj[`${data.field.caseType}`] = {
+                reportTitle: data.field.reportTitle,
+                subtitle: data.field.subtitle
+            };
+            delete data.field.caseType;
+            delete data.field.reportTitle;
+            delete data.field.subtitle;
+            data.field.reportTitle = JSON.stringify(reportTitleObj);
+            data.field.id = layui.data('layuiAdmin').userID;
+            admin.req({
+                url: 'api/user/update',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
+                    data: data.field
+                }),
+                success: function(res) {
+                    layer.msg('修改成功')
+                },
+            })
+        });
+
+        form.on('select(caseType)', function(data) {
+            if (data.value == '常规病例') {
+                $('#reportTitle').val(reportTitleObj['常规病例'].reportTitle);
+                $('#subtitle').val(reportTitleObj['常规病例'].subtitle);
+            } else if (data.value == 'TBS病例') {
+                $('#reportTitle').val(reportTitleObj['TBS病例'].reportTitle);
+                $('#subtitle').val(reportTitleObj['TBS病例'].subtitle);
+            }
+            form.render();
+        })
+    });
+    layui.use('set', layui.factory('set'));
+</script>

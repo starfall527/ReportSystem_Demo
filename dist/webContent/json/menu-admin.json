@@ -1,0 +1,85 @@
+{
+	"code": 200,
+	"msg": "",
+	"data": [
+		{
+			"name": "kingMed",
+			"title": "金域切片管理",
+			"icon": "layui-icon-auz",
+			"jump": "kingMed/kingMed"
+		},
+		{
+			"name": "slideCenter",
+			"title": "切片管理",
+			"icon": "layui-icon-auz",
+			"jump": "slideCenter/slideCenter"
+		},
+		{
+			"name": "caseManage",
+			"title": "病例管理",
+			"icon": "layui-icon-auz",
+			"jump": "case/caseUpload",
+			"list": [
+				{
+					"name": "caseForm",
+					"title": "病例列表（上传端）",
+					"jump": "case/caseUpload"
+				},
+				{
+					"name": "caseForm",
+					"title": "病例列表（专家端）",
+					"jump": "case/caseExpert"
+				},
+				{
+					"name": "caseForm",
+					"title": "病例表单",
+					"jump": "case/caseForm"
+				},
+				{
+					"name": "caseReport",
+					"title": "病例报告",
+					"jump": "case/caseReport"
+				}
+			]
+		},
+		{
+			"name": "user",
+			"title": "用户",
+			"icon": "layui-icon-user",
+			"list": [
+				{
+					"name": "user",
+					"title": "用户列表",
+					"jump": "user/user/list"
+				},
+				{
+					"name": "administrators-rule",
+					"title": "角色管理",
+					"jump": "user/administrators/role"
+				},
+				{
+					"name": "organization",
+					"title": "组织管理",
+					"jump": "user/organization/organization"
+				}
+			]
+		},
+        {
+            "name": "set",
+            "title": "设置",
+            "icon": "layui-icon-set",
+            "list": [{
+                "name": "user",
+                "title": "我的设置",
+                "spread": true,
+                "list": [{
+                    "name": "info",
+                    "title": "基本资料"
+                }, {
+                    "name": "password",
+                    "title": "修改密码"
+                }]
+            }]
+        }
+	]
+}

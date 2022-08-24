@@ -1,0 +1,411 @@
+<!--
+ * @Author: cwx
+ * @Description: slideCenter
+ * @Date: 2021-10-21 17:41:07
+ * @LastEditTime: 2022-08-23 18:02:00
+ * @FilePath: \ReportSystem_Demo\webContent\dist\views\kingMed\kingMed.html
+-->
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;" id="title">
+    <legend>切片管理</legend>
+</fieldset>
+
+<head>
+    <script>
+        layui.define(['tree', 'util', 'table', 'laytpl'], function() {
+            var tree = layui.tree,
+                layer = layui.layer,
+                setter = layui.setter;
+
+            let requestImage = function(url, element) {
+                let request = new XMLHttpRequest();
+                request.responseType = 'blob';
+                request.open('get', url, true);
+                request.setRequestHeader('Authorization', layui.data('layuiAdmin').cloudToken);
+                request.onreadystatechange = e => {
+                    if (request.readyState == XMLHttpRequest.DONE && request.status == 200) {
+                        element.src = URL.createObjectURL(request.response);
+                        element.onload = () => {
+                            URL.revokeObjectURL(element.src);
+                        }
+                    }
+                };
+                request.send(null);
+            }
+            class AuthImg extends HTMLImageElement {
+                constructor() {
+                    super();
+                    this._lastUrl = '';
+                }
+
+                static get observedAttributes() {
+                    return ['authSrc'];
+                }
+
+                connectedCallback() {
+                    let url = this.getAttribute('authSrc');
+                    if (url !== this._lastUrl) {
+                        this._lastUrl = url;
+                        requestImage(url, this);
+                    }
+                    // console.log('connectedCallback() is called.');
+                }
+            }
+            if (window.customElements.get('auth-img') === undefined) {
+                window.customElements.define('auth-img', AuthImg, { extends: 'img' });
+            }
+        })
+    </script>
+</head>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md3">
+            <div class="layui-card" style="margin-bottom: 50px;">
+                <div class="layui-card-header">存储目录</div>
+                <div class="layui-card-body">
+                    <div id="tree"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md9">
+            <div class="layui-card">
+                <div class="layui-card-header">切片列表</div>
+                <div class="layui-card-body">
+                    <!-- <div class="layui-btn-container slide-table-list-btn">
+                        <button class="layui-btn layui-btn-sm" data-type="openSlide" id="openSlide">打开选中切片</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getUrlQrcode" id="getUrlQrcode">生成二维码</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getUrl" id="getUrl">查询切片url</button>
+                        <button class="layui-btn layui-btn-sm" data-type="getAnnotationImgs" id="getAnnotationImgs">查询切片标注</button>
+                    </div> -->
+                </div>
+                <table class="layui-show" id="slide-table-list" lay-filter="slide-table-list"></table>
+                <script type="text/html" id="slide-table-toolbar" lay-filter="table-toolbar">
+                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openSlide">查看切片</a>
+                    <a class="layui-btn layui-btn-xs" lay-event="uploadSlide">上传切片</a>
+                </script>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/html" id="thumbnailTpl">
+    <!-- <img style="display:inline-block; width:80px; height:80px;" src={{ d.thumbnailUrl }}> -->
+<img style="display:inline-block; width:80px; height:80px;" is="auth-img" authSrc={{ d.thumbnailUrl }}>
+</script>
+<script type="text/html" id="labelTpl">
+    <!-- <img style="display:inline-block; width:80px; height:80px;" src={{ d.labelUrl }}> -->
+<img style="display:inline-block; width:80px; height:80px;" is="auth-img" authSrc={{ d.labelUrl }}>
+</script>
+
+<meta name="referrer" content="no-referrer">
+<style type="text/css">
+    .laytable-cell-checkbox {
+        height: auto;
+    }
+
+    .layui-table-cell {
+        text-align: center;
+        height: auto;
+        white-space: normal;
+    }
+
+    .layui-table img {
+        max-width: 200px
+    }
+</style>
+
+
+
+<script>
+    layui.define(['tree', 'util', 'table', 'laytpl'], function() {
+        var tree = layui.tree,
+            layer = layui.layer,
+            setter = layui.setter,
+            util = layui.util,
+            $ = layui.$,
+            admin = layui.admin,
+            view = layui.view,
+            table = layui.table;
+
+        var path = '';
+        var caseID = '';
+
+        // https://auth.sc.trial.omnipath.cc/connect/token
+
+        table.render({
+            elem: '#slide-table-list',
+            url: 'api/slideCenterCloud/table', //使用后端数据
+            height: 600,
+            response: {
+                statusCode: 200
+            },
+            where: {
+                path: path,
+                userName: layui.data('layuiAdmin').userName
+            },
+            cols: [
+                [{
+                        field: 'checkbox',
+                        type: 'checkbox',
+                        fixed: 'left'
+                    },
+                    {
+                        field: 'fileName',
+                        title: '切片名',
+                        minWidth: 80
+                    },
+                    {
+                        field: 'barcode',
+                        title: '条码',
+                        minWidth: 80,
+                        edit: true
+                    },
+                    {
+                        field: 'labelUrl',
+                        title: '标签图',
+                        templet: "#labelTpl",
+                        minWidth: 120
+                    },
+                    {
+                        field: 'thumbnailUrl',
+                        title: '缩略图',
+                        templet: "#thumbnailTpl",
+                        minWidth: 120
+                    },
+                    {
+                        title: "操作",
+                        width: 180,
+                        align: "center",
+                        fixed: "right",
+                        toolbar: "#slide-table-toolbar"
+                    }
+                ]
+            ],
+            page: true,
+            limit: 20,
+            done: function(params) {
+                $(".layui-table-main tr").each(function(index, val) {
+                    $(".layui-table-fixed").each(function() {
+                        $($(this).find(".layui-table-body tbody tr")[index]).height($(val).height())
+                    })
+                });
+                $(".layui-table-header tr").each(function(index, val) {
+                    $(".layui-table-fixed").each(function() {
+                        $($(this).find(".layui-table-header thead tr")[index]).height($(val).height())
+                    })
+                });
+                // 解决checkBox和行高度不一致的问题
+            }
+        })
+        //工具条事件
+        table.on('tool(slide-table-list)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if (layEvent === 'openSlide') { //查看切片
+                data.userName = layui.data('layuiAdmin').userName; //传输用户名,用于查询内网穿透设置
+                admin.req({
+                    url: 'api/slideCenterCloud/openSlide',
+                    type: 'get',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: data,
+                    success: function(res) {
+                        layer.open({
+                            type: 2,
+                            title: res.data.fileName,
+                            shade: false,
+                            maxmin: true,
+                            area: ['100%', '100%'],
+                            content: res.data.slideUrl
+                        }); // iframe弹窗
+                    },
+                    done: function(res) {}
+                })
+            } else if (layEvent === 'uploadSlide') { //上传切片
+                if (![null, undefined, '', 'null'].includes(data.barcode)) {
+                    console.log(data)
+                    data.userName = layui.data('layuiAdmin').userName; //传输用户名,用于查询内网穿透设置
+                    admin.req({
+                        url: 'api/slideCenterCloud/uploadSlide',
+                        type: 'get',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: data,
+                        success: function(res) {
+                           layer.msg(res.msg)
+                        },
+                        done: function(res) {}
+                    })
+                } else {
+                    layer.msg('请填写条码信息');
+                }
+            }
+        });
+
+        function getData(path, title) {
+            var data = [];
+            $.ajax({
+                url: "api/slideCenterCloud/getFolders", //后台数据请求地址
+                type: "get",
+                data: { path: path, title: title },
+                async: false,
+                success: function(result) {
+                    data = result.data;
+                }
+            });
+            return data;
+        }
+
+        //基本演示
+        tree.render({
+            elem: '#tree',
+            data: getData('/', '/'),
+            showCheckbox: false, //是否显示复选框
+
+            id: 'tree',
+            isJump: false, //是否允许点击节点时弹出新窗口跳转
+
+            click: function(obj) {
+                var data = obj.data; //获取当前点击的节点数据
+                // layer.msg('状态：' + obj.state + `obj.field:${obj.data.field}`);
+                layui.table.reload('slide-table-list', {
+                    where: {
+                        path: obj.data.field
+                    },
+                });
+                tree.reload('tree', {
+                    data: getData(obj.data.field, obj.data.title),
+                })
+            }
+        });
+
+        $('.slide-table-list-btn .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        var active = {
+            openSlide: function() { // * 打开选中切片
+                var checkStatus = table.checkStatus('slide-table-list'),
+                    checkData = checkStatus.data[0];
+                if (checkData === undefined) {
+                    return layer.msg('请选择数据');
+                } else {
+                    layer.confirm('将打开选中切片，确定？', {
+                        btn: ['确定', '取消']
+                    }, function(index) {
+                        admin.req({
+                            url: 'api/slideCenter/openSlide',
+                            type: 'get',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: checkData,
+                            success: function(res) {
+                                layer.open({
+                                    type: 2,
+                                    title: res.fileName,
+                                    shade: false,
+                                    maxmin: true,
+                                    area: ['90%', '90%'],
+                                    content: res.data
+                                }); // iframe弹窗
+                            },
+                            done: function(res) {}
+                        })
+                        layer.close(index);
+                    });
+                }
+            },
+            getUrlQrcode: function() { // * 获取二维码
+                var checkStatus = table.checkStatus('slide-table-list'),
+                    checkData = checkStatus.data[0];
+                if (checkData === undefined) {
+                    return layer.msg('请选择数据');
+                } else {
+                    admin.req({
+                        url: 'api/slideCenter/openSlide',
+                        type: 'get',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: checkData,
+                        success: function(res) {
+                            layer.photos({
+                                photos: {
+                                    "title": "", //相册标题
+                                    "id": 123, //相册id
+                                    "start": 0, //初始显示的图片序号，默认0
+                                    "data": [ //相册包含的图片，数组格式
+                                        {
+                                            "alt": "图片名",
+                                            "pid": 666, //图片id
+                                            "src": res.qrcodeName, //* 二维码文件名 固定放在upload文件夹就行 
+                                            "thumb": "" //缩略图地址
+                                        }
+                                    ]
+                                } //json格式
+                            });
+                        },
+                        done: function(res) {}
+                    })
+                }
+            },
+            getUrl: function() { // * 复制url
+                var checkStatus = table.checkStatus('slide-table-list'),
+                    checkData = checkStatus.data[0];
+                if (checkData === undefined) {
+                    return layer.msg('请选择数据');
+                } else {
+                    admin.req({
+                        url: 'api/slideCenter/openSlide',
+                        type: 'get',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: checkData,
+                        success: function(res) {
+                            layer.alert(`${res.data}`, {
+                                title: '切片url'
+                            })
+                        },
+                        done: function(res) {}
+                    })
+                }
+            },
+            getAnnotationImgs: function() { // * 复制url
+                var checkStatus = table.checkStatus('slide-table-list'),
+                    checkData = checkStatus.data[0];
+                if (checkData === undefined) {
+                    return layer.msg('请选择数据');
+                } else {
+                    admin.popup({
+                        title: '选择报告用图',
+                        area: ['800px', '600px'], // 为防止窗口变形,设置弹窗宽度至少为400px
+                        id: 'popup-chooseExpert',
+                        success: function(layero, index) {
+                            view(this.id).render(
+                                'case/annotationList', {
+                                    path: checkData
+                                }).done(function() {})
+                        }
+                    })
+                }
+            }
+        }
+    });
+
+    // 获取格式化时间字符串
+    Date.prototype.Format = function(fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份 
+            "d+": this.getDate(), //日 
+            "h+": this.getHours(), //小时 
+            "m+": this.getMinutes(), //分 
+            "s+": this.getSeconds() //秒 
+        };
+        if (/(y+)/.test(fmt)) { //根据y的长度来截取年
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        }
+        return fmt;
+    }
+</script>

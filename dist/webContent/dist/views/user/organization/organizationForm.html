@@ -1,0 +1,42 @@
+<!--
+ * @Author: cwx
+ * @Description: 
+ * @Date: 2022-03-23 09:50:21
+ * @LastEditTime: 2022-07-15 10:25:42
+ * @FilePath: \ReportSystem_Demo\webContent\dist\views\user\organization\organizationForm.html
+-->
+<div class="layui-form" lay-filter="layuiadmin-form-organizationAdmin" style="padding: 20px 0 0 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">组织名</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="name" value="{{ d.params.organization || '' }}" lay-verify="required" placeholder="请输入组织名" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">描述</label>
+        <div class="layui-input-inline">
+            <script type="text/html" template>
+                <input type="text" name="describe" value="{{ d.params.describe || '' }}" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+            </script>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+            <input type="button" lay-submit lay-filter="organizationForm-submit" value="确认" class="layui-btn">
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form', 'upload'], function() {
+        var $ = layui.$,
+            form = layui.form,
+            upload = layui.upload;
+        form.verify({
+            title: [/^[\S]{0,12}$/, "标题字数需小于12，且不能出现空格"],
+        })
+    })
+</script>

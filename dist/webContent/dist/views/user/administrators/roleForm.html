@@ -1,0 +1,53 @@
+<!--
+ * @Author: cwx
+ * @Description: 角色管理
+ * @Date: 2022-03-23 09:50:21
+ * @LastEditTime: 2022-06-22 14:58:35
+ * @FilePath: \ReportSystem_Demo\webContent\dist\views\user\administrators\roleForm.html
+-->
+<div class="layui-form" lay-filter="layuiadmin-form-role" style="padding: 20px 30px 0 0;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色</label>
+        <div class="layui-input-block">
+            <script type="text/html" template>
+                <select name="roleName">
+                    <option value="管理员" {{ d.params.roleName === '管理员' ? 'selected' : '' }}>管理员</option>
+                    <option value="超级管理员" {{ d.params.roleName === '超级管理员' ? 'selected' : '' }}>超级管理员</option>
+                    <option value="上传端" {{ d.params.roleName === '上传端' ? 'selected' : '' }}>上传端</option>
+                    <option value="专家端" {{ d.params.roleName === '专家端' ? 'selected' : '' }}>专家端</option>
+                </select>
+            </script>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限范围</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="limits[]" lay-skin="primary" title="账户管理">
+            <input type="checkbox" name="limits[]" lay-skin="primary" title="系统配置">
+            <input type="checkbox" name="limits[]" lay-skin="primary" title="病例管理">
+            <input type="checkbox" name="limits[]" lay-skin="primary" title="会诊管理">
+            <input type="checkbox" name="limits[]" lay-skin="primary" title="病例诊断">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">具体描述</label>
+        <div class="layui-input-block">
+            <script type="text/html" template>
+                <textarea type="text" name="description" id="description" lay-verify="" autocomplete="off" class="layui-textarea">{{ d.params.description || '' }}</textarea>
+            </script>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"></label>
+        <div class="layui-input-inline">
+            <input type="button" lay-submit lay-filter="LAY-user-role-submit" value="确认" class="layui-btn">
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['admin', 'form'], function() {
+        var $ = layui.$,
+            form = layui.form;
+    });
+</script>
