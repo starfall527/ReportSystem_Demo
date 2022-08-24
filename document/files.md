@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-08-10 11:06:22
- * @LastEditTime: 2022-08-24 11:12:01
+ * @LastEditTime: 2022-08-24 11:30:42
  * @FilePath: \ReportSystem_Demo\document\files.md
 -->
 <!--
@@ -26,6 +26,10 @@
 
 .\document\接口文档\index.html          apidoc接口文档
 .\protect_process.bat                   守护进程,部署的时候可以设置开机启动
+
+#### 项目使用
+    1.node app.js 启动服务
+    2.打开浏览器,输入127.0.0.1:9000进入界面
 
 #### 开发目的
     该工具基于公有云版slideCenter开发,用于将sc的切片上传到金域病理系统中。
