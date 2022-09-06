@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2022-07-20 11:49:11
- * @LastEditTime 2022-07-26 17:58:50
+ * @LastEditTime 2022-09-02 16:30:23
  * @FilePath \ReportSystem_Demo\Admin\slideCenter\slideCenterCloud.js
  */
 
@@ -540,5 +540,6 @@ function getFileList(path, filesList, isRecursive, postfix, NATtraverse) {
 // #endregion
 
 module.exports = {
-    router_slideCenter
+    router_slideCenter,
+    loginKingMed
 };

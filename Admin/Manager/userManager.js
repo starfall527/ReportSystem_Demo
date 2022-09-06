@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 用户管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-24 10:17:49
+ * @LastEditTime 2022-09-02 16:31:42
  * @FilePath \ReportSystem_Demo\Admin\Manager\userManager.js
  */
 
@@ -11,6 +11,7 @@ const sqlMacros = require("../database/macro");
 const router_user = express.Router();
 const logger = require('log4js').getLogger('user');
 const config = require('../config.js');
+const slideCenterCloud = require('../slideCenter/slideCenterCloud.js')
 const md5 = require('md5');
 
 /*** @note apidoc定义user表数据
@@ -76,7 +77,7 @@ function initUser() {
         sqlMacros.sqlInsert(['name', 'userName', 'password', 'role', 'sign'],
             ['admin', 'admin', '123456', '管理员', '/sign/0_sign.jpeg'], 'USER');
     }
-    
+
     if (sqlMacros.getTableCount('USER', false) === 0) {
         sqlMacros.sqlInsert(['name', 'userName', 'password', 'role', 'sign'],
             ['testuser1', 'testuser1', '123456', '管理员', '/sign/0_sign.jpeg'], 'USER');
@@ -230,7 +231,7 @@ router_user.post('/query', function(req, res) {
         code: 500,
         msg: '未找到用户'
     }
- */ 
+ */
 router_user.get('/login', function(req, res) {
     let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', req.query.userName);
     let menu = config.readConfigFile('./webContent/json/menu.json');
@@ -267,25 +268,22 @@ router_user.get('/login', function(req, res) {
             msg: '登录失败',
             data: {}
         };
-        if (user === undefined) {
-            json.msg = '未选中实验或查询无数据';
+        if (user[0].password === req.query.password) {
+            json = {
+                code: 200,
+                msg: '登录成功',
+                data: {
+                    userID: user[0].id,
+                    userName: user[0].userName,
+                    access_token: md5(`${user[0].id}${user[0].userName}${Date.now()}`),
+                    role: user[0].role,
+                    organization: user[0].organization
+                }
+            };
+            slideCenterCloud.loginKingMed();
+            global.session.push(json.data); // * 暂存在全局变量 待优化
         } else {
-            if (user[0].password === req.query.password) {
-                json = {
-                    code: 200,
-                    msg: '登录成功',
-                    data: {
-                        userID: user[0].id,
-                        userName: user[0].userName,
-                        access_token: md5(`${user[0].id}${user[0].userName}${Date.now()}`),
-                        role: user[0].role,
-                        organization: user[0].organization
-                    }
-                };
-                global.session.push(json.data); // * 暂存在全局变量 待优化
-            } else {
-                json.msg = '密码错误';
-            }
+            json.msg = '密码错误';
         }
         res.send(json);
     }
