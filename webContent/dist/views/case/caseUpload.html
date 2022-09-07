@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-23 17:21:01
+ * @LastEditTime: 2022-09-07 16:34:59
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -36,6 +36,24 @@
         </div>
     </div>
 </div>
+
+<script type="text/html" id="barDemo" lay-filter="barDemo">
+{{# if(["待发起会诊","等待诊断"].includes(d.status)){ }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    {{# } }}
+
+        {{# if(["诊断完成","专家重诊"].includes(d.status)){ }}
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport">查看报告</a>
+            {{# } }}
+
+                {{# if(["专家退回"].includes(d.status)){ }}
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                    <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
+                    {{# } }}
+</script>
 
 <link rel="stylesheet" type="text/css" href="../../../dist/lib/extend/soulTable/soulTable.css" media="all">
 <script>
@@ -74,34 +92,37 @@
                     }, {
                         field: 'caseType',
                         title: '病例类型',
-                        minWidth: 120,
+                        minWidth: 110,
+                        // width: 150, // 优先从这列压缩宽度
                         filter: true
                     }, {
                         field: 'status',
                         title: '状态',
-                        minWidth: 120,
+                        minWidth: 100,
                         filter: true
                     }, {
                         field: 'patName',
                         title: '病人姓名',
-                        minWidth: 120
-                    }, {
-                        field: 'doctor',
-                        title: '医生名',
-                        minWidth: 120
+                        minWidth: 90
                     }, {
                         field: 'hosName',
                         title: '医院名',
-                        minWidth: 120
-                    }, {
-                        field: 'subspecialty',
-                        title: '亚专科',
                         minWidth: 120,
                         filter: true
                     }, {
+                        field: 'doctor',
+                        title: '医生名',
+                        minWidth: 100,
+                        filter: true
+                    }, {
+                        field: 'subspecialty',
+                        title: '亚专科',
+                        minWidth: 100,
+                        filter: true
+                    }, {
                         field: 'expert',
-                        title: '指派专家',
-                        minWidth: 120,
+                        title: '专家名',
+                        minWidth: 100,
                         filter: true
                     }, {
                         field: 'date',
@@ -110,10 +131,11 @@
                         width: 240
                     }, {
                         title: "操作",
-                        width: 300,
+                        minWidth: 180,
                         align: "center",
                         fixed: "right",
-                        toolbar: "#table-toolbar"
+                        // toolbar: "#table-toolbar",
+                        toolbar: "#barDemo"
                     }
                 ]
             ],

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-23 17:21:30
+ * @LastEditTime: 2022-09-07 16:32:32
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -24,7 +24,6 @@
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
                 <script type="text/html" id="table-toolbar" lay-filter="table-toolbar">
                     <a class="layui-btn layui-btn-xs" lay-event="diagnose" id="diagnose">诊断</a>
-                    <!-- <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a> -->
                     <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
                     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport">查看报告</a>
                 </script>
@@ -32,6 +31,26 @@
         </div>
     </div>
 </div>
+
+<!-- <i class="layui-icon">&#xe6b2;</i> -->
+<script type="text/html" id="barDemo" lay-filter="barDemo">
+{{# if(["等待诊断","专家退回"].includes(d.status)){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="diagnose" id="diagnose">诊断</a>
+    <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
+    {{# } }}
+
+        {{# if(d.status ==="诊断完成"){ }}
+            <a class="layui-btn layui-btn-xs" lay-event="diagnose" id="diagnose">重诊</a>
+            <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport">查看报告</a>
+            {{# } }}
+
+                {{# if(d.status ==="专家重诊"){ }}
+                    <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
+                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport">查看报告</a>
+                    {{# } }}
+</script>
+
 
 <link rel="stylesheet" type="text/css" href="../../../dist/lib/extend/soulTable/soulTable.css" media="all">
 <script>
@@ -65,7 +84,6 @@
                     field: 'caseType',
                     title: '病例类型',
                     minWidth: 120,
-                    // width: 150, // 优先从这列压缩宽度
                     filter: true
                 }, {
                     field: 'status',
@@ -74,8 +92,8 @@
                     filter: true
                 }, {
                     field: 'patName',
-                    title: '病人信息',
-                    minWidth: 120
+                    title: '病人姓名',
+                    minWidth: 100
                 }, {
                     field: 'hosName',
                     title: '医院名',
@@ -84,7 +102,7 @@
                 }, {
                     field: 'doctor',
                     title: '医生名',
-                    minWidth: 120,
+                    minWidth: 100,
                     filter: true
                 }, {
                     field: 'subspecialty',
@@ -98,10 +116,11 @@
                     width: 210
                 }, {
                     title: "操作",
-                    width: 240,
+                    minWidth: 210,
                     align: "center",
                     fixed: "right",
-                    toolbar: "#table-toolbar"
+                    // toolbar: "#table-toolbar",
+                    toolbar: "#barDemo"
                 }]
             ],
             page: true,
@@ -170,7 +189,7 @@
                 //do something
             } else if (layEvent === 'openReport') { // 查看报告
                 console.log(data)
-                if (![null, '', undefined, 'null'].includes(data.reportPath)) {
+                if (![null, '', undefined, 'null'].includes(data.reportPath) && data.status !== '等待诊断') {
                     let reportPath = data.reportPath += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
                     admin.popup({
                         title: '查看报告',

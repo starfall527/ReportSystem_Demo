@@ -19,131 +19,147 @@
                             <div class="layui-card-header">新建病例</div>
                             <div class="layui-card-body">
                                 <div class="layui-form-item">
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">病例类型</label>
-                                        <div class="layui-input-block" style="width:161px">
-                                            <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
-                                                <option value="">请选择</option>
-                                                <option value="TBS病例">TBS病例</option>
-                                                <option value="常规病例">常规病例</option>
-                                            </select>
+                                    <div class="layui-row" style="margin-bottom: 10px;">
+                                        <div class="layui-col-md3">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label">病例类型</label>
+                                                <div class="layui-input-block" id="caseTypeBlock" style="width:161px">
+                                                    <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
+                                                        <option value="">请选择</option>
+                                                        <option value="TBS病例">TBS病例</option>
+                                                        <option value="常规病例">常规病例</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label" id="isGynecologyLabel" style="display:none">是否妇科</label>
-                                        <div class="layui-input-block" id="isGynecologyBlock" style="display:none">
-                                            <select name="isGynecology" id="isGynecology" lay-filter="isGynecology">
-                                                <option value="非妇科">非妇科</option>
-                                                <option value="妇科">妇科</option>
-                                            </select>
-                                        </div>
-                                    </div>
 
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label" id="isMenopauseLabel" style="display:none">是否绝经</label>
-                                        <div class="layui-input-block" id="isMenopauseBlock" style="display:none">
-                                            <select name="isMenopause" id="isMenopause" lay-filter="isMenopause">
-                                                <option value="否">否</option>
-                                                <option value="是">是</option>
-                                            </select>
+                                        <div class="layui-col-md3">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label" id="isGynecologyLabel" style="display:none">是否妇科</label>
+                                                <div class="layui-input-block" id="isGynecologyBlock" style="display:none">
+                                                    <select name="isGynecology" id="isGynecology" lay-filter="isGynecology">
+                                                        <option value="">请选择</option>
+                                                        <option value="非妇科">非妇科</option>
+                                                        <option value="妇科">妇科</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label" id="lastMensesLabel" style="display:none">末次月经</label>
-                                        <div class="layui-input-inline">
-                                            <input type="text" name="lastMenses" id="lastMenses" lay-verify="" placeholder="" class="layui-input" style="display:none">
+                                        <div class="layui-col-md3">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label" id="isMenopauseLabel" style="display:none">是否绝经</label>
+                                                <div class="layui-input-block" id="isMenopauseBlock" style="display:none">
+                                                    <select name="isMenopause" id="isMenopause" lay-filter="isMenopause">
+                                                        <option value="否">否</option>
+                                                        <option value="是">是</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="layui-col-md3">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label" id="lastMensesLabel" style="display:none">末次月经</label>
+                                                <div class="layui-input-inline" style="width:159px">
+                                                    <input type="text" name="lastMenses" id="lastMenses" lay-verify="" placeholder="" class="layui-input" style="display:none">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="layui-form-item">
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">病理号</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="pathologyNum" id="pathologyNum" lay-verify="required" class="layui-input">
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">病理号</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="pathologyNum" id="pathologyNum" lay-verify="required" class="layui-input">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">患者姓名</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="patName" id="patName" lay-verify="required" class="layui-input">
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">患者姓名</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="patName" id="patName" lay-verify="required" class="layui-input">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">性别</label>
-                                        <div class="layui-input-block" style="width:161px" >
-                                            <select name="gender" id="gender" lay-filter="gender" lay-verify="required">
-                                                <option value="">请选择</option>
-                                                <option value="男">男</option>
-                                                <option value="女">女</option>
-                                            </select>
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">性别</label>
+                                            <div class="layui-input-block" id="genderTypeBlock" style="width:161px">
+                                                <select name="gender" id="gender" lay-filter="gender" lay-verify="required">
+                                                    <option value="">请选择</option>
+                                                    <option value="男">男</option>
+                                                    <option value="女">女</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">年龄</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="age" id="age" lay-verify="required" class="layui-input">
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">年龄</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="age" id="age" lay-verify="required" class="layui-input">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
-                                    <!-- <div class="layui-inline">
-                                        <label class="layui-form-label">民族</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="nation" id="nation" lay-verify="" class="layui-input">
+
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">医生名</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="doctor" id="doctor" lay-verify="" class="layui-input" disabled>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">出生日期</label>
-                                        <div class="layui-input-inline">
-                                            <input type="text" name="birthDate" id="birthDate" lay-verify="" placeholder="" class="layui-input">
-                                        </div>
-                                    </div> -->
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">医生名</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="doctor" id="doctor" lay-verify="" class="layui-input" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">医院名</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="hosName" id="hosName" lay-verify="" class="layui-input" disabled>
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">医院名</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="hosName" id="hosName" lay-verify="" class="layui-input" disabled>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="layui-form-item">
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">取材部位</label>
-                                        <div class="layui-input-block">
-                                            <input type="text" name="samplePart" id="samplePart" lay-verify="required" class="layui-input">
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">取材部位</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="samplePart" id="samplePart" lay-verify="required" class="layui-input">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">亚专科</label>
-                                        <div class="layui-input-inline" style="width:161px">
-                                            <select name="subspecialty" id="subspecialty" lay-verify="required">
-                                                <option value="">请选择</option>
-                                                <option value="神经病理">神经病理</option>
-                                                <option value="淋巴病理">淋巴病理</option>
-                                                <option value="妇科病理">妇科病理</option>
-                                                <option value="消化病理">消化病理</option>
-                                                <option value="软组织病理">软组织病理</option>
-                                                <option value="分子病理">分子病理</option>
-                                                <option value="乳腺病理">乳腺病理</option>
-                                                <option value="内分泌病理">内分泌病理</option>
-                                                <option value="皮肤病理">皮肤病理</option>
-                                                <option value="细胞病理">细胞病理</option>
-                                                <option value="泌尿生殖病理">泌尿生殖病理</option>
-                                                <option value="头颈部病理">头颈部病理</option>
-                                                <option value="肺与纵隔病理">肺与纵隔病理</option>
-                                                <option value="骨与关节病理">骨与关节病理</option>
-                                                <option value="肾病病理">肾病病理</option>
-                                                <option value="骨髓病理">骨髓病理</option>
-                                                <option value="其它">其它</option>
-                                            </select>
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">亚专科</label>
+                                            <div class="layui-input-inline" id="subspecialtyTypeBlock" style="width:160px">
+                                                <select name="subspecialty" id="subspecialty" lay-verify="required">
+                                                    <option value="">请选择</option>
+                                                    <option value="神经病理">神经病理</option>
+                                                    <option value="淋巴病理">淋巴病理</option>
+                                                    <option value="妇科病理">妇科病理</option>
+                                                    <option value="消化病理">消化病理</option>
+                                                    <option value="软组织病理">软组织病理</option>
+                                                    <option value="分子病理">分子病理</option>
+                                                    <option value="乳腺病理">乳腺病理</option>
+                                                    <option value="内分泌病理">内分泌病理</option>
+                                                    <option value="皮肤病理">皮肤病理</option>
+                                                    <option value="细胞病理">细胞病理</option>
+                                                    <option value="泌尿生殖病理">泌尿生殖病理</option>
+                                                    <option value="头颈部病理">头颈部病理</option>
+                                                    <option value="肺与纵隔病理">肺与纵隔病理</option>
+                                                    <option value="骨与关节病理">骨与关节病理</option>
+                                                    <option value="肾病病理">肾病病理</option>
+                                                    <option value="骨髓病理">骨髓病理</option>
+                                                    <option value="其它">其它</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- <div class="layui-inline">
@@ -152,10 +168,12 @@
                                             <input type="text" name="inspectionDate" id="inspectionDate" lay-verify="" placeholder="" class="layui-input">
                                         </div>
                                     </div> -->
-                                    <div class="layui-inline">
-                                        <label class="layui-form-label">送检单位</label>
-                                        <div class="layui-input-block" style="width: 320px;">
-                                            <input type="text" name="unit" id="unit" lay-verify="required" class="layui-input">
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">送检单位</label>
+                                            <div class="layui-input-block" style="width: 240px;">
+                                                <input type="text" name="unit" id="unit" lay-verify="required" class="layui-input">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -171,7 +189,7 @@
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">临床资料</label>
                                             <div class="layui-input-block">
-                                                <textarea name="clinicalData" id="clinicalData" class="layui-textarea" ></textarea>
+                                                <textarea name="clinicalData" id="clinicalData" class="layui-textarea"></textarea>
                                             </div>
                                         </div>
                                         <div class="layui-form-item">
@@ -458,15 +476,21 @@
                             if (caseData.isGynecology === "妇科") {
                                 $('#isMenopauseBlock').attr('style', 'width:161px;display:block');
                                 $('#isMenopauseLabel').attr('style', 'display:block');
+                                if (caseData.isMenopause === "是") {
+                                    document.getElementById("lastMensesLabel").innerHTML = '绝经日期';
+                                } else {
+                                    document.getElementById("lastMensesLabel").innerHTML = '末次月经';
+                                }
                                 $('#lastMenses').attr('style', 'display:block');
                                 $('#lastMensesLabel').attr('style', 'display:block');
+                                $('#lastMenses').attr('lay-verify', 'required');
                             }
                             $('#isGynecology').val(caseData.isGynecology);
                             $('#isMenopause').val(caseData.isMenopause);
-                            console.log(caseData.lastMenses)
                             $('#lastMenses').val(caseData.lastMenses);
                         }
                         form.render("select"); //刷新select选择框渲染
+                        form.render(); //刷新select选择框渲染
                     }
 
                     // @note 上传附图
@@ -593,8 +617,10 @@
             if (data.value === '常规病例') {
                 $('#general').attr('style', 'display:block');
                 $('#generalLabel').attr('style', 'display:block');
+                $('#isGynecology').val('');
                 $('#isGynecologyBlock').attr('style', 'display:none;');
                 $('#isGynecologyLabel').attr('style', 'display:none');
+                $('#isGynecology').attr('lay-verify', '');
 
                 $('#isMenopauseLabel').attr('style', 'display:none');
                 $('#isMenopauseBlock').attr('style', 'display:none');
@@ -603,23 +629,42 @@
             } else if (data.value === 'TBS病例') {
                 $('#general').attr('style', 'display:none');
                 $('#generalLabel').attr('style', 'display:none');
-                $('#isGynecologyBlock').attr('style', 'display:block;width:161px;');
+                $('#isGynecologyBlock').attr('style', 'width:161px;display:block');
                 $('#isGynecologyLabel').attr('style', 'display:block');
+
+                // $('#isGynecology').attr('lay-verify', 'required');
             }
+            form.render(""); //刷新select选择框渲染
         })
 
         // 根据 是否妇科 判断是否显示 是否绝经 末次月经
         form.on('select(isGynecology)', function(data) {
             if (data.value === '妇科') {
                 $('#isMenopauseLabel').attr('style', 'display:block');
-                $('#isMenopauseBlock').attr('style', 'display:block;width:161px;');
-                $('#lastMenses').attr('style', 'display:block');
+                $('#isMenopauseBlock').attr('style', 'width:161px;display:block');
+                $('#lastMenses').attr('style', 'width:161px;display:block');
                 $('#lastMensesLabel').attr('style', 'display:block');
+                if (caseData.isMenopause === "是") {
+                    document.getElementById("lastMensesLabel").innerHTML = '绝经日期';
+                } else {
+                    document.getElementById("lastMensesLabel").innerHTML = '末次月经';
+                }
+                // $('#lastMenses').attr('lay-verify', 'required');
             } else if (data.value === '非妇科') {
                 $('#isMenopauseLabel').attr('style', 'display:none');
                 $('#isMenopauseBlock').attr('style', 'display:none');
+                $('#lastMenses').attr('lay-verify', '');
                 $('#lastMenses').attr('style', 'display:none');
                 $('#lastMensesLabel').attr('style', 'display:none');
+            }
+            form.render(); //刷新select选择框渲染
+        })
+
+        form.on('select(isMenopause)', function(data) {
+            if (data.value === '是') {
+                document.getElementById("lastMensesLabel").innerHTML = '绝经日期:';
+            } else if (data.value === '否') {
+                document.getElementById("lastMensesLabel").innerHTML = '末次月经:';
             }
         })
 
@@ -686,7 +731,7 @@
                                 path: res.path,
                                 fileName: res.fileName,
                                 slideUrl: res.data,
-                                thumbnail: res.thumbnail,                                
+                                thumbnail: res.thumbnail,
                                 label: res.label
                             });
                         },

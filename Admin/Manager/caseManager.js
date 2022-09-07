@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-08-23 14:56:16
+ * @LastEditTime 2022-09-07 15:45:49
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -415,6 +415,31 @@ router_case.get('/delete', function(req, res) {
     res.send(json);
 });
 
+/*** @note 批量删除病例
+ * @api {post} /api/case/batchDel 批量删除病例
+ * @apiName BatchDeleteCase
+ * @apiGroup 病例管理
+ * @apiParam {ObjectArray} data             数据对象
+ * @apiParam {Object} data.id               病例id
+ * @apiUse CommonResponse
+ */
+ router_case.post('/batchDel', function(req, res) {
+    let data = req.body.data;
+    for (let i = 0; i < data.length; i++) {
+        let reportPath = path.join(process.cwd(), '/upload/', data[i].reportPath);
+        if (fs.existsSync(reportPath) && ![null, '', undefined].includes(data[i].reportPath)) {
+            fs.unlinkSync(reportPath); // * 删除相关pdf文件
+        }
+        let result = sqlMacros.sqlDelete('id', data[i]['id'], 'pathCase');
+    } // * 根据id删除所选数据
+    
+    var json = {
+        code: 200,
+        msg: '成功'
+    };
+    res.send(json);
+});
+
 /*** @note  新增病例数据
  * @api {post} /api/case/insert 新增病例数据
  * @apiName InsertCase
@@ -683,7 +708,9 @@ router_case.get('/openReport', function(req, res) {
                 if (![null, undefined, ''].includes(document.getElementById("isMenopause"))) {
                     document.getElementById("isMenopause").innerHTML += caseData.isMenopause;
                     if (![null, undefined, ''].includes(document.getElementById("lastMenses"))) {
-                        if (caseData.isMenopause === "是") {}
+                        if (caseData.isMenopause === "是") {
+                            document.getElementById("lastMenses").innerHTML = '绝经日期:';
+                        }
                         document.getElementById("lastMenses").innerHTML += caseData.lastMenses;
                     }
                 }
@@ -763,8 +790,12 @@ router_case.get('/openReport', function(req, res) {
                 }
             } else if (caseData.caseType === "TBS病例") {
                 if (![null, undefined, ''].includes(document.getElementById("sampleQuality"))) {
+                    let semiColon = '';
+                    if (![null, undefined, ''].includes(caseData.unsatisfiedReason)) {
+                        semiColon = ';'; // * 不满意时,需要加分号隔开 不满意理由
+                    }
                     document.getElementById("sampleQuality").innerHTML +=
-                        `${caseData.isSatisfied};${caseData.unsatisfiedReason}`; // 标本质量
+                        `${caseData.isSatisfied}${semiColon}${caseData.unsatisfiedReason}`; // 标本质量
                 }
                 if (![null, undefined, ''].includes(document.getElementById("component"))) {
                     document.getElementById("component").innerHTML += caseData.component; // 细胞成分

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-08-23 14:59:54
+ * @LastEditTime: 2022-09-07 14:59:10
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -52,7 +52,7 @@
                     </div>
                     <div class="layui-row layui-col-space15" style="margin-left: 20px;">
                         <div class="layui-col-md6">
-                            <div class="layui-label" id="uploadDate">发起会诊时间:</div>
+                            <div class="layui-label" id="uploadDate">送检时间:</div>
                         </div>
                         <div class="layui-col-md6">
                             <div class="layui-label" id="unit">送检单位:</div>
@@ -86,10 +86,10 @@
                         <legend>备注</legend>
                         <div class="layui-field-box" id="note">无</div>
                     </fieldset>
-                    <fieldset class="layui-elem-field" style="margin-top:20px;">
+                    <!-- <fieldset class="layui-elem-field" style="margin-top:20px;">
                         <legend>原诊断意见</legend>
                         <div class="layui-field-box" id="originDiagnosis">无</div>
-                    </fieldset>
+                    </fieldset> -->
                     <fieldset class="layui-elem-field" style="margin-top:20px;">
                         <legend>附件</legend>
                         <!-- <button class="layui-btn" id="openSlide" lay-filter="openSlide"
@@ -405,6 +405,7 @@
             success: function(res) { // 查询到病例数据,设置各种监听,以及html文本
                 if (res.count > 0) {
                     caseData = res.data[0];
+                    console.log(caseData)
                     for (const key in caseData) {
                         if (Object.hasOwnProperty.call(caseData, key)) {
                             const element = caseData[key];
@@ -427,7 +428,7 @@
                     document.getElementById("samplePart").innerHTML = caseData.samplePart;
                     document.getElementById("history").innerHTML = caseData.history;
                     document.getElementById("note").innerHTML = caseData.note;
-                    document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis;
+                    // document.getElementById("originDiagnosis").innerHTML = caseData.originDiagnosis;
                     document.getElementById("sign").setAttribute('src', caseData.signPath);
 
                     if (![null, undefined, '', 'null'].includes(caseData.clinicalDataFigure)) {
@@ -447,6 +448,9 @@
                     if (caseData.caseType === 'TBS病例' && caseData.isGynecology === '妇科') {
                         $('#isMenopauseRow').attr('style', 'margin-left: 20px;display:block');
                         document.getElementById("isMenopause").innerHTML += caseData.isMenopause;
+                        if (caseData.isMenopause === "是") {
+                            document.getElementById("lastMenses").innerHTML = '绝经日期:';
+                        }
                         document.getElementById("lastMenses").innerHTML += caseData.lastMenses;
                     } else {
                         $('#isMenopauseRow').attr('style', 'display:none');

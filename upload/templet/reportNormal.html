@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-05-30 14:30:59
- * @LastEditTime: 2022-08-24 16:42:31
+ * @LastEditTime: 2022-09-06 15:12:34
  * @FilePath: \ReportSystem_Demo\upload\templet\reportNormal.html
 -->
 <html>
@@ -109,6 +109,7 @@
         }
 
         #grid {
+            text-align: justify;
             display: grid;
             height: auto;
             grid-template-columns: 35% 35% 30%;
@@ -118,14 +119,15 @@
         #grid2ColLabel {
             display: grid;
             height: auto;
-            grid-template-columns: 66% 34%;
+            grid-template-columns: 60% 5% 35%;
             grid-template-rows: repeat(1, 1fr);
         }
 
         #grid2Col {
+            text-align: justify;
             display: grid;
             height: auto;
-            grid-template-columns: 55% 45%;
+            grid-template-columns: 50% 5% 45%;
             grid-template-rows: repeat(1, 1fr);
         }
 
@@ -213,7 +215,7 @@
             </div>
             <HR>
             <div id="grid">
-                <div class="label grid-cell1" id="patNameLabel">病人姓名:</div>
+                <div class="label grid-cell1" id="patNameLabel">姓名:</div>
                 <div class="label grid-cell2" id="genderLabel">性别:</div>
                 <div class="label grid-cell3" id="ageLabel">年龄:</div>
                 <div class="labelBreak"></div>
@@ -224,23 +226,23 @@
             <div id="grid2Col">
                 <div class="labelBreak"></div>
                 <div class="label grid-cell1" id="unitLabel">送检单位:</div>
-                <div class="label grid-cell2" id="uploadDateLabel">发起会诊时间:</div>
+                <div class="label grid-cell3" id="uploadDateLabel">发起会诊时间:</div>
             </div>
             <HR>
             <div id="grid2Col">
                 <div class="label grid-cell1" id="clinicalData">临床资料:</div>
-                <div class="label grid-cell2" id="imgCheck">影像学检查:</div>
+                <div class="label grid-cell3" id="imgCheck">影像学检查:</div>
                 <div class="label grid-cell1"><img src="" id="clinicalDataFigure" height="215px" style="display:none;"></div>
-                <div class="label grid-cell2"><img src="" id="imgCheckFigure" height="215px" style="display:none;"></div>
+                <div class="label grid-cell3"><img src="" id="imgCheckFigure" height="215px" style="display:none;"></div>
                 <div class="labelBreak"></div>
                 <div class="label grid-cell1" id="general">大体所见:</div>
-                <div class="label grid-cell2" id="history">病史:</div>
+                <div class="label grid-cell3" id="history">病史:</div>
                 <div class="labelBreak"></div>
                 <div class="label grid-cell1" id="note">备注:</div>
                 <!-- <div class="label grid-cell1" id="originDiagnosis">初诊意见:</div> -->
             </div>
             <HR>
-            <div class="label-large" id="annotationLabel">镜下所见:
+            <div class="label" id="annotationLabel">镜下所见:
                 <div class="labelBreak"></div>
                 <div id="grid">
                     <div class="label grid-cell1"><img src="" id="annotation0" height="215px"></div>
@@ -248,15 +250,15 @@
                     <div class="label grid-cell3"><img src="" id="annotation2" height="215px"></div>
                 </div>
             </div>
-            <div class="label-large" id="diagnosis">诊断意见:</div>
-            <div class="label-large" id="suggestion">补充意见:</div>
+            <div class="label" id="diagnosis">诊断意见:</div>
+            <div class="label" id="suggestion">补充意见:</div>
             <HR>
             <div id="grid2ColLabel">
                 <div class="label grid-cell1" id="sign">
-                    <div style="float: left;">医生签名:</div>
+                    <div style="float: left;">诊断医生:</div>
                     <div><img src="" id="signImg" style="height:60px;margin-left: 10px;"></div>
                 </div>
-                <div class="label grid-cell2" id="diagnoseDate">诊断时间:</div>
+                <div class="label grid-cell3" id="diagnoseDate">诊断时间:</div>
             </div>
         </div>
     </div>

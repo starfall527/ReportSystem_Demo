@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 关键文档说明
  * @Date: 2021-12-08 10:17:56
- * @LastEditTime: 2022-08-24 17:42:44
+ * @LastEditTime: 2022-09-06 14:25:41
  * @FilePath: \ReportSystem_Demo\document\files.md
 -->
 
@@ -66,7 +66,14 @@
     npm install --save opencv4nodejs
     这一步如果出问题请参考 https://blog.csdn.net/Apple_Coco/article/details/109426608
 
+##### 内网穿透测试映射
+slideCenter映射
+192.168.31.198:9804
+mi31j7uu.shenzhuo.vip:24017
 
+报告系统映射
+192.168.31.198:9000
+mi31j7uu.shenzhuo.vip:22060
 
 ##### bat文件设置开机启动
 https://wenku.baidu.com/view/5efd48dacbd376eeaeaad1f34693daef5ef713be.html
