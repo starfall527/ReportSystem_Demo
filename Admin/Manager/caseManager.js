@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-09-07 15:45:49
+ * @LastEditTime 2022-09-16 09:33:28
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -227,8 +227,9 @@ router_case.post('/table', function(req, res) {
         caseType: [],
         subspecialty: [],
         expert: [],
-        code: 200,
-        msg: '成功',
+        patName: [],
+        pathologyNum: [],
+        date: []
     };
     let userName = req.body.userName;
     let result = [];
@@ -256,12 +257,16 @@ router_case.post('/table', function(req, res) {
         data.caseType.push(element.caseType);
         data.subspecialty.push(element.subspecialty);
         data.expert.push(element.expert);
+        data.patName.push(element.patName);
+        data.pathologyNum.push(element.pathologyNum);
+        data.date.push(element.date);
     });
-    data.status = sqlMacros.uniqueArray(data.status);
-    data.caseType = sqlMacros.uniqueArray(data.caseType);
-    data.subspecialty = sqlMacros.uniqueArray(data.subspecialty);
-    data.expert = sqlMacros.uniqueArray(data.expert);
+    Object.keys(data).forEach(element => {
+        data[element] = sqlMacros.uniqueArray(data[element]);
+    });
 
+    data.code = 200;
+    data.msg = '成功';
     res.send(data);
 });
 
@@ -334,8 +339,9 @@ router_case.post('/expertTable', function(req, res) {
         subspecialty: [],
         hosName: [],
         doctor: [],
-        code: 200,
-        msg: '成功',
+        patName: [],
+        pathologyNum: [],
+        date: []
     };
     let userName = req.body.userName;
     let result = [];
@@ -358,13 +364,17 @@ router_case.post('/expertTable', function(req, res) {
         data.subspecialty.push(element.subspecialty);
         data.hosName.push(element.hosName);
         data.doctor.push(element.doctor);
+        data.patName.push(element.patName);
+        data.pathologyNum.push(element.pathologyNum);
+        data.date.push(element.date);
     });
-    data.status = sqlMacros.uniqueArray(data.status);
-    data.caseType = sqlMacros.uniqueArray(data.caseType);
-    data.subspecialty = sqlMacros.uniqueArray(data.subspecialty);
-    data.hosName = sqlMacros.uniqueArray(data.hosName);
-    data.doctor = sqlMacros.uniqueArray(data.doctor);
 
+    Object.keys(data).forEach(element => {
+        data[element] = sqlMacros.uniqueArray(data[element]);
+    });
+
+    data.code = 200;
+    data.msg = '成功';
     res.send(data);
 });
 
@@ -423,7 +433,7 @@ router_case.get('/delete', function(req, res) {
  * @apiParam {Object} data.id               病例id
  * @apiUse CommonResponse
  */
- router_case.post('/batchDel', function(req, res) {
+router_case.post('/batchDel', function(req, res) {
     let data = req.body.data;
     for (let i = 0; i < data.length; i++) {
         let reportPath = path.join(process.cwd(), '/upload/', data[i].reportPath);
@@ -432,7 +442,7 @@ router_case.get('/delete', function(req, res) {
         }
         let result = sqlMacros.sqlDelete('id', data[i]['id'], 'pathCase');
     } // * 根据id删除所选数据
-    
+
     var json = {
         code: 200,
         msg: '成功'
@@ -457,9 +467,6 @@ router_case.post('/insert', function(req, res) {
     } else if (data.caseType === "TBS病例") {
         if (data.isGynecology === "非妇科") {
             data.isMenopause = '';
-            data.lastMenses = '';
-        }
-        if (data.isMenopause === "否") {
             data.lastMenses = '';
         }
     }
@@ -684,8 +691,8 @@ router_case.get('/openReport', function(req, res) {
             for (const key in caseData) {
                 if (Object.hasOwnProperty.call(caseData, key)) {
                     const element = caseData[key];
-                    if ([null, ''].includes(element) && !["unsatisfiedReason", 'isMenopause', 'clinicalData',
-                            'imgCheck', 'clinicalDataFigure', 'imgCheckFigure'
+                    if ([null, ''].includes(element) && !["unsatisfiedReason", 'isMenopause',
+                            'clinicalDataFigure', 'imgCheckFigure'
                         ].includes(key)) {
                         caseData[key] = '无';
                     }

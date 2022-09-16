@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-05-30 14:30:59
- * @LastEditTime: 2022-09-06 15:12:34
+ * @LastEditTime: 2022-09-16 10:46:53
  * @FilePath: \ReportSystem_Demo\upload\templet\reportNormal.html
 -->
 <html>
@@ -131,6 +131,14 @@
             grid-template-rows: repeat(1, 1fr);
         }
 
+        #grid2ColWithLabel {
+            text-align: justify;
+            display: grid;
+            height: auto;
+            grid-template-columns: 10% 40% 5% 12% 33%;
+            grid-template-rows: repeat(1, 1fr);
+        }
+
         .grid-cell1 {
             grid-column: 1;
         }
@@ -141,6 +149,14 @@
 
         .grid-cell3 {
             grid-column: 3;
+        }
+
+        .grid-cell4 {
+            grid-column: 4;
+        }
+
+        .grid-cell5 {
+            grid-column: 5;
         }
 
         #item1 {
@@ -209,8 +225,9 @@
             <div class="labelBreak"></div>
             <div class="subtitle" id="subtitle"></div>
             <div class="labelBreak"></div>
-            <div id="grid">
+            <div id="grid2ColLabel">
                 <div class="label grid-cell1" id="pathologyNumLabel">病理号:</div>
+                <div class="label grid-cell3" id="uploadDateLabel">送检时间:</div>
                 <!-- <div class="label grid-cell3" id="consultationNumLabel">会诊号:</div> -->
             </div>
             <HR>
@@ -219,28 +236,40 @@
                 <div class="label grid-cell2" id="genderLabel">性别:</div>
                 <div class="label grid-cell3" id="ageLabel">年龄:</div>
                 <div class="labelBreak"></div>
-                <div class="label grid-cell1" id="doctorLabel">医生:</div>
                 <!-- <div class="label grid-cell2" id="hosNameLabel">医院名:</div> -->
-                <div class="label grid-cell2" id="samplePartLabel">取材部位:</div>
             </div>
             <div id="grid2Col">
+                <div class="label grid-cell1" id="samplePartLabel">取材部位:</div>
+                <div class="label grid-cell3" id="history">病史:</div>
                 <div class="labelBreak"></div>
-                <div class="label grid-cell1" id="unitLabel">送检单位:</div>
-                <div class="label grid-cell3" id="uploadDateLabel">发起会诊时间:</div>
+                <div class="label grid-cell1" id="doctorLabel">送检医生:</div>
+                <div class="label grid-cell3" id="unitLabel">送检单位:</div>
+                <div class="labelBreak"></div>
             </div>
             <HR>
-            <div id="grid2Col">
-                <div class="label grid-cell1" id="clinicalData">临床资料:</div>
-                <div class="label grid-cell3" id="imgCheck">影像学检查:</div>
+            <div id="grid2ColWithLabel">
+                <div class="label grid-cell1" style="line-height: 140%;">临床资料:</div>
+                <div class="label grid-cell2" id="clinicalData" style="line-height: 140%;"></div>
+                <div class="label grid-cell4" style="line-height: 140%;">影像学检查:</div>
+                <div class="label grid-cell5" id="imgCheck" style="line-height: 140%;"></div>
+
+                <div class="label grid-cell2"><img src="" id="clinicalDataFigure" height="215px" style="display:none;"></div>
+                <div class="label grid-cell4"><img src="" id="imgCheckFigure" height="215px" style="display:none;"></div>
+                <div class="labelBreak"></div>
+            </div>
+            <!-- <div id="grid2Col">
+                <div class="label grid-cell1" id="clinicalData" style="line-height: 150%;">临床资料:</div>
+                <div class="label grid-cell3" id="imgCheck" style="line-height: 150%;">影像学检查:</div>
                 <div class="label grid-cell1"><img src="" id="clinicalDataFigure" height="215px" style="display:none;"></div>
                 <div class="label grid-cell3"><img src="" id="imgCheckFigure" height="215px" style="display:none;"></div>
                 <div class="labelBreak"></div>
-                <div class="label grid-cell1" id="general">大体所见:</div>
+                <div class="label grid-cell1" id="note">备注:</div>
                 <div class="label grid-cell3" id="history">病史:</div>
                 <div class="labelBreak"></div>
-                <div class="label grid-cell1" id="note">备注:</div>
-                <!-- <div class="label grid-cell1" id="originDiagnosis">初诊意见:</div> -->
-            </div>
+                <div class="label grid-cell1" id="originDiagnosis">初诊意见:</div>
+            </div> -->
+            <div class="labelBreak"></div>
+            <div class="label" id="general">大体所见:</div>
             <HR>
             <div class="label" id="annotationLabel">镜下所见:
                 <div class="labelBreak"></div>
@@ -250,6 +279,7 @@
                     <div class="label grid-cell3"><img src="" id="annotation2" height="215px"></div>
                 </div>
             </div>
+            <HR>
             <div class="label" id="diagnosis">诊断意见:</div>
             <div class="label" id="suggestion">补充意见:</div>
             <HR>

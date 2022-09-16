@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-09-07 16:34:59
+ * @LastEditTime: 2022-09-16 10:11:46
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -39,19 +39,19 @@
 
 <script type="text/html" id="barDemo" lay-filter="barDemo">
 {{# if(["待发起会诊","等待诊断"].includes(d.status)){ }}
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" style="float:left;margin-top:3px">删除</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit" style="float:left;margin-top:3px">编辑</a>
     {{# } }}
 
         {{# if(["诊断完成","专家重诊"].includes(d.status)){ }}
-            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-            <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
-            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport">查看报告</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" style="float:left;margin-top:3px">删除</a>
+            <a class="layui-btn layui-btn-xs" lay-event="slideList" style="float:left;margin-top:3px">查看切片</a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport" style="float:left;margin-top:3px">查看报告</a>
             {{# } }}
 
                 {{# if(["专家退回"].includes(d.status)){ }}
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-                    <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" style="float:left;margin-top:3px">删除</a>
+                    <a class="layui-btn layui-btn-xs" lay-event="slideList" style="float:left;margin-top:3px">查看切片</a>
                     {{# } }}
 </script>
 
@@ -88,7 +88,8 @@
                     {
                         field: 'pathologyNum',
                         title: '病理号',
-                        minWidth: 80
+                        minWidth: 100,
+                        filter: true
                     }, {
                         field: 'caseType',
                         title: '病例类型',
@@ -103,12 +104,14 @@
                     }, {
                         field: 'patName',
                         title: '病人姓名',
-                        minWidth: 90
+                        minWidth: 110,
+                        filter: true
                     }, {
                         field: 'hosName',
                         title: '医院名',
                         minWidth: 120,
-                        filter: true
+                        filter: true,
+                        hide: true
                     }, {
                         field: 'doctor',
                         title: '医生名',
@@ -128,10 +131,11 @@
                         field: 'date',
                         title: '上传时间',
                         minWidth: 120,
-                        width: 240
+                        width: 220,
+                        filter: { type: 'date[yyyy-MM-dd HH:mm:ss]' },
                     }, {
                         title: "操作",
-                        minWidth: 180,
+                        minWidth: 210,
                         align: "center",
                         fixed: "right",
                         // toolbar: "#table-toolbar",
@@ -189,7 +193,8 @@
                             contentType: 'application/json;charset=UTF-8',
                             data: data,
                             success: function(res) {
-                                layer.msg('删除成功')
+                                layer.msg('删除成功');
+                                layui.table.reload('case-table');
                             },
                             done: function(res) {}
                         });

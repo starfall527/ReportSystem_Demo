@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-09-07 16:32:32
+ * @LastEditTime: 2022-09-15 17:29:42
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -35,19 +35,19 @@
 <!-- <i class="layui-icon">&#xe6b2;</i> -->
 <script type="text/html" id="barDemo" lay-filter="barDemo">
 {{# if(["等待诊断","专家退回"].includes(d.status)){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="diagnose" id="diagnose">诊断</a>
-    <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
+    <a class="layui-btn layui-btn-xs" lay-event="slideList" style="float:left;margin-top:3px">查看切片</a>
+    <a class="layui-btn layui-btn-xs" lay-event="diagnose" id="diagnose" style="float:left;margin-top:3px">诊断</a>
     {{# } }}
 
         {{# if(d.status ==="诊断完成"){ }}
-            <a class="layui-btn layui-btn-xs" lay-event="diagnose" id="diagnose">重诊</a>
-            <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
-            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport">查看报告</a>
+            <a class="layui-btn layui-btn-xs" lay-event="slideList" style="float:left;margin-top:3px">查看切片</a>
+            <a class="layui-btn layui-btn-xs" lay-event="diagnose" id="diagnose" style="float:left;margin-top:3px">重诊</a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport" style="float:left;margin-top:3px">查看报告</a>
             {{# } }}
 
                 {{# if(d.status ==="专家重诊"){ }}
-                    <a class="layui-btn layui-btn-xs" lay-event="slideList">查看切片</a>
-                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport">查看报告</a>
+                    <a class="layui-btn layui-btn-xs" lay-event="slideList" style="float:left;margin-top:3px">查看切片</a>
+                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport" style="float:left;margin-top:3px">查看报告</a>
                     {{# } }}
 </script>
 
@@ -79,7 +79,8 @@
                 [{
                     field: 'pathologyNum',
                     title: '病理号',
-                    minWidth: 80
+                    minWidth: 100,
+                    filter: true
                 }, {
                     field: 'caseType',
                     title: '病例类型',
@@ -88,12 +89,13 @@
                 }, {
                     field: 'status',
                     title: '状态',
-                    minWidth: 120,
+                    minWidth: 110,
                     filter: true
                 }, {
                     field: 'patName',
                     title: '病人姓名',
-                    minWidth: 100
+                    minWidth: 110,
+                    filter: true
                 }, {
                     field: 'hosName',
                     title: '医院名',
@@ -113,7 +115,8 @@
                     field: 'date',
                     title: '上传时间',
                     minWidth: 120,
-                    width: 210
+                    width: 220,
+                    filter: {type: 'date[yyyy-MM-dd HH:mm:ss]'},
                 }, {
                     title: "操作",
                     minWidth: 210,

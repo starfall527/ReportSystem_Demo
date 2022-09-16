@@ -51,6 +51,7 @@
                                                 <label class="layui-form-label" id="isMenopauseLabel" style="display:none">是否绝经</label>
                                                 <div class="layui-input-block" id="isMenopauseBlock" style="display:none">
                                                     <select name="isMenopause" id="isMenopause" lay-filter="isMenopause">
+                                                        <option value="">请选择</option>
                                                         <option value="否">否</option>
                                                         <option value="是">是</option>
                                                     </select>
@@ -79,7 +80,7 @@
                                     </div>
                                     <div class="layui-col-md3">
                                         <div class="layui-inline">
-                                            <label class="layui-form-label">患者姓名</label>
+                                            <label class="layui-form-label">病人姓名</label>
                                             <div class="layui-input-block">
                                                 <input type="text" name="patName" id="patName" lay-verify="required" class="layui-input">
                                             </div>
@@ -476,6 +477,7 @@
                             if (caseData.isGynecology === "妇科") {
                                 $('#isMenopauseBlock').attr('style', 'width:161px;display:block');
                                 $('#isMenopauseLabel').attr('style', 'display:block');
+                                $('#isMenopause').attr('lay-verify', 'required');
                                 if (caseData.isMenopause === "是") {
                                     document.getElementById("lastMensesLabel").innerHTML = '绝经日期';
                                 } else {
@@ -621,6 +623,7 @@
                 $('#isGynecologyBlock').attr('style', 'display:none;');
                 $('#isGynecologyLabel').attr('style', 'display:none');
                 $('#isGynecology').attr('lay-verify', '');
+                $('#isMenopause').attr('lay-verify', '');
 
                 $('#isMenopauseLabel').attr('style', 'display:none');
                 $('#isMenopauseBlock').attr('style', 'display:none');
@@ -654,6 +657,7 @@
                 $('#isMenopauseLabel').attr('style', 'display:none');
                 $('#isMenopauseBlock').attr('style', 'display:none');
                 $('#lastMenses').attr('lay-verify', '');
+                $('#isMenopause').attr('lay-verify', '');
                 $('#lastMenses').attr('style', 'display:none');
                 $('#lastMensesLabel').attr('style', 'display:none');
             }
