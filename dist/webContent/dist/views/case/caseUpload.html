@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-09-16 10:11:46
+ * @LastEditTime: 2022-09-21 15:38:50
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -37,27 +37,11 @@
     </div>
 </div>
 
-<script type="text/html" id="barDemo" lay-filter="barDemo">
-{{# if(["待发起会诊","等待诊断"].includes(d.status)){ }}
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" style="float:left;margin-top:3px">删除</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit" style="float:left;margin-top:3px">编辑</a>
-    {{# } }}
-
-        {{# if(["诊断完成","专家重诊"].includes(d.status)){ }}
-            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" style="float:left;margin-top:3px">删除</a>
-            <a class="layui-btn layui-btn-xs" lay-event="slideList" style="float:left;margin-top:3px">查看切片</a>
-            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport" style="float:left;margin-top:3px">查看报告</a>
-            {{# } }}
-
-                {{# if(["专家退回"].includes(d.status)){ }}
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" style="float:left;margin-top:3px">删除</a>
-                    <a class="layui-btn layui-btn-xs" lay-event="slideList" style="float:left;margin-top:3px">查看切片</a>
-                    {{# } }}
-</script>
 
 <link rel="stylesheet" type="text/css" href="../../../dist/lib/extend/soulTable/soulTable.css" media="all">
+
 <script>
-    layui.use(['admin', 'form', 'laydate', 'table', 'view', 'soulTable'], function() {
+    layui.use(['admin', 'form', 'laydate', 'table', 'view', 'soulTable', 'macro'], function() {
         var $ = layui.$,
             admin = layui.admin,
             element = layui.element,
@@ -68,7 +52,8 @@
             setter = layui.setter,
             form = layui.form,
             soulTable = layui.soulTable;
-
+        var macro = layui.macro;
+       
         table.render({
             elem: '#case-table',
             url: 'api/case/table', //使用后端数据
@@ -300,4 +285,23 @@
             }
         }
     });
+</script>
+
+
+<script type="text/html" id="barDemo" lay-filter="barDemo">
+{{# if(["待发起会诊","等待诊断"].includes(d.status)){ }}
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" style="float:left;margin-top:3px">删除</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit" style="float:left;margin-top:3px">编辑</a>
+    {{# } }}
+
+        {{# if(["诊断完成","专家重诊"].includes(d.status)){ }}
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" style="float:left;margin-top:3px">删除</a>
+            <a class="layui-btn layui-btn-xs" lay-event="slideList" style="float:left;margin-top:3px">查看切片</a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openReport" style="float:left;margin-top:3px">查看报告</a>
+            {{# } }}
+
+                {{# if(["专家退回"].includes(d.status)){ }}
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" style="float:left;margin-top:3px">删除</a>
+                    <a class="layui-btn layui-btn-xs" lay-event="slideList" style="float:left;margin-top:3px">查看切片</a>
+                    {{# } }}
 </script>

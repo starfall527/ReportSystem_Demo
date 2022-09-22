@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-09-16 09:33:28
+ * @LastEditTime 2022-09-21 16:21:25
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -13,6 +13,7 @@ const logger = require('log4js').getLogger();
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
+const slideCenter = require("../slideCenter/slideCenter.js");
 
 /*** @note apidoc定义常规回复
  * @apiDefine CommonResponse
@@ -195,10 +196,13 @@ router_case.get('/table', function(req, res) {
             }
         });
     }
+    let pageData = sqlMacros.getPageData(result, req.query.page, req.query.limit);
+    let NATtraverse = user[0].NATtraverse;
+    replaceNATtraverse(pageData, NATtraverse);
     var json = {
         code: 200,
         msg: '成功',
-        data: sqlMacros.getPageData(result, req.query.page, req.query.limit),
+        data: pageData,
         count: result.length
     };
     if (result.length == 0) {
@@ -307,10 +311,14 @@ router_case.get('/expertTable', function(req, res) {
         }
     }); // * 搜索指派给该专家的病例 未发起的病例不显示
 
+    let user = sqlMacros.sqlSelect('*', 'USER', true, 'userName', userName);
+    let pageData = sqlMacros.getPageData(result, req.query.page, req.query.limit);
+    let NATtraverse = user[0].NATtraverse;
+    replaceNATtraverse(pageData, NATtraverse);
     var json = {
         code: 200,
         msg: '成功',
-        data: sqlMacros.getPageData(result, req.query.page, req.query.limit),
+        data: pageData,
         count: result.length
     };
     if (result.length == 0) { json.msg = '查询无数据'; }
@@ -394,10 +402,13 @@ router_case.post('/query', function(req, res) {
     var reqKeys = Object.keys(data);
     var reqValues = Object.values(data);
     let result = sqlMacros.sqlQuery('*', 'pathCase', reqKeys, reqValues, 'AND');
+    let pageData = sqlMacros.getPageData(result, req.query.page, req.query.limit);
+    replaceNATtraverse(pageData, NATtraverse);
+
     var json = {
         code: 200,
         msg: '成功',
-        data: sqlMacros.getPageData(result, data.page, data.limit),
+        data: pageData,
         count: result.length,
         NATtraverse: NATtraverse
     };
@@ -993,6 +1004,31 @@ router_case.get('/cancelFigure', function(req, res) {
     };
     res.send(json);
 });
+
+function replaceNATtraverse(pageData, NATtraverse) {
+    if (!['', null, undefined, 'null'].includes(NATtraverse)) {
+        pageData.forEach(element => {
+            if (!['', null, undefined, 'null'].includes(element.slideUrl)) {
+                let tmpSlideUrl = JSON.parse(element.slideUrl);
+                tmpSlideUrl.forEach(slideUrlElement => {
+                    slideUrlElement.slideUrl = slideCenter.urlReplaceIP(slideUrlElement.slideUrl, NATtraverse)
+                    slideUrlElement.label = slideCenter.urlReplaceIP(slideUrlElement.label, NATtraverse)
+                    slideUrlElement.thumbnail = slideCenter.urlReplaceIP(slideUrlElement.thumbnail, NATtraverse)
+                });
+                element.slideUrl = JSON.stringify(tmpSlideUrl);
+            }
+            if (!['', null, undefined, 'null'].includes(element.annotation)) {
+                let tmpAnnotation = JSON.parse(element.slideUrl);
+                tmpAnnotation.forEach(annotationElement => {
+                    annotationElement.annotationUrl = slideCenter.urlReplaceIP(annotationElement.annotationUrl, NATtraverse)
+                });
+                element.annotation = JSON.stringify(tmpAnnotation);
+            }
+            // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
+        });
+    }
+    return pageData;
+}
 
 module.exports = {
     router_case

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 查看病例切片
  * @Date: 2022-05-31 17:40:21
- * @LastEditTime: 2022-08-24 17:16:29
+ * @LastEditTime: 2022-09-21 15:51:56
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\slideTable.html
 -->
 
@@ -46,7 +46,7 @@
 <!-- 定义一个 lay-done 对应的全局方法，以供动态模板执行 -->
 <script>
     layui.data.sendParams = function(params) {
-        layui.define(['admin', 'form', 'laydate', 'table', 'laytpl'], function() {
+        layui.define(['admin', 'form', 'laydate', 'table', 'laytpl', 'macro'], function() {
             var $ = layui.$,
                 admin = layui.admin,
                 element = layui.element,
@@ -55,88 +55,89 @@
                 table = layui.table,
                 laytpl = layui.laytpl,
                 form = layui.form;
-            setter = layui.setter;
+            var setter = layui.setter;
+            var macro = layui.macro;
             // todo 发送请求 返回该病例的切片列表
-        })
-        var tableData = params.caseData.slideUrl;
-        if (![null, undefined, '', 'null'].includes(tableData)) {
-            tableData = JSON.parse(tableData);
-            tableData.forEach(element => {
-                element.thumbnailUrl = element.thumbnail;
-                element.labelUrl = element.label;
-                let NATtraverse = layui.data('layuiAdmin').NATtraverse
-                if (!['', null, undefined, 'null'].includes(NATtraverse)) {
-                    let a = `127.0.0.1:9804`;
-                    element.labelUrl = element.labelUrl.replace(a, NATtraverse);
-                    element.thumbnailUrl = element.thumbnailUrl.replace(a, NATtraverse);
-                    element.slideUrl = element.slideUrl.replace(a, NATtraverse);
-                    // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
+            var tableData = params.caseData.slideUrl;
+            if (![null, undefined, '', 'null'].includes(tableData)) {
+                tableData = JSON.parse(tableData);
+                tableData.forEach(element => {
+                    element.thumbnailUrl = element.thumbnail;
+                    element.labelUrl = element.label;
+                    let NATtraverse = layui.data('layuiAdmin').NATtraverse
+                    console.log(NATtraverse)
+                    if (!['', null, undefined, 'null'].includes(NATtraverse)) {
+                        element.labelUrl = macro.urlReplaceIP(element.labelUrl, NATtraverse) // element.labelUrl.replace(a, NATtraverse);
+                        element.thumbnailUrl = macro.urlReplaceIP(element.thumbnailUrl, NATtraverse) // element.thumbnailUrl.replace(a, NATtraverse);
+                        element.slideUrl = macro.urlReplaceIP(element.slideUrl, NATtraverse) // element.slideUrl.replace(a, NATtraverse);
+                        // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
+                    }
+                });
+            } else { tableData = [] }
+            var slideTable = layui.table.render({
+                elem: '#slide-table-list',
+                data: tableData,
+                cols: [
+                    [{
+                            field: 'fileName',
+                            title: '切片名',
+                            minWidth: 80
+                        },
+                        {
+                            field: 'labelUrl',
+                            title: '标签图',
+                            templet: "#labelTpl",
+                            minWidth: 120
+                        },
+                        {
+                            field: 'thumbnail',
+                            title: '缩略图',
+                            templet: "#thumbnailTpl",
+                            minWidth: 120
+                        },
+                        {
+                            title: "操作",
+                            width: 150,
+                            align: "center",
+                            fixed: "right",
+                            toolbar: "#slide-table-toolbar"
+                        }
+                    ]
+                ],
+                page: true,
+                limit: 10,
+                done: function(params) {
+                    $(".layui-table-main tr").each(function(index, val) {
+                        $(".layui-table-fixed").each(function() {
+                            $($(this).find(".layui-table-body tbody tr")[index]).height($(val).height())
+                        })
+                    });
+                    $(".layui-table-header tr").each(function(index, val) {
+                        $(".layui-table-fixed").each(function() {
+                            $($(this).find(".layui-table-header thead tr")[index]).height($(val).height())
+                        })
+                    });
+                    // 解决checkBox和行高度不一致的问题
                 }
             });
-        } else { tableData = [] }
-        var slideTable = layui.table.render({
-            elem: '#slide-table-list',
-            data: tableData,
-            cols: [
-                [{
-                        field: 'fileName',
-                        title: '切片名',
-                        minWidth: 80
-                    },
-                    {
-                        field: 'labelUrl',
-                        title: '标签图',
-                        templet: "#labelTpl",
-                        minWidth: 120
-                    },
-                    {
-                        field: 'thumbnail',
-                        title: '缩略图',
-                        templet: "#thumbnailTpl",
-                        minWidth: 120
-                    },
-                    {
-                        title: "操作",
-                        width: 150,
-                        align: "center",
-                        fixed: "right",
-                        toolbar: "#slide-table-toolbar"
-                    }
-                ]
-            ],
-            page: true,
-            limit: 10,
-            done: function(params) {
-                $(".layui-table-main tr").each(function(index, val) {
-                    $(".layui-table-fixed").each(function() {
-                        $($(this).find(".layui-table-body tbody tr")[index]).height($(val).height())
-                    })
-                });
-                $(".layui-table-header tr").each(function(index, val) {
-                    $(".layui-table-fixed").each(function() {
-                        $($(this).find(".layui-table-header thead tr")[index]).height($(val).height())
-                    })
-                });
-                // 解决checkBox和行高度不一致的问题
-            }
-        });
 
-        //工具条事件
-        layui.table.on('tool(slide-table-list)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
-            var data = obj.data; //获得当前行数据
-            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+            //工具条事件
+            layui.table.on('tool(slide-table-list)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
-            if (layEvent === 'openSlide') { //查看切片
-                layui.layer.open({
-                    type: 2,
-                    title: data.fileName,
-                    shade: false,
-                    maxmin: true,
-                    area: ['100%', '100%'],
-                    content: data.slideUrl
-                }); // iframe弹窗
-            }
+                if (layEvent === 'openSlide') { //查看切片
+                    layui.layer.open({
+                        type: 2,
+                        title: data.fileName,
+                        shade: false,
+                        maxmin: true,
+                        area: ['100%', '100%'],
+                        content: data.slideUrl
+                    }); // iframe弹窗
+                }
+            })
         });
     };
 </script>

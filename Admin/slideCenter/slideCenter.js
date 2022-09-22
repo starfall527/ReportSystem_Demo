@@ -285,8 +285,7 @@ function getAnnotationImage(path, tenantName, AnnotationId, NATtraverse) {
     // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
     let uri = `http://${options.socket}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
     if (!['', null, undefined, 'null'].includes(NATtraverse)) {
-        let a = `${options.hostname}:${options.port}`;
-        uri = uri.replace(a, NATtraverse);
+        uri = urlReplaceIP(uri, NATtraverse)
         // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
     }
     return uri;
@@ -303,8 +302,7 @@ function getThumbnailUrl(path, tenantName, imageName, NATtraverse) {
     // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
     let uri = `http://${options.socket}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
     if (!['', null, undefined, 'null'].includes(NATtraverse)) {
-        let a = `${options.hostname}:${options.port}`;
-        uri = uri.replace(a, NATtraverse);
+        uri = urlReplaceIP(uri, NATtraverse)
         // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
     }
     return uri;
@@ -322,8 +320,7 @@ function getLabelUrl(path, tenantName, imageName, NATtraverse) {
     // let uri = sendRequest(options.path); // 需要获取二进制的时候,再用async和await
     let uri = `http://${options.socket}${options.path}` // * 只传地址给前端 table只能以http://127.0.0.1开头 localhost不行
     if (!['', null, undefined, 'null'].includes(NATtraverse)) {
-        let a = `${options.hostname}:${options.port}`;
-        uri = uri.replace(a, NATtraverse);
+        uri = urlReplaceIP(uri, NATtraverse)
         // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
     }
     return uri;
@@ -440,6 +437,8 @@ router_slideCenter.get('/table', function(req, res) {
         })
     }
     let pageData = sqlMacros.getPageData(tableData, req.query.page, req.query.limit);
+
+    
     var json = {
         code: 200,
         msg: '成功',
@@ -532,10 +531,9 @@ router_slideCenter.get('/openSlide', function(req, res) {
         var img = fs.createWriteStream(qrImgPath);
         // 将生成的二维码流pipe进入刚刚创建的可写入流，并生成文件
         if (!['', null, undefined, 'null'].includes(NATtraverse)) {
-            let a = `${options.hostname}:${options.port}`;
             thumbnail = getThumbnailUrl(data.path, '', '', NATtraverse);
             label = getLabelUrl(data.path, '', '', NATtraverse);
-            apiRes = apiRes.replace(a, NATtraverse);
+            apiRes = urlReplaceIP(apiRes, NATtraverse)
             // 来自外网的访问需要把apiRes的127.0.0.1:9804替换成NATtraverse
         } else {
             thumbnail = getThumbnailUrl(data.path);
@@ -560,11 +558,40 @@ router_slideCenter.get('/openSlide', function(req, res) {
         });
     })
 });
-// #endregion
+
+function urlReplaceIP(url, ip) {
+    var url = url || "";
+    try {
+        if (url == "") {
+            return url;
+        }
+        if (url.indexOf(ip) != -1) {
+            return url; //没有此字段则退出
+        }
+        //截取ip前字段"http:"
+        if (url.indexOf('//') == -1) {
+            return url; //没有此字段则退出
+        }
+        var substr1 = url.substring(0, url.indexOf('//'));
+        //console.log("oldUrl protocol:",substr1); // "http:"
+
+        var substr2 = url.substring(url.indexOf('//') + 2, url.length);
+        substr2 = substr2.substring(substr2.indexOf('/') + 1, substr2.length);
+        //console.log("oldUrl path:", substr2); //"it/local/facerec/default/20200609112555435018.jpg"
+        var newUrl = substr1 + "//" + ip + "/" + substr2;
+        //console.log("newUrl:",newUrl);
+        return newUrl;
+    } catch (exception) {
+        alert("replace IP error");
+    }
+    // console.log(urlReplaceIP('http://192.168.31.85:9804/local/facerec/default/20200609112555435018.jpg','192.168.31.85:9000'))
+}
+// #endregion 
 
 module.exports = {
     router_slideCenter,
     getFolderList,
     getFileList,
-    getTree
+    getTree,
+    urlReplaceIP
 }
