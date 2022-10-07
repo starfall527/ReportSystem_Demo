@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-09-15 17:29:42
+ * @LastEditTime: 2022-09-28 14:13:29
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseExpert.html
 -->
 <div class="layui-card layadmin-header">
@@ -34,7 +34,7 @@
 
 <!-- <i class="layui-icon">&#xe6b2;</i> -->
 <script type="text/html" id="barDemo" lay-filter="barDemo">
-{{# if(["等待诊断","专家退回"].includes(d.status)){ }}
+{{# if(["等待诊断"].includes(d.status)){ }}
     <a class="layui-btn layui-btn-xs" lay-event="slideList" style="float:left;margin-top:3px">查看切片</a>
     <a class="layui-btn layui-btn-xs" lay-event="diagnose" id="diagnose" style="float:left;margin-top:3px">诊断</a>
     {{# } }}

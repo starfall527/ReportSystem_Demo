@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-05-30 14:30:59
- * @LastEditTime: 2022-09-16 10:46:53
+ * @LastEditTime: 2022-09-28 15:09:29
  * @FilePath: \ReportSystem_Demo\upload\templet\reportNormal.html
 -->
 <html>
@@ -127,7 +127,7 @@
             text-align: justify;
             display: grid;
             height: auto;
-            grid-template-columns: 50% 5% 45%;
+            grid-template-columns: 35% 65%;
             grid-template-rows: repeat(1, 1fr);
         }
 
@@ -240,10 +240,10 @@
             </div>
             <div id="grid2Col">
                 <div class="label grid-cell1" id="samplePartLabel">取材部位:</div>
-                <div class="label grid-cell3" id="history">病史:</div>
+                <div class="label grid-cell2" id="history">病史:</div>
                 <div class="labelBreak"></div>
                 <div class="label grid-cell1" id="doctorLabel">送检医生:</div>
-                <div class="label grid-cell3" id="unitLabel">送检单位:</div>
+                <div class="label grid-cell2" id="unitLabel">送检单位:</div>
                 <div class="labelBreak"></div>
             </div>
             <HR>
@@ -268,8 +268,10 @@
                 <div class="labelBreak"></div>
                 <div class="label grid-cell1" id="originDiagnosis">初诊意见:</div>
             </div> -->
-            <div class="labelBreak"></div>
-            <div class="label" id="general">大体所见:</div>
+            <div id="grid2Col">
+                <div class="labelBreak"></div>
+            </div>
+            <div class="label" id="general" style="line-height: 140%;">大体所见:</div>
             <HR>
             <div class="label" id="annotationLabel">镜下所见:
                 <div class="labelBreak"></div>
@@ -280,7 +282,9 @@
                 </div>
             </div>
             <HR>
+            <div class="labelBreak"></div>
             <div class="label" id="diagnosis">诊断意见:</div>
+            <div class="labelBreak"></div>
             <div class="label" id="suggestion">补充意见:</div>
             <HR>
             <div id="grid2ColLabel">

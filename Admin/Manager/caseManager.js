@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-09-21 16:21:25
+ * @LastEditTime 2022-09-28 15:38:17
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -230,6 +230,7 @@ router_case.post('/table', function(req, res) {
         status: [],
         caseType: [],
         subspecialty: [],
+        doctor: [],
         expert: [],
         patName: [],
         pathologyNum: [],
@@ -261,6 +262,7 @@ router_case.post('/table', function(req, res) {
         data.caseType.push(element.caseType);
         data.subspecialty.push(element.subspecialty);
         data.expert.push(element.expert);
+        data.doctor.push(element.doctor);
         data.patName.push(element.patName);
         data.pathologyNum.push(element.pathologyNum);
         data.date.push(element.date);
