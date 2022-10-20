@@ -28,15 +28,16 @@
                                                         <option value="">请选择</option>
                                                         <option value="TBS病例">TBS病例</option>
                                                         <option value="常规病例">常规病例</option>
+                                                        <option value="荧光真菌">荧光真菌</option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="layui-col-md3">
+                                        <div class="layui-col-md3 layui-hide" id="isGynecologyCol">
                                             <div class="layui-inline">
-                                                <label class="layui-form-label" id="isGynecologyLabel" style="display:none">是否妇科</label>
-                                                <div class="layui-input-block" id="isGynecologyBlock" style="display:none">
+                                                <label class="layui-form-label">是否妇科</label>
+                                                <div class="layui-input-block" style="width:161px;">
                                                     <select name="isGynecology" id="isGynecology" lay-filter="isGynecology">
                                                         <option value="">请选择</option>
                                                         <option value="非妇科">非妇科</option>
@@ -46,10 +47,10 @@
                                             </div>
                                         </div>
 
-                                        <div class="layui-col-md3">
+                                        <div class="layui-col-md3 layui-hide" id="isMenopauseCol">
                                             <div class="layui-inline">
-                                                <label class="layui-form-label" id="isMenopauseLabel" style="display:none">是否绝经</label>
-                                                <div class="layui-input-block" id="isMenopauseBlock" style="display:none">
+                                                <label class="layui-form-label" id="isMenopauseLabel">是否绝经</label>
+                                                <div class="layui-input-block" id="isMenopauseBlock" style="width:159px;">
                                                     <select name="isMenopause" id="isMenopause" lay-filter="isMenopause">
                                                         <option value="">请选择</option>
                                                         <option value="否">否</option>
@@ -58,11 +59,11 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="layui-col-md3">
+                                        <div class="layui-col-md3 layui-hide" id="lastMensesCol">
                                             <div class="layui-inline">
-                                                <label class="layui-form-label" id="lastMensesLabel" style="display:none">末次月经</label>
+                                                <label class="layui-form-label" id="lastMensesLabel">末次月经</label>
                                                 <div class="layui-input-inline" style="width:159px">
-                                                    <input type="text" name="lastMenses" id="lastMenses" lay-verify="" placeholder="" class="layui-input" style="display:none">
+                                                    <input type="text" name="lastMenses" id="lastMenses" lay-verify="" placeholder="" class="layui-input">
                                                 </div>
                                             </div>
                                         </div>
@@ -108,7 +109,6 @@
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
-
                                     <div class="layui-col-md3">
                                         <div class="layui-inline">
                                             <label class="layui-form-label">医生名</label>
@@ -128,7 +128,7 @@
                                 </div>
 
                                 <div class="layui-form-item">
-                                    <div class="layui-col-md3">
+                                    <div class="layui-col-md3" id="samplePartCol">
                                         <div class="layui-inline">
                                             <label class="layui-form-label">取材部位</label>
                                             <div class="layui-input-block">
@@ -136,11 +136,25 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="layui-col-md3">
+                                    <div class="layui-col-md3 layui-hide" id="sampleCol">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label" id="sampleLabel">送检标本</label>
+                                            <div class="layui-input-inline" id="sampleBlock" style="width:160px">
+                                                <select name="sample" id="sample" lay-verify="">
+                                                    <option value="">请选择</option>
+                                                    <option value="皮屑">皮屑</option>
+                                                    <option value="甲屑">甲屑</option>
+                                                    <option value="毛发">毛发</option>
+                                                    <option value="分泌物">分泌物</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md3 layui-hide" id="subspecialtyCol">
                                         <div class="layui-inline">
                                             <label class="layui-form-label">亚专科</label>
                                             <div class="layui-input-inline" id="subspecialtyTypeBlock" style="width:160px">
-                                                <select name="subspecialty" id="subspecialty" lay-verify="required">
+                                                <select name="subspecialty" id="subspecialty" lay-verify="">
                                                     <option value="">请选择</option>
                                                     <option value="神经病理">神经病理</option>
                                                     <option value="淋巴病理">淋巴病理</option>
@@ -169,10 +183,21 @@
                                             <input type="text" name="inspectionDate" id="inspectionDate" lay-verify="" placeholder="" class="layui-input">
                                         </div>
                                     </div> -->
+                                    <div class="layui-col-md3 layui-hide" id="departmentCol">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">送检科室</label>
+                                            <div class="layui-input-inline" style="width:160px">
+                                                <select name="department" id="department" lay-verify="">
+                                                    <option value="">请选择</option>
+                                                    <option value="皮肤科">皮肤科</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="layui-col-md3">
                                         <div class="layui-inline">
                                             <label class="layui-form-label">送检单位</label>
-                                            <div class="layui-input-block" style="width: 240px;">
+                                            <div class="layui-input-block">
                                                 <input type="text" name="unit" id="unit" lay-verify="required" class="layui-input">
                                             </div>
                                         </div>
@@ -185,7 +210,7 @@
                     <div class="layui-row">
                         <div class="layui-card">
                             <div class="layui-card-body">
-                                <div class="layui-row layui-col-space5" style="margin-right:20px;">
+                                <div class="layui-row layui-col-space5" style="margin-right:20px;" id="imgDataRow">
                                     <div class="layui-col-md6">
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">临床资料</label>
@@ -250,10 +275,10 @@
                                             </div>
                                         </div>
                                     </div> -->
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md6 layui-hide" id="generalCol">
                                         <div class="layui-form-item">
                                             <!-- 大体所见 TBS系统中没有这个 需要设置隐藏 -->
-                                            <label class="layui-form-label" id="generalLabel">大体所见</label>
+                                            <label class="layui-form-label">大体所见</label>
                                             <div class="layui-input-block">
                                                 <textarea name="general" id="general" class="layui-textarea"></textarea>
                                             </div>
@@ -315,7 +340,7 @@
                                         </script>
                                         <div class="layui-btn-container form-step-btn" style="margin-top: 10px;">
                                             <button class="layui-btn pre" lay-submit lay-filter="formStep2-pre" id="step-btn">上一步</button>
-                                            <button class="layui-btn next" lay-submit lay-filter="formStep2-next">下一步</button>
+                                            <button class="layui-btn next" lay-submit lay-filter="formStep2-next">编辑报告</button>
                                         </div>
                                     </div>
                                 </div>
@@ -462,29 +487,31 @@
                             document.getElementById("imgCheckFigure").setAttribute('value', randomUrl);
                         }
 
-                        if (caseData.caseType === '常规病例') {
-                            $('#general').attr('style', 'display:block');
-                            $('#generalLabel').attr('style', 'display:block');
-                            $('#isGynecologyBlock').attr('style', 'display:none');
-                            $('#isGynecologyLabel').attr('style', 'display:none');
+                        if (["常规病例", "荧光真菌"].includes(caseData.caseType)) {
+                            $('#generalCol').removeClass("layui-hide");
+                            $('#isGynecologyCol').addClass("layui-hide");
                             $('#isGynecology').val('非妇科');
-                        } else if (caseData.caseType === 'TBS病例') {
-                            $('#general').attr('style', 'display:none');
-                            $('#generalLabel').attr('style', 'display:none');
+                            if (data.value === '荧光真菌') {
+                                $('#sample').attr('lay-verify', 'required');
 
-                            $('#isGynecologyBlock').attr('style', 'width:161px;display:block;');
-                            $('#isGynecologyLabel').attr('style', 'display:block');
+                                $('#imgDataRow').attr('style', 'display:none');
+                                $('#departmentCol').removeClass("layui-hide");
+
+                                $('#generalCol').addClass("layui-hide");
+
+                                $('#sampleCol').removeClass("layui-hide");
+                            }
+                        } else if (caseData.caseType === 'TBS病例') {
+                            $('#isGynecologyCol').removeClass("layui-hide");
                             if (caseData.isGynecology === "妇科") {
-                                $('#isMenopauseBlock').attr('style', 'width:161px;display:block');
-                                $('#isMenopauseLabel').attr('style', 'display:block');
+                                $('#isMenopauseCol').removeClass("layui-hide");
                                 $('#isMenopause').attr('lay-verify', 'required');
                                 if (caseData.isMenopause === "是") {
                                     document.getElementById("lastMensesLabel").innerHTML = '绝经日期';
                                 } else {
                                     document.getElementById("lastMensesLabel").innerHTML = '末次月经';
                                 }
-                                $('#lastMenses').attr('style', 'display:block');
-                                $('#lastMensesLabel').attr('style', 'display:block');
+                                $('#lastMensesCol').removeClass("layui-hide");
                                 $('#lastMenses').attr('lay-verify', 'required');
                             }
                             $('#isGynecology').val(caseData.isGynecology);
@@ -616,37 +643,53 @@
 
         // select同步筛选条件
         form.on('select(caseType)', function(data) {
-            if (data.value === '常规病例') {
-                $('#general').attr('style', 'display:block');
-                $('#generalLabel').attr('style', 'display:block');
+            if (["常规病例", "荧光真菌"].includes(data.value)) {
+                $('#generalCol').removeClass("layui-hide");
+            }
+
+            if (data.value === 'TBS病例') {
+                $('#generalCol').addClass("layui-hide");
+                $('#isGynecologyCol').removeClass("layui-hide");
+            } else {
+                $('#isGynecologyCol').addClass("layui-hide");
                 $('#isGynecology').val('');
-                $('#isGynecologyBlock').attr('style', 'display:none;');
-                $('#isGynecologyLabel').attr('style', 'display:none');
                 $('#isGynecology').attr('lay-verify', '');
+
+                $('#isMenopauseCol').addClass("layui-hide");
                 $('#isMenopause').attr('lay-verify', '');
 
-                $('#isMenopauseLabel').attr('style', 'display:none');
-                $('#isMenopauseBlock').attr('style', 'display:none');
-                $('#lastMenses').attr('style', 'display:none');
-                $('#lastMensesLabel').attr('style', 'display:none');
-            } else if (data.value === 'TBS病例') {
-                $('#general').attr('style', 'display:none');
-                $('#generalLabel').attr('style', 'display:none');
-                $('#isGynecologyBlock').attr('style', 'width:161px;display:block');
-                $('#isGynecologyLabel').attr('style', 'display:block');
-
-                // $('#isGynecology').attr('lay-verify', 'required');
+                $('#lastMensesCol').addClass("layui-hide");
             }
+
+            if (data.value === '荧光真菌') {
+                $('#samplePartCol').addClass("layui-hide");
+                $('#samplePart').attr('lay-verify', '');
+
+                $('#sampleCol').removeClass("layui-hide");
+                $('#sample').attr('lay-verify', 'required');
+
+                $('#imgDataRow').attr('style', 'display:none');
+                $('#generalCol').addClass("layui-hide");
+                $('#departmentCol').removeClass("layui-hide");
+            } else {
+                $('#samplePartCol').removeClass("layui-hide");
+                $('#samplePart').attr('lay-verify', 'required');
+
+                $('#sampleCol').addClass("layui-hide");
+                $('#sample').attr('lay-verify', '');
+
+                $('#imgDataRow').attr('style', 'display:block');
+                $('#departmentCol').addClass("layui-hide");
+            }
+
             form.render(""); //刷新select选择框渲染
         })
 
         // 根据 是否妇科 判断是否显示 是否绝经 末次月经
         form.on('select(isGynecology)', function(data) {
             if (data.value === '妇科') {
-                $('#isMenopauseLabel').attr('style', 'display:block');
-                $('#isMenopauseBlock').attr('style', 'width:161px;display:block');
-                $('#lastMenses').attr('style', 'width:161px;display:block');
-                $('#lastMensesLabel').attr('style', 'display:block');
+                $('#isMenopauseCol').removeClass("layui-hide");
+                $('#lastMensesCol').removeClass("layui-hide");
                 if (caseData.isMenopause === "是") {
                     document.getElementById("lastMensesLabel").innerHTML = '绝经日期';
                 } else {
@@ -654,12 +697,10 @@
                 }
                 // $('#lastMenses').attr('lay-verify', 'required');
             } else if (data.value === '非妇科') {
-                $('#isMenopauseLabel').attr('style', 'display:none');
-                $('#isMenopauseBlock').attr('style', 'display:none');
+                $('#isMenopauseCol').addClass("layui-hide");
+                $('#lastMensesCol').addClass("layui-hide");
                 $('#lastMenses').attr('lay-verify', '');
                 $('#isMenopause').attr('lay-verify', '');
-                $('#lastMenses').attr('style', 'display:none');
-                $('#lastMensesLabel').attr('style', 'display:none');
             }
             form.render(); //刷新select选择框渲染
         })
@@ -680,7 +721,7 @@
             height: Math.max($(document).height() - $('#stepForm').offset().top - 55, 790),
             stepItems: [{ title: '填写病例信息' },
                 { title: '选择病例切片' },
-                { title: '选择会诊专家' }
+                { title: '编辑诊断报告' }
             ]
         });
 
@@ -879,6 +920,7 @@
             return false;
         });
         form.on('submit(formStep2-next)', function(data) {
+            // 新功能,保存当前数据,并直接跳转到编辑报告界面
             var checkStatus = table.checkStatus('slide-table-list'),
                 checkData = checkStatus.data; // 要改成复选框
             caseData.slideUrl = [];
@@ -900,67 +942,36 @@
                                 label: res.label,
                                 folder: res.folder
                             });
+
+                            caseData.status = '等待诊断';
+                            caseData.uploadDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
+                            caseData.slideUrl = JSON.stringify(caseData.slideUrl);
+                            caseData.expert = layui.data('layuiAdmin').userName;
+                            Object.keys(data.field).forEach(element => {
+                                caseData[element] = data.field[element]; //逐个赋值
+                            });
+                            admin.req({
+                                url: 'api/case/insert',
+                                type: 'POST',
+                                contentType: 'application/json;charset=UTF-8',
+                                data: JSON.stringify({
+                                    data: caseData
+                                }),
+                                success: function(res) {
+                                    let caseTypeDisplay = {
+                                        '常规病例': 'Normal',
+                                        'TBS病例': 'TBS',
+                                        '荧光真菌': 'Fungus',
+                                    };
+                                    top.location.href = `./#/case/caseReport/caseID=${caseData.id}/caseType=${caseTypeDisplay[caseData.caseType]}`;
+                                },
+                                done: function(res) {}
+                            })
                         },
                         done: function(res) {}
                     })
                 });
-                step.next('#stepForm');
-                form.render();
-
-
-                let tableHeight = $(document).height() - $('#expert-table').offset().top - $('#step-btn').height() - 60;
-                // document.getElementById('expert-card').setAttribute('style', `height: ${tableHeight + offset}px`);
-                table.render({
-                    elem: '#expert-table',
-                    url: 'api/user/expertTable', //使用后端数据
-                    height: tableHeight,
-                    response: {
-                        statusCode: 200
-                    },
-                    cols: [
-                        [{
-                                field: 'radio',
-                                type: 'radio',
-                                fixed: 'left',
-                                minWidth: 120,
-                            },
-                            {
-                                field: 'userName',
-                                title: '专家名',
-                                width: 240,
-                                minWidth: 120,
-                            }, {
-                                field: 'subspecialty',
-                                title: '擅长亚专科',
-                                minWidth: 120,
-                            }, {
-                                field: 'info',
-                                title: '简介',
-                                minWidth: 120,
-                            },
-                        ]
-                    ],
-                    page: true,
-                    limit: 20,
-                    done: function() {
-                        $(".layui-table-main tr").each(function(index, val) {
-                            if ([2, 3].includes(index)) { // * 由于前面切片列表需要适应图片,这里index是2,3而不是0,1;layui-table-fixed的index需要-2
-                                $(".layui-table-fixed").each(function() { // layui-table-fixed的index需要-2
-                                    $($(this).find(".layui-table-body tbody tr")[index - 2]).height(38) //$(val).height()
-                                })
-                            }
-                        });
-                        $(".layui-table-header tr").each(function(index, val) {
-                            if ([2, 3].includes(index)) { // * 由于前面切片列表需要适应图片,这里index是2,3而不是0,1;
-                                $(".layui-table-fixed").each(function() { // layui-table-fixed的index需要-2
-                                    $($(this).find(".layui-table-header thead tr")[index - 2]).height(38) //$(val).height()
-                                })
-                            }
-                        });
-                    }
-                });
             }
-            form.render('radio');
             return false;
         });
         form.on('submit(formStep3-pre)', function(data) {
@@ -968,4 +979,22 @@
             return false;
         });
     });
+
+    // 获取格式化时间字符串
+    Date.prototype.Format = function(fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份 
+            "d+": this.getDate(), //日 
+            "h+": this.getHours(), //小时 
+            "m+": this.getMinutes(), //分 
+            "s+": this.getSeconds() //秒 
+        };
+        if (/(y+)/.test(fmt)) { //根据y的长度来截取年
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        }
+        return fmt;
+    }
 </script>

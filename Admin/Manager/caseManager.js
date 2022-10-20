@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-09-28 15:38:17
+ * @LastEditTime 2022-10-19 17:23:58
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -55,6 +55,7 @@ const slideCenter = require("../slideCenter/slideCenter.js");
  * @apiSuccess {String} data.isMenopause        是否绝经
  * 
  * @apiSuccess {String} data.samplePart         取样部位
+ * @apiSuccess {String} data.sample             送检标本 仅荧光真菌用
  * @apiSuccess {String} data.clinicalData       临床资料
  * @apiSuccess {String} data.clinicalDataFigure 临床资料附图
  * @apiSuccess {String} data.imgCheck           影像学检查
@@ -118,6 +119,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "isMenopause VARCHAR(255)," + // 是否绝经    
 
     "samplePart VARCHAR(255)," + // 取样部位 
+    "sample VARCHAR(255)," + // 送检标本 仅荧光真菌用 
     "clinicalData VARCHAR(255)," + // 临床资料
     "clinicalDataFigure VARCHAR(255)," + // 临床资料附图
     "imgCheck VARCHAR(255)," + // 影像学检查
@@ -151,7 +153,7 @@ const createCaseTable = sqlMacros.sqlExecute(
     "date timestamp NOT NULL default (datetime('now', 'localtime')))" // 建表时间
 );
 // sqlMacros.sqlAlter('pathCase', 'clinicalDataFigure', 'VARCHAR(255)', ''); //新增字段
-sqlMacros.sqlAlter('pathCase', 'suggestion', 'VARCHAR(255)', ''); //新增字段
+sqlMacros.sqlAlter('pathCase', 'sample', 'VARCHAR(255)', ''); //新增字段
 
 /*** @note 查询病例
  * @api {get} /api/case/table 查询病例
@@ -473,7 +475,7 @@ router_case.post('/batchDel', function(req, res) {
 router_case.post('/insert', function(req, res) {
     let data = req.body.data;
     delete data.file;
-    if (data.caseType === "常规病例") {
+    if (["常规病例", "荧光真菌"].includes(data.caseType)) {
         data.isGynecology = "非妇科";
         data.isMenopause = '';
         data.lastMenses = '';
@@ -655,8 +657,15 @@ router_case.get('/openReport', function(req, res) {
     if (user.length > 0) {
         user = user[0];
         if (!['', null, undefined, 'null'].includes(user.reportTitle)) {
-            caseData.reportTitle = JSON.parse(user.reportTitle)[type].reportTitle;
-            caseData.subtitle = JSON.parse(user.reportTitle)[type].subtitle;
+            try {
+                caseData.reportTitle = JSON.parse(user.reportTitle)[type].reportTitle;
+                caseData.subtitle = JSON.parse(user.reportTitle)[type].subtitle;
+            } catch (e) {
+                logger.error(`未找到报告标题,请在右上角“基本资料”处设置对应病例类型的报告标题`);
+                var json = { code: 500, msg: '未找到报告标题,请在右上角“基本资料”处设置对应病例类型的报告标题' };
+                res.send(json);
+                return;
+            }
         } else {
             let organization = sqlMacros.sqlSelect('*', 'organization', true, 'name', user.organization);
             if (organization.length > 0) {
@@ -673,6 +682,7 @@ router_case.get('/openReport', function(req, res) {
     let caseTypeDisplay = {
         '常规病例': 'Normal',
         'TBS病例': 'TBS',
+        '荧光真菌': 'Fungus',
     };
     type = caseTypeDisplay[type];
     let executablePath = '';
@@ -737,6 +747,13 @@ router_case.get('/openReport', function(req, res) {
             } else if (caseData.caseType === "TBS病例") {
                 document.getElementById("isMenopause").setAttribute("style", "display:none;");
                 document.getElementById("lastMenses").setAttribute("style", "display:none;");
+            } else if (caseData.caseType === "荧光真菌") {
+                if (![null, undefined, ''].includes(document.getElementById("sample"))) {
+                    document.getElementById("sample").innerHTML += caseData.sample; // 大体所见
+                }
+                if (![null, undefined, ''].includes(document.getElementById("department"))) {
+                    document.getElementById("department").innerHTML += caseData.department; // 送检部门
+                }
             }
 
             if (![null, undefined, ''].includes(document.getElementById("pathologyNumLabel"))) {
@@ -803,8 +820,7 @@ router_case.get('/openReport', function(req, res) {
                 document.getElementById("imgCheckFigure").setAttribute('style', "display:block;");
                 // document.getElementById("imgCheck").innerHTML = "影像学检查:";
             }
-
-            if (caseData.caseType === "常规病例") {
+            if (["常规病例", "荧光真菌"].includes(caseData.caseType)) {
                 if (![null, undefined, ''].includes(document.getElementById("general"))) {
                     document.getElementById("general").innerHTML += caseData.general; // 大体所见
                 }

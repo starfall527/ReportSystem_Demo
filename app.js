@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 
  * @Date 2021-10-21 17:26:04
- * @LastEditTime 2022-08-01 11:49:50
+ * @LastEditTime 2022-10-08 15:08:57
  * @FilePath \ReportSystem_Demo\app.js
  */
 const express = require("express");
@@ -77,7 +77,7 @@ app.use('/api/user', userManager.router_user);
 app.use('/api/case', caseManager.router_case);
 app.use('/api/organization', organization.router_organization);
 
-app.listen(9000, function() {
+app.listen(9001, function() {
     console.log("the server is started!!!");
 });
 

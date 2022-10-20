@@ -2,8 +2,8 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-09-21 15:38:50
- * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
+ * @LastEditTime: 2022-10-08 16:11:18
+ * @FilePath: \ReportSystem_Demo\dist\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
     <div class="layui-breadcrumb" lay-filter="breadcrumb">
@@ -19,7 +19,7 @@
             <div class="layui-card-body">
                 <div class="layui-btn-container case-table-btn">
                     <button class="layui-btn" data-type="newCase">新建病例</button>
-                    <button class="layui-btn" data-type="startConsultation">发起会诊</button>
+                    <!-- <button class="layui-btn" data-type="startConsultation">发起会诊</button> -->
                     <button class="layui-btn" data-type="clearFilter">清除筛选条件</button>
                 </div>
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
@@ -53,7 +53,7 @@
             form = layui.form,
             soulTable = layui.soulTable;
         var macro = layui.macro;
-       
+
         table.render({
             elem: '#case-table',
             url: 'api/case/table', //使用后端数据
@@ -144,6 +144,9 @@
                         if (b === 'TBS') {
                             $(this).text() = 'TBS病例'
                         }
+                        if (b === 'fungus') {
+                            $(this).text() = '荧光真菌'
+                        }
                         if (b === '等待诊断') {
                             $(this).css('background-color', '#00CCCC');
                         }
@@ -172,6 +175,11 @@
                 if (data.doctor == layui.data('layuiAdmin').userName) {
                     layer.confirm('将删除病例,确定？', function(index) {
                         obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
+                        Object.keys(data).forEach(element => {
+                            if (!['id', 'reportPath'].includes(element)) {
+                                delete data[element]
+                            }
+                        });
                         admin.req({
                             url: 'api/case/delete',
                             type: 'get',

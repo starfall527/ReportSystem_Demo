@@ -2,13 +2,13 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-09-07 14:59:10
+ * @LastEditTime: 2022-10-07 15:22:29
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
     <div class="layui-breadcrumb" lay-filter="breadcrumb">
         <a lay-href="">主页</a>
-        <a lay-href="./case/caseExpert"><cite>病例管理</cite></a>
+        <a lay-href="./case/caseUpload"><cite>病例管理</cite></a>
         <a><cite>病例详情</cite></a>
     </div>
 </div>
@@ -283,7 +283,7 @@
                                         <button class="layui-btn layui-btn-radius" lay-submit type="button" lay-filter="form-report">提交报告</button>
                                         <!-- <button class="layui-btn layui-btn-normal layui-btn-radius">加做医嘱</button> -->
                                         <!-- <button class="layui-btn layui-btn-warm layui-btn-radius">转诊</button> -->
-                                        <button class="layui-btn layui-btn-danger layui-btn-radius" data-type="returnReport" lay-submit type="button" lay-filter="form-report">退回病例</button>
+                                        <button class="layui-btn layui-btn-danger layui-btn-radius" data-type="returnReport" id="returnReport" lay-submit type="button" lay-filter="form-report">退回病例</button>
                                         <!-- <button class="layui-btn layui-btn-primary layui-btn-radius">质控评价</button> -->
                                     </div>
                                 </div>
@@ -405,7 +405,7 @@
             success: function(res) { // 查询到病例数据,设置各种监听,以及html文本
                 if (res.count > 0) {
                     caseData = res.data[0];
-                    console.log(caseData)
+                    // console.log(caseData)
                     for (const key in caseData) {
                         if (Object.hasOwnProperty.call(caseData, key)) {
                             const element = caseData[key];
@@ -416,6 +416,9 @@
                                 }
                             }
                         }
+                    }
+                    if (caseData.status === '诊断完成') {
+                        document.getElementById("returnReport").setAttribute('style', 'display: none');
                     }
                     document.getElementById("name").innerHTML += caseData.patName;
                     document.getElementById("gender").innerHTML += caseData.gender;
@@ -558,7 +561,7 @@
                     });
                 } else {
                     layer.alert("查询不到病例,将返回列表");
-                    window.location.href = `./#/case/caseExpert`;
+                    window.location.href = `./#/case/caseUpload`;
                 }
             },
             done: function(res) {}
@@ -621,7 +624,7 @@
                                     contentType: 'application/json;charset=UTF-8',
                                     data: res.data,
                                     success: function(res) {
-                                        window.location.href = `./#/case/caseExpert`;
+                                        window.location.href = `./#/case/caseUpload`;
                                         table.reload('case-table');
                                     },
                                 });
@@ -632,7 +635,7 @@
                         }
                         if (!["诊断完成", "专家重诊"].includes(caseStatus)) {
                             setTimeout(() => {
-                                window.location.href = `./#/case/caseExpert`;
+                                window.location.href = `./#/case/caseUpload`;
                                 table.reload('case-table');
                             }, 2000);
                         }

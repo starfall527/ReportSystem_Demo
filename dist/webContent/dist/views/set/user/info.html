@@ -2,8 +2,8 @@
  * @Author: cwx
  * @Description: 修改当前用户信息
  * @Date: 2022-03-23 09:50:21
- * @LastEditTime: 2022-08-19 16:01:31
- * @FilePath: \ReportSystem_Demo\webContent\dist\views\set\user\info.html
+ * @LastEditTime: 2022-10-08 09:34:32
+ * @FilePath: \ReportSystem_Demo\dist\webContent\dist\views\set\user\info.html
 -->
 
 <title>设置我的资料</title>
@@ -94,6 +94,7 @@
                                 <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
                                     <option value="常规病例">常规病例</option>
                                     <option value="TBS病例">TBS病例</option>
+                                    <option value="荧光真菌">荧光真菌</option>
                                 </select>
                             </div>
                         </div>
@@ -138,12 +139,12 @@
             view = layui.view,
             xmSelect = layui.xmSelect;
 
-        var reportTitleObj = { '常规病例': '', 'TBS病例': '' };
+        var reportTitleObj = { '常规病例': '', 'TBS病例': '', '荧光真菌': '' };
         document.getElementById("LAY_signSrc").setAttribute('style', "display: none");
-        if (layui.data('layuiAdmin').role == '上传端') {
-            document.getElementById("info-column").setAttribute('class', 'layui-col-md12');
-            document.getElementById("reportTitle-column").setAttribute('style', "display: none");
-        }
+        // if (layui.data('layuiAdmin').role == '上传端') {
+        //     document.getElementById("info-column").setAttribute('class', 'layui-col-md12');
+        //     document.getElementById("reportTitle-column").setAttribute('style', "display: none");
+        // }
 
         var userData;
         admin.req({
@@ -165,7 +166,7 @@
                     $('#phone').val(userData.phone);
                     $('#info').val(userData.info);
                     if (![null, 'null', '', 'undefined', {}].includes(userData.reportTitle)) {
-                        console.log(userData.reportTitle)
+                        // console.log(userData.reportTitle)
                         reportTitleObj = JSON.parse(userData.reportTitle);
                         $('#reportTitle').val(reportTitleObj['常规病例'].reportTitle);
                         $('#subtitle').val(reportTitleObj['常规病例'].subtitle);
@@ -300,6 +301,9 @@
             } else if (data.value == 'TBS病例') {
                 $('#reportTitle').val(reportTitleObj['TBS病例'].reportTitle);
                 $('#subtitle').val(reportTitleObj['TBS病例'].subtitle);
+            } else if (data.value == '荧光真菌') {
+                $('#reportTitle').val(reportTitleObj['荧光真菌'].reportTitle);
+                $('#subtitle').val(reportTitleObj['荧光真菌'].subtitle);
             }
             form.render();
         })

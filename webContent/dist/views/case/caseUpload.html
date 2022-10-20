@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-09-22 14:29:57
+ * @LastEditTime: 2022-10-19 10:12:47
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -19,7 +19,7 @@
             <div class="layui-card-body">
                 <div class="layui-btn-container case-table-btn">
                     <button class="layui-btn" data-type="newCase">新建病例</button>
-                    <button class="layui-btn" data-type="startConsultation">发起会诊</button>
+                    <!-- <button class="layui-btn" data-type="startConsultation">发起会诊</button> -->
                     <button class="layui-btn" data-type="clearFilter">清除筛选条件</button>
                 </div>
                 <table class="layui-show" id="case-table" lay-filter="case-table"></table>
@@ -144,6 +144,9 @@
                         if (b === 'TBS') {
                             $(this).text() = 'TBS病例'
                         }
+                        if (b === 'Fungus') {
+                            $(this).text() = '荧光真菌'
+                        }
                         if (b === '等待诊断') {
                             $(this).css('background-color', '#00CCCC');
                         }
@@ -173,7 +176,7 @@
                     layer.confirm('将删除病例,确定？', function(index) {
                         obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
                         Object.keys(data).forEach(element => {
-                            if(!['id','reportPath'].includes(element)){
+                            if (!['id', 'reportPath'].includes(element)) {
                                 delete data[element]
                             }
                         });

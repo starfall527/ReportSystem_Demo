@@ -2,8 +2,8 @@
  * @Author: cwx
  * @Description: 
  * @Date: 2022-05-30 14:30:59
- * @LastEditTime: 2022-10-07 15:38:37
- * @FilePath: \ReportSystem_Demo\upload\templet\reportTBS.html
+ * @LastEditTime: 2022-10-19 17:19:00
+ * @FilePath: \ReportSystem_Demo\upload\templet\reportfungus.html
 -->
 <html>
 
@@ -116,14 +116,6 @@
             grid-template-rows: repeat(1, 1fr);
         }
 
-        #grid2ColWide {
-            text-align: justify;
-            display: grid;
-            height: auto;
-            grid-template-columns: 35% 65%;
-            grid-template-rows: repeat(1, 1fr);
-        }
-
         #grid2ColLabel {
             display: grid;
             height: auto;
@@ -135,10 +127,10 @@
             text-align: justify;
             display: grid;
             height: auto;
-            grid-template-columns: 50% 5% 45%;
+            grid-template-columns: 35% 65%;
             grid-template-rows: repeat(1, 1fr);
         }
-        
+
         #grid2ColWithLabel {
             text-align: justify;
             display: grid;
@@ -229,7 +221,8 @@
 <body>
     <div class="page">
         <div class="pageBorder">
-            <div class="title" id="reportTitle">宫颈液基细胞学诊断报告</div>
+            <div class="title" id="reportTitle">常规病例诊断报告</div>
+            <div class="labelBreak"></div>
             <div class="subtitle" id="subtitle"></div>
             <div class="labelBreak"></div>
             <div id="grid2ColLabel">
@@ -243,32 +236,33 @@
                 <div class="label grid-cell2" id="genderLabel">性别:</div>
                 <div class="label grid-cell3" id="ageLabel">年龄:</div>
                 <div class="labelBreak"></div>
+                <!-- <div class="label grid-cell2" id="hosNameLabel">医院名:</div> -->
+            </div>
+            <div id="grid2Col">
                 <div class="label grid-cell1" id="samplePartLabel">取材部位:</div>
-                <div class="label grid-cell2" id="isMenopause">是否绝经:</div>
-                <div class="label grid-cell3" id="lastMenses">末次月经:</div>
+                <div class="label grid-cell2" id="history">病史:</div>
                 <div class="labelBreak"></div>
+            </div>
+            <div id="grid">
                 <div class="label grid-cell1" id="doctorLabel">送检医生:</div>
-                <div class="label grid-cell2" id="unitLabel">送检单位:</div>
-            </div>
-            <HR>
-            <div id="grid2ColWithLabel">
-                <div class="label grid-cell1" style="line-height: 140%;">临床资料:</div>
-                <div class="label grid-cell2" id="clinicalData" style="line-height: 140%;"></div>
-                <div class="label grid-cell4" style="line-height: 140%;">影像学检查:</div>
-                <div class="label grid-cell5" id="imgCheck" style="line-height: 140%;"></div>
-
-                <div class="label grid-cell2"><img src="" id="clinicalDataFigure" height="215px" style="display:none;"></div>
-                <div class="label grid-cell4"><img src="" id="imgCheckFigure" height="215px" style="display:none;"></div>
-                <div class="labelBreak"></div>
-            </div>
-            <div id="grid2ColWide">
-                <div class="labelBreak"></div>
-                <!-- <div class="label grid-cell1" id="originDiagnosis">初诊意见:</div> -->
-                <div class="label grid-cell1" id="history">病史:</div>
-                <div class="label grid-cell2" id="note">备注:</div>
+                <div class="label grid-cell2" id="department">送检科室:</div>
+                <div class="label grid-cell3" id="sample">送检标本:</div>
                 <div class="labelBreak"></div>
             </div>
             <HR>
+            <!-- <div id="grid2Col">
+                <div class="label grid-cell1" id="clinicalData" style="line-height: 150%;">临床资料:</div>
+                <div class="label grid-cell3" id="imgCheck" style="line-height: 150%;">影像学检查:</div>
+                <div class="label grid-cell1"><img src="" id="clinicalDataFigure" height="215px" style="display:none;"></div>
+                <div class="label grid-cell3"><img src="" id="imgCheckFigure" height="215px" style="display:none;"></div>
+                <div class="labelBreak"></div>
+                <div class="label grid-cell1" id="note">备注:</div>
+                <div class="label grid-cell3" id="history">病史:</div>
+                <div class="labelBreak"></div>
+                <div class="label grid-cell1" id="originDiagnosis">初诊意见:</div>
+            </div> -->
+            <!-- <div class="label" id="general" style="line-height: 140%;">大体所见:</div>
+            <HR> -->
             <div class="label" id="annotationLabel">镜下所见:
                 <div class="labelBreak"></div>
                 <div id="grid">
@@ -277,36 +271,17 @@
                     <div class="label grid-cell3"><img src="" id="annotation2" height="215px"></div>
                 </div>
             </div>
-            <div id="grid2Col">
-                <div class="labelBreak"></div>
-                <div class="label grid-cell1" id="sampleQuality">标本素质:</div>
-                <div class="label grid-cell3" id="component">细胞成分:</div>
-                <div class="labelBreak"></div>
-                <div class="label grid-cell1" id="inflammation">炎症:</div>
-                <div class="label grid-cell3" id="reactChange">反应性改变:</div>
-                <div class="labelBreak"></div>
-                <div class="label grid-cell1" id="pathogen">病原体:</div>
-                <div class="label grid-cell3" id="squamousCell">鳞状上皮细胞分析:</div>
-                <div class="labelBreak"></div>
-                <div class="label grid-cell1" id="glandularCell">腺上皮细胞分析:</div>
-                <div class="label grid-cell3" id="otherAnalysis">其它:</div>
-            </div>
-
-            <div class="labelBreak"></div>
             <HR>
-            <div class="label" id="diagnosis">细胞病理学诊断:</div>
+            <div class="labelBreak"></div>
+            <div class="label" id="diagnosis">诊断意见:</div>
             <div class="labelBreak"></div>
             <div class="label" id="suggestion">补充意见:</div>
-
-            <div class="labelBreak"></div>
             <HR>
-
             <div id="grid2ColLabel">
                 <div class="label grid-cell1" id="sign">
                     <div style="float: left;">诊断医生:</div>
                     <div><img src="" id="signImg" style="height:60px;margin-left: 10px;"></div>
                 </div>
-
                 <div class="label grid-cell3" id="diagnoseDate">诊断时间:</div>
             </div>
         </div>

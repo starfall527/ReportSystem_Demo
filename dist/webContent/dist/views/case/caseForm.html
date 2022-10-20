@@ -28,6 +28,7 @@
                                                         <option value="">请选择</option>
                                                         <option value="TBS病例">TBS病例</option>
                                                         <option value="常规病例">常规病例</option>
+                                                        <option value="荧光真菌">荧光真菌</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -315,7 +316,7 @@
                                         </script>
                                         <div class="layui-btn-container form-step-btn" style="margin-top: 10px;">
                                             <button class="layui-btn pre" lay-submit lay-filter="formStep2-pre" id="step-btn">上一步</button>
-                                            <button class="layui-btn next" lay-submit lay-filter="formStep2-next">下一步</button>
+                                            <button class="layui-btn next" lay-submit lay-filter="formStep2-next">编辑报告</button>
                                         </div>
                                     </div>
                                 </div>
@@ -462,7 +463,7 @@
                             document.getElementById("imgCheckFigure").setAttribute('value', randomUrl);
                         }
 
-                        if (caseData.caseType === '常规病例') {
+                        if (["常规病例", "荧光真菌"].includes(caseData.caseType)) {
                             $('#general').attr('style', 'display:block');
                             $('#generalLabel').attr('style', 'display:block');
                             $('#isGynecologyBlock').attr('style', 'display:none');
@@ -616,7 +617,7 @@
 
         // select同步筛选条件
         form.on('select(caseType)', function(data) {
-            if (data.value === '常规病例') {
+            if (["常规病例", "荧光真菌"].includes(caseData.caseType)) {
                 $('#general').attr('style', 'display:block');
                 $('#generalLabel').attr('style', 'display:block');
                 $('#isGynecology').val('');
@@ -879,6 +880,7 @@
             return false;
         });
         form.on('submit(formStep2-next)', function(data) {
+            // 新功能,保存当前数据,并直接跳转到编辑报告界面
             var checkStatus = table.checkStatus('slide-table-list'),
                 checkData = checkStatus.data; // 要改成复选框
             caseData.slideUrl = [];
@@ -900,67 +902,36 @@
                                 label: res.label,
                                 folder: res.folder
                             });
+
+                            caseData.status = '等待诊断';
+                            caseData.uploadDate = new Date().Format("yyyy-MM-dd hh:mm:ss")
+                            caseData.slideUrl = JSON.stringify(caseData.slideUrl);
+                            caseData.expert = layui.data('layuiAdmin').userName;
+                            Object.keys(data.field).forEach(element => {
+                                caseData[element] = data.field[element]; //逐个赋值
+                            });
+                            admin.req({
+                                url: 'api/case/insert',
+                                type: 'POST',
+                                contentType: 'application/json;charset=UTF-8',
+                                data: JSON.stringify({
+                                    data: caseData
+                                }),
+                                success: function(res) {
+                                    let caseTypeDisplay = {
+                                        '常规病例': 'Normal',
+                                        'TBS病例': 'TBS',
+                                        '荧光真菌': 'fungus',
+                                    };
+                                    top.location.href = `./#/case/caseReport/caseID=${caseData.id}/caseType=${caseTypeDisplay[caseData.caseType]}`;
+                                },
+                                done: function(res) {}
+                            })
                         },
                         done: function(res) {}
                     })
                 });
-                step.next('#stepForm');
-                form.render();
-
-
-                let tableHeight = $(document).height() - $('#expert-table').offset().top - $('#step-btn').height() - 60;
-                // document.getElementById('expert-card').setAttribute('style', `height: ${tableHeight + offset}px`);
-                table.render({
-                    elem: '#expert-table',
-                    url: 'api/user/expertTable', //使用后端数据
-                    height: tableHeight,
-                    response: {
-                        statusCode: 200
-                    },
-                    cols: [
-                        [{
-                                field: 'radio',
-                                type: 'radio',
-                                fixed: 'left',
-                                minWidth: 120,
-                            },
-                            {
-                                field: 'userName',
-                                title: '专家名',
-                                width: 240,
-                                minWidth: 120,
-                            }, {
-                                field: 'subspecialty',
-                                title: '擅长亚专科',
-                                minWidth: 120,
-                            }, {
-                                field: 'info',
-                                title: '简介',
-                                minWidth: 120,
-                            },
-                        ]
-                    ],
-                    page: true,
-                    limit: 20,
-                    done: function() {
-                        $(".layui-table-main tr").each(function(index, val) {
-                            if ([2, 3].includes(index)) { // * 由于前面切片列表需要适应图片,这里index是2,3而不是0,1;layui-table-fixed的index需要-2
-                                $(".layui-table-fixed").each(function() { // layui-table-fixed的index需要-2
-                                    $($(this).find(".layui-table-body tbody tr")[index - 2]).height(38) //$(val).height()
-                                })
-                            }
-                        });
-                        $(".layui-table-header tr").each(function(index, val) {
-                            if ([2, 3].includes(index)) { // * 由于前面切片列表需要适应图片,这里index是2,3而不是0,1;
-                                $(".layui-table-fixed").each(function() { // layui-table-fixed的index需要-2
-                                    $($(this).find(".layui-table-header thead tr")[index - 2]).height(38) //$(val).height()
-                                })
-                            }
-                        });
-                    }
-                });
             }
-            form.render('radio');
             return false;
         });
         form.on('submit(formStep3-pre)', function(data) {
@@ -968,4 +939,22 @@
             return false;
         });
     });
+
+    // 获取格式化时间字符串
+    Date.prototype.Format = function(fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份 
+            "d+": this.getDate(), //日 
+            "h+": this.getHours(), //小时 
+            "m+": this.getMinutes(), //分 
+            "s+": this.getSeconds() //秒 
+        };
+        if (/(y+)/.test(fmt)) { //根据y的长度来截取年
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        }
+        return fmt;
+    }
 </script>
