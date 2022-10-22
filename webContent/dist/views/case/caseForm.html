@@ -136,6 +136,24 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="layui-col-md3 layui-hide" id="samplePartFungusCol">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label" id="sampleLabel">取材部位</label>
+                                            <div class="layui-input-inline" id="sampleBlock" style="width:160px">
+                                                <select name="samplePart" id="samplePartFungus">
+                                                    <option value="">请选择</option>
+                                                    <option value="头">头</option>
+                                                    <option value="面部">面部</option>
+                                                    <option value="颈部">颈部</option>
+                                                    <option value="躯干">躯干</option>
+                                                    <option value="四肢">四肢</option>
+                                                    <option value="臀部">臀部</option>
+                                                    <option value="指甲">指甲</option>
+                                                    <option value="趾甲">趾甲</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="layui-col-md3 layui-hide" id="sampleCol">
                                         <div class="layui-inline">
                                             <label class="layui-form-label" id="sampleLabel">送检标本</label>
@@ -248,7 +266,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="layui-row layui-col-space5" style="margin-right:20px;">
+                                <div class="layui-row layui-col-space5" id="historyCol" style="margin-right:20px;">
                                     <div class="layui-col-md6">
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">病史</label>
@@ -257,7 +275,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md6" id="noteCol">
                                         <div class="layui-form-item">
                                             <label class="layui-form-label">备注</label>
                                             <div class="layui-input-block">
@@ -400,7 +418,6 @@
                             </div>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -499,7 +516,12 @@
 
                                 $('#generalCol').addClass("layui-hide");
 
+                                $('#samplePartCol').addClass("layui-hide");
+                                $('#samplePartFungusCol').removeClass("layui-hide");
                                 $('#sampleCol').removeClass("layui-hide");
+                                $('#historyCol').addClass("layui-hide");
+                                $('#noteCol').addClass("layui-hide");
+                                $('#history').attr('lay-verify', '');
                             }
                         } else if (caseData.caseType === 'TBS病例') {
                             $('#isGynecologyCol').removeClass("layui-hide");
@@ -662,24 +684,38 @@
             }
 
             if (data.value === '荧光真菌') {
-                $('#samplePartCol').addClass("layui-hide");
-                $('#samplePart').attr('lay-verify', '');
+                // 取材部位 更换选项值
 
                 $('#sampleCol').removeClass("layui-hide");
                 $('#sample').attr('lay-verify', 'required');
+                $('#samplePart').attr('lay-verify', '');
+                $('#samplePartFungus').attr('lay-verify', 'required');
 
                 $('#imgDataRow').attr('style', 'display:none');
                 $('#generalCol').addClass("layui-hide");
                 $('#departmentCol').removeClass("layui-hide");
+
+                $('#historyCol').addClass("layui-hide");
+                $('#noteCol').addClass("layui-hide");
+                $('#history').attr('lay-verify', '');
+
+                $('#samplePartCol').addClass("layui-hide");
+                $('#samplePartFungusCol').removeClass("layui-hide");
             } else {
-                $('#samplePartCol').removeClass("layui-hide");
-                $('#samplePart').attr('lay-verify', 'required');
 
                 $('#sampleCol').addClass("layui-hide");
                 $('#sample').attr('lay-verify', '');
 
                 $('#imgDataRow').attr('style', 'display:block');
                 $('#departmentCol').addClass("layui-hide");
+
+                $('#historyCol').removeClass("layui-hide");
+                $('#noteCol').removeClass("layui-hide");
+
+                $('#samplePartCol').removeClass("layui-hide");
+                $('#samplePartFungusCol').addClass("layui-hide");
+                $('#samplePart').attr('lay-verify', 'required');
+                $('#samplePartFungus').attr('lay-verify', '');
             }
 
             form.render(""); //刷新select选择框渲染

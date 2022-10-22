@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-10-20 17:30:48
+ * @LastEditTime: 2022-10-21 19:21:15
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseReport.html
 -->
 <div class="layui-card layadmin-header">
@@ -60,12 +60,12 @@
                     </div>
 
                     <hr>
-                    <fieldset class="layui-elem-field" style="margin-top:20px;">
+                    <fieldset class="layui-elem-field" style="margin-top:20px;" id="clinicalData-field">
                         <legend>临床资料</legend>
                         <div class="layui-field-box" id="clinicalData">无</div>
                         <div><img src="" id="clinicalDataFigure" style="height:160px;margin-left: 10px;"></div>
                     </fieldset>
-                    <fieldset class="layui-elem-field" style="margin-top:20px;">
+                    <fieldset class="layui-elem-field" style="margin-top:20px;" id="imgCheck-field">
                         <legend>影像学检查</legend>
                         <div class="layui-field-box" id="imgCheck">无</div>
                         <div><img src="" id="imgCheckFigure" style="height:160px;margin-left: 10px;"></div>
@@ -82,11 +82,11 @@
                         <legend>大体所见</legend>
                         <div class="layui-field-box" id="general">无</div>
                     </fieldset>
-                    <fieldset class="layui-elem-field" style="margin-top:20px;">
+                    <fieldset class="layui-elem-field" style="margin-top:20px;" id="history-field">
                         <legend>病史</legend>
                         <div class="layui-field-box" id="history">无</div>
                     </fieldset>
-                    <fieldset class="layui-elem-field" style="margin-top:20px;">
+                    <fieldset class="layui-elem-field" style="margin-top:20px;" id="note-field">
                         <legend>备注</legend>
                         <div class="layui-field-box" id="note">无</div>
                     </fieldset>
@@ -236,18 +236,18 @@
                                     <div class="layui-form-item">
                                         <textarea name="diagnosis" placeholder="请输入诊断意见" class="layui-textarea" id="diagnosis"></textarea>
                                         <div id="diagnosis-select" name="diagnosis" class="xm-select-demo"></div>
-
-                                        <!-- <select name="diagnosis" lay-verify="" id="diagnosisSelect">
-                                            <option value="无">无</option>
-                                            <option value="镜下可见孢子">镜下可见孢子</option>
-                                            <option value="镜下可见菌丝">镜下可见菌丝</option>
-                                            <option value="镜下可见菌丝及孢子">镜下可见菌丝及孢子</option>
-                                            <option value="镜下未见菌丝或孢子">镜下未见菌丝或孢子</option>
-                                        </select> -->
                                     </div>
                                 </div>
                             </div>
                             <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">临床诊断</h2>
+                                <div class="layui-colla-content">
+                                    <div class="layui-form-item">
+                                        <div id="clinicalDiagnosis-select" name="clinicalDiagnosis" class="xm-select-demo"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item" id="suggestion">
                                 <h2 class="layui-colla-title">补充意见</h2>
                                 <div class="layui-colla-content">
                                     <div class="layui-form-item">
@@ -392,6 +392,14 @@
                 { name: '镜下未见菌丝或孢子', value: '镜下未见菌丝或孢子' },
             ]
         });
+        var clinicalDiagnosisSelect = xmSelect.render({ // 其它
+            el: '#clinicalDiagnosis-select',
+            radio: true,
+            data: [
+                { name: '真菌阴性 -', value: '真菌阴性 -' },
+                { name: '真菌阳性 +', value: '真菌阳性 +' },
+            ]
+        });
         form.render(); // 在xmSelect渲染后要重新渲染form,否则特殊情况界面会显示不了所有下拉框
 
         var router = layui.router();
@@ -414,7 +422,6 @@
             document.getElementById("colla-inflammation").setAttribute("style", "display:none");
             document.getElementById("colla-analysis").setAttribute("style", "display:none");
         }
-
         if (router.search.caseType == "Fungus") {
             document.getElementById("sample-field").setAttribute("style", "display:block");
             document.getElementById("samplePart-field").setAttribute("style", "display:none");
@@ -422,8 +429,12 @@
             document.getElementById("diagnosis-select").setAttribute("style", "display:block");
             document.getElementById("diagnosis").setAttribute("style", "display:none");
 
-            // document.getElementById("diagnosisSelect").setAttribute("style", "display:block");
-            // document.getElementById("diagnosis-select").setAttribute("style", "display:none");
+            document.getElementById("clinicalData-field").setAttribute("style", "display:none");
+            document.getElementById("imgCheck-field").setAttribute("style", "display:none");
+            document.getElementById("history-field").setAttribute("style", "display:none");
+            document.getElementById("note-field").setAttribute("style", "display:none");
+
+            document.getElementById("suggestion").setAttribute("style", "display:none");
         } else {
             document.getElementById("samplePart-field").setAttribute("style", "display:block");
             document.getElementById("sample-field").setAttribute("style", "display:none");
@@ -640,6 +651,10 @@
                 data.field.pathogen = pathogenSelect.getValue('valueStr');
                 data.field.otherAnalysis = otherSelect.getValue('valueStr');
                 data.field.diagnoseDate = new Date().Format("yyyy-MM-dd hh:mm:ss");
+                if (caseData.caseType === '荧光真菌') {
+                    data.field.diagnosis = diagnosisSelect.getValue('valueStr');
+                    data.field.clinicalDiagnosis = clinicalDiagnosisSelect.getValue('valueStr');
+                }
                 let annotation = [];
                 checkData.forEach(element => {
                     annotation.push(element);

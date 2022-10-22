@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-10-19 17:23:58
+ * @LastEditTime 2022-10-21 19:04:56
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -56,6 +56,7 @@ const slideCenter = require("../slideCenter/slideCenter.js");
  * 
  * @apiSuccess {String} data.samplePart         取样部位
  * @apiSuccess {String} data.sample             送检标本 仅荧光真菌用
+ * @apiSuccess {String} data.clinicalDiagnosis  临床诊断 仅荧光真菌用
  * @apiSuccess {String} data.clinicalData       临床资料
  * @apiSuccess {String} data.clinicalDataFigure 临床资料附图
  * @apiSuccess {String} data.imgCheck           影像学检查
@@ -753,6 +754,9 @@ router_case.get('/openReport', function(req, res) {
                 }
                 if (![null, undefined, ''].includes(document.getElementById("department"))) {
                     document.getElementById("department").innerHTML += caseData.department; // 送检部门
+                }
+                if (![null, undefined, ''].includes(document.getElementById("clinicalDiagnosis"))) {
+                    document.getElementById("clinicalDiagnosis").innerHTML += caseData.clinicalDiagnosis; // 临床诊断
                 }
             }
 
