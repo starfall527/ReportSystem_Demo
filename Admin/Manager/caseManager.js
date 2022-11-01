@@ -2,7 +2,7 @@
  * @Author cwx
  * @Description 病例管理后端
  * @Date 2021-10-21 17:25:59
- * @LastEditTime 2022-09-28 15:38:17
+ * @LastEditTime 2022-11-01 09:20:21
  * @FilePath \ReportSystem_Demo\Admin\Manager\caseManager.js
  */
 
@@ -504,6 +504,15 @@ router_case.post('/insert', function(req, res) {
         if (user.length > 0) {
             reqKeys.push('signPath');
             reqValues.push(user[0].sign);
+            if ([undefined, 'null', null, ''].includes(user[0].sign)) {
+                json = { code: 500, msg: '所选专家未上传电子签名,无法指派' };
+                res.send(json);
+                return;
+            }
+        } else {
+            json = { code: 500, msg: '未查询到专家' };
+            res.send(json);
+            return;
         }
         let result = sqlMacros.sqlInsert(reqKeys, reqValues, 'pathCase');
     }
