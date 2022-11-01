@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-09-21 15:38:50
+ * @LastEditTime: 2022-11-01 10:16:40
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -53,7 +53,7 @@
             form = layui.form,
             soulTable = layui.soulTable;
         var macro = layui.macro;
-       
+
         table.render({
             elem: '#case-table',
             url: 'api/case/table', //使用后端数据
@@ -172,6 +172,11 @@
                 if (data.doctor == layui.data('layuiAdmin').userName) {
                     layer.confirm('将删除病例,确定？', function(index) {
                         obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
+                        Object.keys(data).forEach(element => {
+                            if (!['id', 'reportPath'].includes(element)) {
+                                delete data[element]
+                            }
+                        });
                         admin.req({
                             url: 'api/case/delete',
                             type: 'get',

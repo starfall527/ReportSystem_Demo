@@ -116,7 +116,10 @@
                                     contentType: 'application/json;charset=UTF-8',
                                     data: JSON.stringify({ data: field }),
                                     success: function(res) {
-                                        if (res.code === 200) { layer.msg('编辑成功'); }
+                                        if (res.code === 200) {
+                                            layer.msg('编辑成功');
+                                            layui.data('layuiAdmin').organization = field.name;
+                                        }
                                     },
                                     done: function(res) {
                                         layui.table.reload('organization-table'); //重载表格

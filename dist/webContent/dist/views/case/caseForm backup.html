@@ -1,0 +1,971 @@
+<title>新建病例</title>
+
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a lay-href="./case/caseUpload"><cite>病例管理</cite></a>
+        <a><cite>新建病例</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+
+    <div class="layui-carousel" id="stepForm" lay-filter="stepForm" style="margin: 0 auto;">
+        <div carousel-item>
+            <div>
+                <form class="layui-form" action="" lay-filter="component-form-group">
+                    <div class="layui-row" style="margin-bottom: 10px;">
+                        <div class="layui-card">
+                            <div class="layui-card-header">新建病例</div>
+                            <div class="layui-card-body">
+                                <div class="layui-form-item">
+                                    <div class="layui-row" style="margin-bottom: 10px;">
+                                        <div class="layui-col-md3">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label">病例类型</label>
+                                                <div class="layui-input-block" id="caseTypeBlock" style="width:161px">
+                                                    <select name="caseType" id="caseType" lay-filter="caseType" lay-verify="required">
+                                                        <option value="">请选择</option>
+                                                        <option value="TBS病例">TBS病例</option>
+                                                        <option value="常规病例">常规病例</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="layui-col-md3">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label" id="isGynecologyLabel" style="display:none">是否妇科</label>
+                                                <div class="layui-input-block" id="isGynecologyBlock" style="display:none">
+                                                    <select name="isGynecology" id="isGynecology" lay-filter="isGynecology">
+                                                        <option value="">请选择</option>
+                                                        <option value="非妇科">非妇科</option>
+                                                        <option value="妇科">妇科</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="layui-col-md3">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label" id="isMenopauseLabel" style="display:none">是否绝经</label>
+                                                <div class="layui-input-block" id="isMenopauseBlock" style="display:none">
+                                                    <select name="isMenopause" id="isMenopause" lay-filter="isMenopause">
+                                                        <option value="">请选择</option>
+                                                        <option value="否">否</option>
+                                                        <option value="是">是</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="layui-col-md3">
+                                            <div class="layui-inline">
+                                                <label class="layui-form-label" id="lastMensesLabel" style="display:none">末次月经</label>
+                                                <div class="layui-input-inline" style="width:159px">
+                                                    <input type="text" name="lastMenses" id="lastMenses" lay-verify="" placeholder="" class="layui-input" style="display:none">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item">
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">病理号</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="pathologyNum" id="pathologyNum" lay-verify="required" class="layui-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">病人姓名</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="patName" id="patName" lay-verify="required" class="layui-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">性别</label>
+                                            <div class="layui-input-block" id="genderTypeBlock" style="width:161px">
+                                                <select name="gender" id="gender" lay-filter="gender" lay-verify="required">
+                                                    <option value="">请选择</option>
+                                                    <option value="男">男</option>
+                                                    <option value="女">女</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">年龄</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="age" id="age" lay-verify="required" class="layui-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">医生名</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="doctor" id="doctor" lay-verify="" class="layui-input" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">医院名</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="hosName" id="hosName" lay-verify="" class="layui-input" disabled>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item">
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">取材部位</label>
+                                            <div class="layui-input-block">
+                                                <input type="text" name="samplePart" id="samplePart" lay-verify="required" class="layui-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">亚专科</label>
+                                            <div class="layui-input-inline" id="subspecialtyTypeBlock" style="width:160px">
+                                                <select name="subspecialty" id="subspecialty" lay-verify="required">
+                                                    <option value="">请选择</option>
+                                                    <option value="神经病理">神经病理</option>
+                                                    <option value="淋巴病理">淋巴病理</option>
+                                                    <option value="妇科病理">妇科病理</option>
+                                                    <option value="消化病理">消化病理</option>
+                                                    <option value="软组织病理">软组织病理</option>
+                                                    <option value="分子病理">分子病理</option>
+                                                    <option value="乳腺病理">乳腺病理</option>
+                                                    <option value="内分泌病理">内分泌病理</option>
+                                                    <option value="皮肤病理">皮肤病理</option>
+                                                    <option value="细胞病理">细胞病理</option>
+                                                    <option value="泌尿生殖病理">泌尿生殖病理</option>
+                                                    <option value="头颈部病理">头颈部病理</option>
+                                                    <option value="肺与纵隔病理">肺与纵隔病理</option>
+                                                    <option value="骨与关节病理">骨与关节病理</option>
+                                                    <option value="肾病病理">肾病病理</option>
+                                                    <option value="骨髓病理">骨髓病理</option>
+                                                    <option value="其它">其它</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="layui-inline">
+                                        <label class="layui-form-label">发起会诊时间</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="inspectionDate" id="inspectionDate" lay-verify="" placeholder="" class="layui-input">
+                                        </div>
+                                    </div> -->
+                                    <div class="layui-col-md3">
+                                        <div class="layui-inline">
+                                            <label class="layui-form-label">送检单位</label>
+                                            <div class="layui-input-block" style="width: 240px;">
+                                                <input type="text" name="unit" id="unit" lay-verify="required" class="layui-input">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-row">
+                        <div class="layui-card">
+                            <div class="layui-card-body">
+                                <div class="layui-row layui-col-space5" style="margin-right:20px;">
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">临床资料</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="clinicalData" id="clinicalData" class="layui-textarea"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">临床资料附图</label>
+                                            <div class="layui-input-inline layui-btn-container" style="width: auto;">
+                                                <button type="button" class="layui-btn layui-btn-primary" id="clinicalDataFigureUpload" style="margin-left:15px">
+                                                    <i class="layui-icon">&#xe67c;</i>上传图片
+                                                </button>
+                                                <button class="layui-btn layui-btn-primary" lay-submit type="button" layadmin-event="clinicalDataFigure" id="clinicalDataFigure">查看附图</button>
+                                                <button class="layui-btn layui-btn-primary" lay-submit type="button" layadmin-event="cancelClinicalDataFigure" id="cancelClinicalDataFigure">取消附图</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">影像学检查</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="imgCheck" id="imgCheck" class="layui-textarea"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">影像学检查附图</label>
+                                            <div class="layui-input-inline layui-btn-container" style="width: auto;">
+                                                <button type="button" class="layui-btn layui-btn-primary" id="imgCheckFigureUpload" style="margin-left:15px">
+                                                    <i class="layui-icon">&#xe67c;</i>上传图片
+                                                </button>
+                                                <button class="layui-btn layui-btn-primary" lay-submit type="button" layadmin-event="imgCheckFigure" id="imgCheckFigure">查看附图</button>
+                                                <button class="layui-btn layui-btn-primary" lay-submit type="button" layadmin-event="cancelImgCheckFigure" id="cancelImgCheckFigure">取消附图</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-row layui-col-space5" style="margin-right:20px;">
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">病史</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="history" id="history" class="layui-textarea" lay-verify="required"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">备注</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="note" id="note" class="layui-textarea"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-row layui-col-space5" style="margin-right:20px;">
+                                    <!-- <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">原诊断意见</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="originDiagnosis" id="originDiagnosis" class="layui-textarea"></textarea>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="layui-col-md6">
+                                        <div class="layui-form-item">
+                                            <!-- 大体所见 TBS系统中没有这个 需要设置隐藏 -->
+                                            <label class="layui-form-label" id="generalLabel">大体所见</label>
+                                            <div class="layui-input-block">
+                                                <textarea name="general" id="general" class="layui-textarea"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn next" lay-submit lay-filter="formStep">下一步</button>
+                                        <button class="layui-btn" lay-submit lay-filter="save-form-submit">保存</button>
+                                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div>
+                <form>
+                    <div class="layui-fluid">
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-md4">
+                                <div class="layui-card" style="margin-bottom: 50px;height:710px" id="directory-card">
+                                    <div class="layui-card-header">存储目录</div>
+                                    <div class="layui-card-body">
+                                        <div id="tree"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md8">
+                                <div class="layui-card">
+                                    <div class="layui-card-header" style="margin-bottom:10px;height:55px">
+                                        <div class="layui-row" style="padding-top:5px">
+                                            <div class="layui-col-md8">
+                                                <div class="layui-label">切片列表</div>
+                                            </div>
+                                            <div class="layui-col-md4">
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="queryFileName" id="queryFileName" placeholder="请输入切片名" autocomplete="off" class="layui-input">
+                                                </div>
+                                                <div class="layui-input-inline">
+                                                    <button class="layui-btn" type="button" id="searchSlide" lay-filter="searchSlide">搜索</button>
+                                                </div>
+                                                <!-- <div class="layui-btn-container slide-table-list-btn" style="margin-top: 10px;margin-left: 10px;">
+                                                    <button class="layui-btn layui-btn" type="button" lay-submit id="openSlide" lay-filter="openSlide">打开选中切片</button>
+                                                    <button class="layui-btn layui-btn" type="button" lay-submit id="chooseSlide" lay-filter="chooseSlide">选择切片</button>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="layui-card-body" style="margin-top: 10px;">
+                                        <table class="layui-show" id="slide-table-list" lay-filter="slide-table-list">
+                                        </table>
+                                        <script type="text/html" id="slide-table-toolbar" lay-filter="table-toolbar">
+                                            <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="openSlide">查看切片</a>
+                                        </script>
+                                        <div class="layui-btn-container form-step-btn" style="margin-top: 10px;">
+                                            <button class="layui-btn pre" lay-submit lay-filter="formStep2-pre" id="step-btn">上一步</button>
+                                            <button class="layui-btn next" lay-submit lay-filter="formStep2-next">下一步</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        layui.use('slideCenter', layui.factory('slideCenter'));
+                    </script>
+                </form>
+            </div>
+
+            <div>
+                <form>
+                    <div class="layui-fluid">
+                        <div class="layui-row layui-col-space15">
+                            <!-- <div class="layui-col-md4">
+                                <div class="layui-card">
+                                    <div class="layui-card-header">条件搜索</div>
+                                    <div class="layui-card-body">
+                                        <form class="layui-form" lay-filter="queryExpert">
+                                            <div class="layui-form-item" style="margin-top: 15px;">
+                                                <label class="layui-form-label layui-required">专家姓名</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="expertName" id="expertName" placeholder="请输入" class="layui-input">
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item" style="margin-top: 15px;">
+                                                <label class="layui-form-label layui-required">擅长亚专科</label>
+                                                <div class="layui-input-inline">
+                                                    <input type="text" name="expertSubspecialty" id="expertSubspecialty" placeholder="请输入" class="layui-input">
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <div class="layui-btn-container form-control-btn" style="margin-left: 0px;">
+                                                        <button type="button" class="layui-btn" lay-submit lay-filter="queryExpert" id="query">查询</button>
+                                                        <button type="reset" class="layui-btn layui-btn-primary" data-type="reset">重置</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div class="layui-col-md12">
+                                <div class="layui-card" id="expert-card">
+                                    <div class="layui-card-header">专家列表</div>
+                                    <div class="layui-card-body">
+                                        <table class="layui-show" id="expert-table" lay-filter="expert-table"></table>
+                                        <div class="layui-btn-container case-table-btn" style="margin-top: 20px;">
+                                            <button class="layui-btn pre" lay-submit lay-filter="formStep3-pre">上一步</button>
+                                            <button class="layui-btn" lay-submit lay-filter="case-form-submit">提交表单</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="thumbnailTpl">
+    <img style="display:inline-block; width:80px; height:80px;" src={{ d.thumbnailUrl }}>
+</script>
+<script type="text/html" id="labelTpl">
+    <img style="display:inline-block; width:80px; height:80px;" src={{ d.labelUrl }}>
+</script>
+<style type="text/css">
+    .laytable-cell-checkbox {
+        height: auto;
+    }
+
+    .layui-table-cell {
+        text-align: center;
+        height: auto;
+        white-space: normal;
+    }
+
+    .layui-table img {
+        max-width: 200px
+    }
+
+    .layui-form-label {
+        white-space: nowrap !important;
+    }
+</style>
+
+<script>
+    layui.define(['admin', 'form', 'laydate', 'view', 'stepLay', 'table', 'upload'], function() {
+        var $ = layui.$,
+            admin = layui.admin,
+            element = layui.element,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            view = layui.view,
+            step = layui.stepLay,
+            table = layui.table,
+            form = layui.form,
+            upload = layui.upload;
+        router = layui.router();
+
+        var caseData = {};
+        if (![null, undefined, ''].includes(router.search.caseID)) { // caseID非空,编辑模式
+            admin.req({
+                url: '/api/case/query',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({ data: { id: router.search.caseID } }),
+                success: function(res) {
+                    if (res.data.length > 0) {
+                        caseData = res.data[0];
+                        console.log(caseData);
+                        $('#caseType').val(caseData.caseType);
+                        $('#pathologyNum').val(caseData.pathologyNum);
+                        $('#patName').val(caseData.patName);
+                        $('#gender').val(caseData.gender);
+                        $('#age').val(caseData.age);
+                        $('#nation').val(caseData.nation);
+                        $('#birthDate').val(caseData.birthDate);
+                        $('#samplePart').val(caseData.samplePart);
+                        $('#subspecialty').val(caseData.subspecialty);
+                        $('#inspectionDate').val(caseData.inspectionDate);
+                        $('#unit').val(caseData.unit);
+                        $('#doctor').val(layui.data('layuiAdmin').userName);
+                        $('#hosName').val(layui.data('layuiAdmin').organization);
+                        $('#clinicalData').val(caseData.clinicalData);
+                        $('#history').val(caseData.history);
+                        $('#imgCheck').val(caseData.imgCheck);
+                        $('#note').val(caseData.note);
+                        $('#originDiagnosis').val(caseData.originDiagnosis);
+                        $('#general').val(caseData.general);
+
+                        if (![null, undefined, '', 'null'].includes(caseData.clinicalDataFigure)) {
+                            let randomUrl = caseData.clinicalDataFigure += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                            document.getElementById("clinicalDataFigure").setAttribute('value', randomUrl);
+                        }
+                        if (![null, undefined, '', 'null'].includes(caseData.imgCheckFigure)) {
+                            randomUrl = caseData.imgCheckFigure += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                            document.getElementById("imgCheckFigure").setAttribute('value', randomUrl);
+                        }
+
+                        if (caseData.caseType === '常规病例') {
+                            $('#general').attr('style', 'display:block');
+                            $('#generalLabel').attr('style', 'display:block');
+                            $('#isGynecologyBlock').attr('style', 'display:none');
+                            $('#isGynecologyLabel').attr('style', 'display:none');
+                            $('#isGynecology').val('非妇科');
+                        } else if (caseData.caseType === 'TBS病例') {
+                            $('#general').attr('style', 'display:none');
+                            $('#generalLabel').attr('style', 'display:none');
+
+                            $('#isGynecologyBlock').attr('style', 'width:161px;display:block;');
+                            $('#isGynecologyLabel').attr('style', 'display:block');
+                            if (caseData.isGynecology === "妇科") {
+                                $('#isMenopauseBlock').attr('style', 'width:161px;display:block');
+                                $('#isMenopauseLabel').attr('style', 'display:block');
+                                $('#isMenopause').attr('lay-verify', 'required');
+                                if (caseData.isMenopause === "是") {
+                                    document.getElementById("lastMensesLabel").innerHTML = '绝经日期';
+                                } else {
+                                    document.getElementById("lastMensesLabel").innerHTML = '末次月经';
+                                }
+                                $('#lastMenses').attr('style', 'display:block');
+                                $('#lastMensesLabel').attr('style', 'display:block');
+                                $('#lastMenses').attr('lay-verify', 'required');
+                            }
+                            $('#isGynecology').val(caseData.isGynecology);
+                            $('#isMenopause').val(caseData.isMenopause);
+                            $('#lastMenses').val(caseData.lastMenses);
+                        }
+                        form.render("select"); //刷新select选择框渲染
+                        form.render(); //刷新select选择框渲染
+                    }
+
+                    // @note 上传附图
+                    var clinicalDataFigureUploadInst = upload.render({
+                        elem: "#clinicalDataFigureUpload",
+                        url: 'api/case/uploadFigure',
+                        accept: 'images',
+                        method: 'get',
+                        acceptMime: 'image/*',
+                        headers: {},
+                        before: function() {
+                            this.headers.id = caseData.id;
+                            this.headers.type = "clinicalDataFigure";
+                        },
+                        done: function(res) {
+                            if (200 == res.code) {
+                                layer.msg('上传成功');
+                                let randomUrl = res.url += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                                document.getElementById("clinicalDataFigure").setAttribute('value', randomUrl);
+                                caseData.clinicalDataFigure = randomUrl;
+                                console.log($('#clinicalDataFigure').val());
+                            } else { layer.msg('上传失败') }
+                        },
+                        error: function(err) { console.log(err); }
+                    });
+
+                    var imgCheckFigureUploadInst = upload.render({
+                        elem: "#imgCheckFigureUpload",
+                        url: 'api/case/uploadFigure',
+                        accept: 'images',
+                        method: 'get',
+                        acceptMime: 'image/*',
+                        headers: {},
+                        before: function() {
+                            this.headers.id = caseData.id;
+                            this.headers.type = "imgCheckFigure";
+                        },
+                        done: function(res) {
+                            if (200 == res.code) {
+                                layer.msg('上传成功');
+                                let randomUrl = res.url += '?' + Math.floor(Math.random() * 100 + 1); // * 给前台的数据url加上随机数,浏览器才会更新图片
+                                document.getElementById("imgCheckFigure").setAttribute('value', randomUrl);
+                                caseData.imgCheckFigure = randomUrl;
+
+                                console.log($('#imgCheckFigure').val());
+                            } else { layer.msg('上传失败') }
+
+                        },
+                        error: function(err) { console.log(err); }
+                    });
+
+                    admin.events.clinicalDataFigure = function(t) {
+                        var i = document.getElementById("clinicalDataFigure").getAttribute('value');
+                        if (![null, undefined, '', 'null'].includes(i)) {
+                            layer.photos({
+                                photos: {
+                                    title: "临床资料附图",
+                                    data: [{ src: i }]
+                                },
+                                shade: .01,
+                                closeBtn: 1,
+                                anim: 5
+                            })
+                        } else { layer.msg("暂无临床资料附图"); }
+                    };
+                    admin.events.imgCheckFigure = function(t) {
+                        var i = document.getElementById("imgCheckFigure").getAttribute('value');
+                        if (![null, undefined, '', 'null'].includes(i)) {
+                            layer.photos({
+                                photos: {
+                                    title: "影像学检查附图",
+                                    data: [{ src: i }]
+                                },
+                                shade: .01,
+                                closeBtn: 1,
+                                anim: 5
+                            })
+                        } else { layer.msg("暂无影像学检查附图"); }
+                    };
+
+                    admin.events.cancelClinicalDataFigure = function(t) {
+                        admin.req({
+                            url: 'api/case/cancelFigure',
+                            type: 'get',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: {
+                                id: caseData.id,
+                                type: "clinicalDataFigure"
+                            },
+                            success: function(res) {
+                                document.getElementById("clinicalDataFigure").setAttribute('value', '');
+                                caseData.clinicalDataFigure = '';
+                                layer.msg("已取消临床资料附图");
+                            }
+                        })
+                    };
+
+                    admin.events.cancelImgCheckFigure = function(t) {
+                        admin.req({
+                            url: 'api/case/cancelFigure',
+                            type: 'get',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: {
+                                id: caseData.id,
+                                type: "imgCheckFigure"
+                            },
+                            success: function(res) {
+                                document.getElementById("imgCheckFigure").setAttribute('value', '');
+                                caseData.imgCheckFigure = '';
+                                layer.msg("已取消影像学检查附图");
+                            }
+                        })
+                    };
+                }
+            });
+        } else {
+            $('#doctor').val(layui.data('layuiAdmin').userName);
+            $('#hosName').val(layui.data('layuiAdmin').organization);
+        }
+        form.render('select');
+
+        // select同步筛选条件
+        form.on('select(caseType)', function(data) {
+            if (data.value === '常规病例') {
+                $('#general').attr('style', 'display:block');
+                $('#generalLabel').attr('style', 'display:block');
+                $('#isGynecology').val('');
+                $('#isGynecologyBlock').attr('style', 'display:none;');
+                $('#isGynecologyLabel').attr('style', 'display:none');
+                $('#isGynecology').attr('lay-verify', '');
+                $('#isMenopause').attr('lay-verify', '');
+
+                $('#isMenopauseLabel').attr('style', 'display:none');
+                $('#isMenopauseBlock').attr('style', 'display:none');
+                $('#lastMenses').attr('style', 'display:none');
+                $('#lastMensesLabel').attr('style', 'display:none');
+            } else if (data.value === 'TBS病例') {
+                $('#general').attr('style', 'display:none');
+                $('#generalLabel').attr('style', 'display:none');
+                $('#isGynecologyBlock').attr('style', 'width:161px;display:block');
+                $('#isGynecologyLabel').attr('style', 'display:block');
+
+                // $('#isGynecology').attr('lay-verify', 'required');
+            }
+            form.render(""); //刷新select选择框渲染
+        })
+
+        // 根据 是否妇科 判断是否显示 是否绝经 末次月经
+        form.on('select(isGynecology)', function(data) {
+            if (data.value === '妇科') {
+                $('#isMenopauseLabel').attr('style', 'display:block');
+                $('#isMenopauseBlock').attr('style', 'width:161px;display:block');
+                $('#lastMenses').attr('style', 'width:161px;display:block');
+                $('#lastMensesLabel').attr('style', 'display:block');
+                if (caseData.isMenopause === "是") {
+                    document.getElementById("lastMensesLabel").innerHTML = '绝经日期';
+                } else {
+                    document.getElementById("lastMensesLabel").innerHTML = '末次月经';
+                }
+                // $('#lastMenses').attr('lay-verify', 'required');
+            } else if (data.value === '非妇科') {
+                $('#isMenopauseLabel').attr('style', 'display:none');
+                $('#isMenopauseBlock').attr('style', 'display:none');
+                $('#lastMenses').attr('lay-verify', '');
+                $('#isMenopause').attr('lay-verify', '');
+                $('#lastMenses').attr('style', 'display:none');
+                $('#lastMensesLabel').attr('style', 'display:none');
+            }
+            form.render(); //刷新select选择框渲染
+        })
+
+        form.on('select(isMenopause)', function(data) {
+            if (data.value === '是') {
+                document.getElementById("lastMensesLabel").innerHTML = '绝经日期:';
+            } else if (data.value === '否') {
+                document.getElementById("lastMensesLabel").innerHTML = '末次月经:';
+            }
+        })
+
+        step.render({
+            elem: '#stepForm',
+            filter: 'stepForm',
+            width: '100%', //设置容器宽度
+            stepWidth: '950px',
+            height: Math.max($(document).height() - $('#stepForm').offset().top - 55, 790),
+            stepItems: [{ title: '填写病例信息' },
+                { title: '选择病例切片' },
+                { title: '选择会诊专家' }
+            ]
+        });
+
+        laydate.render({
+            elem: '#birthDate',
+            done: function(value, date, endDate) {
+                var nowDate = new Date(); //当前日期
+                var nowYear = nowDate.getFullYear();
+                var nowMonth = nowDate.getMonth() + 1; //实际月份
+                var birthYear = date.year;
+                var birthMonth = date.month;
+                var age = parseInt(nowYear) - parseInt(birthYear);
+                if (age < 0) { //如果出生年龄大于当前时间的话
+                    age = 0;
+                } else {
+                    if (nowMonth > birthMonth) { //若当前月份大于出生月份
+                        age = age + 1;
+                    } else if (nowMonth == birthMonth) { //如果当前月份==出生月份
+                        var birthDate = date.date;
+                        var nowDate = nowDate.getDate();
+                        if (nowDate > birthDate) {
+                            age = age + 1;
+                        }
+                    }
+                }
+                $("#age").val(age); // 自动设置年龄
+            }
+        });
+        laydate.render({
+            elem: '#inspectionDate',
+            type: 'datetime'
+        });
+        laydate.render({
+            elem: '#lastMenses'
+        });
+        $('#chooseSlide').on('click', function() {
+            var checkStatus = table.checkStatus('slide-table-list'),
+                checkData = checkStatus.data; // 要改成复选框
+            caseData.slideUrl = [];
+            if (checkData.length === 0) {
+                return layer.msg('请选择数据');
+            } else {
+                checkData.forEach(element => {
+                    admin.req({
+                        url: 'api/slideCenter/openSlide',
+                        type: 'get',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: element,
+                        userName: layui.data('layuiAdmin').userName,
+                        success: function(res) {
+                            caseData.slideUrl.push({
+                                path: res.path,
+                                fileName: res.fileName,
+                                slideUrl: res.data,
+                                thumbnail: res.thumbnail,
+                                label: res.label
+                            });
+                        },
+                        done: function(res) {}
+                    })
+                });
+            }
+        })
+
+        /* 监听表单提交 */
+        form.on('submit(queryExpert)', function(data) {
+            let queryData = {
+                expertName: $('#expertName').val(),
+                subspecialty: $('#expertSubspecialty').val(),
+            };
+
+            table.reload('expert-table', {
+                where: queryData,
+                page: { curr: 1 }
+            });
+            return false;
+        });
+
+        /* 监听表单提交 */
+        form.on('submit(case-form-submit)', function(data) {
+            data.field.doctor = layui.data('layuiAdmin').userName;
+            var checkStatus = table.checkStatus('expert-table'),
+                checkData = checkStatus.data;
+            if (checkData === []) {
+                return layer.msg('请选择专家');
+            } else {
+                caseData.slideUrl = JSON.stringify(caseData.slideUrl);
+                caseData.expert = checkData[0].userName;
+                Object.keys(data.field).forEach(element => {
+                    caseData[element] = data.field[element]; //逐个赋值
+                });
+                admin.req({
+                    url: 'api/case/insert',
+                    type: 'POST',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify({
+                        data: caseData
+                    }),
+                    success: function(res) {
+                        layer.msg('操作成功,即将跳转回列表');
+                        setTimeout(() => {
+                            top.location.href = './#/case/caseUpload'; // 跳转回列表
+                        }, 1500);
+                    },
+                    done: function(res) {}
+                })
+            }
+            return false;
+        });
+
+        /* 监听表单提交 */
+        form.on('submit(save-form-submit)', function(data) {
+            data.field.doctor = layui.data('layuiAdmin').userName;
+            Object.keys(data.field).forEach(element => {
+                caseData[element] = data.field[element]; //逐个赋值
+            });
+            admin.req({
+                url: 'api/case/insert',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
+                    data: caseData
+                }),
+                success: function(res) {
+                    layer.msg('保存成功');
+                }
+            })
+
+            return false;
+        });
+
+        // 打开选中切片
+        form.on('submit(openSlide)', function(data) {
+            var checkStatus = table.checkStatus('slide-table-list'),
+                checkData = checkStatus.data[0];
+            if (checkData === undefined) {
+                layer.msg('请选择数据');
+                return false;
+            } else {
+                admin.req({
+                    url: 'api/slideCenter/openSlide',
+                    type: 'get',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: checkData,
+                    success: function(res) {
+                        layer.open({
+                            type: 2,
+                            title: res.fileName,
+                            shade: false,
+                            maxmin: true,
+                            area: ['100%', '100%'],
+                            content: res.data
+                        }); // iframe弹窗
+                    },
+                    done: function(res) {
+                        layer.close(index);
+                        return false;
+                    }
+                })
+                return false;
+            }
+        })
+
+        form.on('submit(formStep)', function(data) {
+            data.field.doctor = layui.data('layuiAdmin').userName;
+            Object.keys(data.field).forEach(element => {
+                caseData[element] = data.field[element]; //逐个赋值
+            });
+            step.next('#stepForm');
+            form.render('table');
+
+            if (![null, undefined, '', 'null'].includes(caseData.slideUrl)) {
+                // console.log(caseData.slideUrl.folder)
+                // todo 展开文件树,选中切片
+            }
+
+            let tableHeight = $(document).height() - $('#slide-table-list').offset().top - $('#step-btn').height() - 20;
+            let offset = $('#slide-table-list').offset().top - $('#directory-card').offset().top + $('#step-btn').height() + 10;
+            document.getElementById('directory-card').setAttribute('style', `height: ${tableHeight + offset}px`);
+            table.render({ height: tableHeight });
+            form.render();
+            return false;
+        });
+
+        form.on('submit(chooseSlide)', function(data) {
+            data.field.doctor = layui.data('layuiAdmin').userName;
+            Object.keys(data.field).forEach(element => {
+                caseData[element] = data.field[element]; //逐个赋值
+            });
+            step.next('#stepForm');
+            return false;
+        });
+
+        form.on('submit(formStep2-pre)', function(data) {
+            step.pre('#stepForm');
+            return false;
+        });
+        form.on('submit(formStep2-next)', function(data) {
+            var checkStatus = table.checkStatus('slide-table-list'),
+                checkData = checkStatus.data; // 要改成复选框
+            caseData.slideUrl = [];
+            if (checkData.length === 0) {
+                layer.msg('请选择切片');
+            } else {
+                checkData.forEach(element => {
+                    admin.req({
+                        url: 'api/slideCenter/openSlide',
+                        type: 'get',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: element,
+                        success: function(res) {
+                            caseData.slideUrl.push({
+                                path: res.path,
+                                fileName: res.fileName,
+                                slideUrl: res.data,
+                                thumbnail: res.thumbnail,
+                                label: res.label,
+                                folder: res.folder
+                            });
+                        },
+                        done: function(res) {}
+                    })
+                });
+                step.next('#stepForm');
+                form.render();
+
+
+                let tableHeight = $(document).height() - $('#expert-table').offset().top - $('#step-btn').height() - 60;
+                // document.getElementById('expert-card').setAttribute('style', `height: ${tableHeight + offset}px`);
+                table.render({
+                    elem: '#expert-table',
+                    url: 'api/user/expertTable', //使用后端数据
+                    height: tableHeight,
+                    response: {
+                        statusCode: 200
+                    },
+                    cols: [
+                        [{
+                                field: 'radio',
+                                type: 'radio',
+                                fixed: 'left',
+                                minWidth: 120,
+                            },
+                            {
+                                field: 'userName',
+                                title: '专家名',
+                                width: 240,
+                                minWidth: 120,
+                            }, {
+                                field: 'subspecialty',
+                                title: '擅长亚专科',
+                                minWidth: 120,
+                            }, {
+                                field: 'info',
+                                title: '简介',
+                                minWidth: 120,
+                            },
+                        ]
+                    ],
+                    page: true,
+                    limit: 20,
+                    done: function() {
+                        $(".layui-table-main tr").each(function(index, val) {
+                            if ([2, 3].includes(index)) { // * 由于前面切片列表需要适应图片,这里index是2,3而不是0,1;layui-table-fixed的index需要-2
+                                $(".layui-table-fixed").each(function() { // layui-table-fixed的index需要-2
+                                    $($(this).find(".layui-table-body tbody tr")[index - 2]).height(38) //$(val).height()
+                                })
+                            }
+                        });
+                        $(".layui-table-header tr").each(function(index, val) {
+                            if ([2, 3].includes(index)) { // * 由于前面切片列表需要适应图片,这里index是2,3而不是0,1;
+                                $(".layui-table-fixed").each(function() { // layui-table-fixed的index需要-2
+                                    $($(this).find(".layui-table-header thead tr")[index - 2]).height(38) //$(val).height()
+                                })
+                            }
+                        });
+                    }
+                });
+            }
+            form.render('radio');
+            return false;
+        });
+        form.on('submit(formStep3-pre)', function(data) {
+            step.pre('#stepForm');
+            return false;
+        });
+    });
+</script>

@@ -2,7 +2,7 @@
  * @Author: cwx
  * @Description: slideCenter
  * @Date: 2021-10-21 17:41:07
- * @LastEditTime: 2022-09-22 14:29:57
+ * @LastEditTime: 2022-11-01 10:16:40
  * @FilePath: \ReportSystem_Demo\webContent\dist\views\case\caseUpload.html
 -->
 <div class="layui-card layadmin-header">
@@ -173,7 +173,7 @@
                     layer.confirm('将删除病例,确定？', function(index) {
                         obj.del(); // 删除对应行（tr）的DOM结构，并更新缓存
                         Object.keys(data).forEach(element => {
-                            if(!['id','reportPath'].includes(element)){
+                            if (!['id', 'reportPath'].includes(element)) {
                                 delete data[element]
                             }
                         });
