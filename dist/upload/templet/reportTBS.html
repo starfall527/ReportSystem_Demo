@@ -1,0 +1,316 @@
+<!--
+ * @Author: cwx
+ * @Description: 
+ * @Date: 2022-05-30 14:30:59
+ * @LastEditTime: 2022-10-07 15:38:37
+ * @FilePath: \ReportSystem_Demo\upload\templet\reportTBS.html
+-->
+<html>
+
+<head>
+    <meta charset="utf8">
+    <title>报告</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'SimSun';
+            font-weight: 500;
+            font-size: 20px;
+            background: rgb(241, 241, 241);
+            /* background: rgb(255/, 255, 255); */
+            box-sizing: border-box;
+        }
+
+        .page {
+            position: relative;
+            display: block;
+            background: white;
+            page-break-after: auto;
+            margin: 0px;
+            overflow: hidden;
+        }
+
+        .pageBorder {
+            margin: 50px;
+        }
+
+        @media print {
+            body {
+                background: black;
+            }
+
+            .page {
+                margin: 0;
+                height: 100%;
+                width: 100%;
+            }
+        }
+
+        .page.first {
+            border-left: 5px solid green;
+        }
+
+        .bottom {
+            position: absolute;
+            left: 5mm;
+            right: 5mm;
+            bottom: 5mm;
+        }
+
+        .group {
+            margin-top: 3mm;
+        }
+
+        .title {
+            color: black;
+            position: relative;
+            font-family: 'SimSun';
+            font-weight: bold;
+            font-size: 36px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: black;
+            position: relative;
+            font-family: 'SimSun';
+            font-weight: bold;
+            font-size: 22px;
+            text-align: center;
+        }
+
+        .label {
+            color: black;
+            position: relative;
+            font-family: 'SimSun';
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .label-large {
+            color: black;
+            position: relative;
+            font-family: 'SimSun';
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .labelBreak {
+            margin-top: 8px;
+        }
+
+        .line {
+            color: black;
+            position: relative;
+        }
+
+        #grid {
+            text-align: justify;
+            display: grid;
+            height: auto;
+            grid-template-columns: 35% 35% 30%;
+            grid-template-rows: repeat(1, 1fr);
+        }
+
+        #grid2ColWide {
+            text-align: justify;
+            display: grid;
+            height: auto;
+            grid-template-columns: 35% 65%;
+            grid-template-rows: repeat(1, 1fr);
+        }
+
+        #grid2ColLabel {
+            display: grid;
+            height: auto;
+            grid-template-columns: 60% 5% 35%;
+            grid-template-rows: repeat(1, 1fr);
+        }
+
+        #grid2Col {
+            text-align: justify;
+            display: grid;
+            height: auto;
+            grid-template-columns: 50% 5% 45%;
+            grid-template-rows: repeat(1, 1fr);
+        }
+        
+        #grid2ColWithLabel {
+            text-align: justify;
+            display: grid;
+            height: auto;
+            grid-template-columns: 10% 40% 5% 12% 33%;
+            grid-template-rows: repeat(1, 1fr);
+        }
+
+        .grid-cell1 {
+            grid-column: 1;
+        }
+
+        .grid-cell2 {
+            grid-column: 2;
+        }
+
+        .grid-cell3 {
+            grid-column: 3;
+        }
+
+        .grid-cell4 {
+            grid-column: 4;
+        }
+
+        .grid-cell5 {
+            grid-column: 5;
+        }
+
+        #item1 {
+            background-color: lime;
+        }
+
+        #item2 {
+            background-color: yellow;
+            grid-row: 2 / 4;
+        }
+
+        #item3 {
+            background-color: blue;
+            grid-row: span 2 / 7;
+        }
+
+        .col1 {
+            position: relative;
+            text-align: left;
+            float: left;
+        }
+
+        .col2 {
+            position: relative;
+            left: 30%;
+            text-align: left;
+            float: left;
+        }
+
+        .col2End {
+            position: relative;
+            left: 30%;
+            text-align: left;
+        }
+
+        .col3 {
+            position: relative;
+            left: 60%;
+            text-align: left;
+        }
+
+        .text {
+            color: black;
+            position: relative;
+            font-size: 14px;
+            left: 28px;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .logo {
+            position: relative;
+            width: 80%;
+            left: 10%;
+            top: 15%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="pageBorder">
+            <div class="title" id="reportTitle">宫颈液基细胞学诊断报告</div>
+            <div class="subtitle" id="subtitle"></div>
+            <div class="labelBreak"></div>
+            <div id="grid2ColLabel">
+                <div class="label grid-cell1" id="pathologyNumLabel">病理号:</div>
+                <div class="label grid-cell3" id="uploadDateLabel">送检时间:</div>
+                <!-- <div class="label grid-cell3" id="consultationNumLabel">会诊号:</div> -->
+            </div>
+            <HR>
+            <div id="grid">
+                <div class="label grid-cell1" id="patNameLabel">姓名:</div>
+                <div class="label grid-cell2" id="genderLabel">性别:</div>
+                <div class="label grid-cell3" id="ageLabel">年龄:</div>
+                <div class="labelBreak"></div>
+                <div class="label grid-cell1" id="samplePartLabel">取材部位:</div>
+                <div class="label grid-cell2" id="isMenopause">是否绝经:</div>
+                <div class="label grid-cell3" id="lastMenses">末次月经:</div>
+                <div class="labelBreak"></div>
+                <div class="label grid-cell1" id="doctorLabel">送检医生:</div>
+                <div class="label grid-cell2" id="unitLabel">送检单位:</div>
+            </div>
+            <HR>
+            <div id="grid2ColWithLabel">
+                <div class="label grid-cell1" style="line-height: 140%;">临床资料:</div>
+                <div class="label grid-cell2" id="clinicalData" style="line-height: 140%;"></div>
+                <div class="label grid-cell4" style="line-height: 140%;">影像学检查:</div>
+                <div class="label grid-cell5" id="imgCheck" style="line-height: 140%;"></div>
+
+                <div class="label grid-cell2"><img src="" id="clinicalDataFigure" height="215px" style="display:none;"></div>
+                <div class="label grid-cell4"><img src="" id="imgCheckFigure" height="215px" style="display:none;"></div>
+                <div class="labelBreak"></div>
+            </div>
+            <div id="grid2ColWide">
+                <div class="labelBreak"></div>
+                <!-- <div class="label grid-cell1" id="originDiagnosis">初诊意见:</div> -->
+                <div class="label grid-cell1" id="history">病史:</div>
+                <div class="label grid-cell2" id="note">备注:</div>
+                <div class="labelBreak"></div>
+            </div>
+            <HR>
+            <div class="label" id="annotationLabel">镜下所见:
+                <div class="labelBreak"></div>
+                <div id="grid">
+                    <div class="label grid-cell1"><img src="" id="annotation0" height="215px"></div>
+                    <div class="label grid-cell2"><img src="" id="annotation1" height="215px"></div>
+                    <div class="label grid-cell3"><img src="" id="annotation2" height="215px"></div>
+                </div>
+            </div>
+            <div id="grid2Col">
+                <div class="labelBreak"></div>
+                <div class="label grid-cell1" id="sampleQuality">标本素质:</div>
+                <div class="label grid-cell3" id="component">细胞成分:</div>
+                <div class="labelBreak"></div>
+                <div class="label grid-cell1" id="inflammation">炎症:</div>
+                <div class="label grid-cell3" id="reactChange">反应性改变:</div>
+                <div class="labelBreak"></div>
+                <div class="label grid-cell1" id="pathogen">病原体:</div>
+                <div class="label grid-cell3" id="squamousCell">鳞状上皮细胞分析:</div>
+                <div class="labelBreak"></div>
+                <div class="label grid-cell1" id="glandularCell">腺上皮细胞分析:</div>
+                <div class="label grid-cell3" id="otherAnalysis">其它:</div>
+            </div>
+
+            <div class="labelBreak"></div>
+            <HR>
+            <div class="label" id="diagnosis">细胞病理学诊断:</div>
+            <div class="labelBreak"></div>
+            <div class="label" id="suggestion">补充意见:</div>
+
+            <div class="labelBreak"></div>
+            <HR>
+
+            <div id="grid2ColLabel">
+                <div class="label grid-cell1" id="sign">
+                    <div style="float: left;">诊断医生:</div>
+                    <div><img src="" id="signImg" style="height:60px;margin-left: 10px;"></div>
+                </div>
+
+                <div class="label grid-cell3" id="diagnoseDate">诊断时间:</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
